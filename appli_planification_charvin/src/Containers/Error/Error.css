@@ -1,0 +1,34 @@
+.error-404 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: auto;
+    text-align: center;
+    padding: 10px;
+}
+
+.error-404-img {
+    margin: auto;
+    width: 50%;
+    padding: 20px;
+}
+
+.error-404-title {
+    padding: 15px;
+    color: #eb671c;   
+}
+
+.error-404-title2 {
+    padding: 15px;
+    color: #104476;
+}
+
+.error-404-link {
+    padding: 15px;
+    color: #eb671c;
+    font-weight: bolder;
+    cursor: pointer;
+}
+

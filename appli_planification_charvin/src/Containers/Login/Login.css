@@ -1,0 +1,102 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    margin: 40px;
+    text-align: center;   
+    color: #104476;
+}
+
+.login-container h1 {
+    text-transform: uppercase;
+    font-size: 17px;
+    font-weight: bolder;
+    padding: 15px 10px 20px 10px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 4px #818386;
+}
+
+.login-container-img{
+    width: 70%;
+    margin: 0 auto;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin:auto;
+}
+
+.login-form h2 {
+    font-size: 13px;
+    font-style: italic;
+    color: #eb671c;
+    margin: 10px auto 20px auto;
+    padding: 10px;
+}
+
+.login-form label {
+    font-size: 10px;
+    font-style: italic; 
+
+    padding: 5px;
+}
+
+.login-input {
+   width: 65%; 
+   margin: 10px auto 20px auto;
+   padding: 5px;
+   text-align: center;
+   border-radius: 5px;
+   border-style: none;
+   background-color: lightsteelblue;
+}
+
+.login-form-button {
+    width: 30%;
+    background-color: #eb671c;
+    color: #104476;
+    border-radius: 5px;
+    border-style: none;
+    padding: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-errMsg {
+    color: red;
+}
+
+
+@media screen and (min-width: 769px){
+    
+    .login-container {
+        margin: 15px auto 20px;
+    }
+
+    .login-container h1 {
+        font-size: 25px;
+    }
+   
+    .login-form h2 {
+        font-size: 20px;
+    }
+
+    .login-form label {
+        font-size: 15px;
+    }
+
+    .login-container-img {
+        width: 60%;
+    }
+}
+
+@media screen and (min-width: 1050px){
+    .login-form-button:hover {
+        background-color: #e7aa87;
+    }
+}
