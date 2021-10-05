@@ -5,6 +5,7 @@ import Login from './Containers/Login/Login.js';
 import Booking from './Containers/Booking/Booking.js';
 import Admin from './Containers/Admin/Admin.js';
 import Stats from './Containers/Stats/Stats.js';
+import Logout from './Components/Logout/Logout.js';
 
 
 
@@ -18,6 +19,7 @@ function App() {
           <Route exact path = '/' component = { Booking } />
           <Route exact path = '/admin' component = { Admin } />
           <Route exact path = '/stats' component = { Stats } />
+          <Route exact path = '/logout' component = { Logout } />
           <Route path = '/' component = { Error }/>        
         </Switch>
 

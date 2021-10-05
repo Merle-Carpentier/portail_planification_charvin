@@ -44,10 +44,10 @@ export default function Login() {
             {redirect && <Redirect to = "/"/>}
             <div className="login-container">
 
-                <img className="login-container-img"src={charvin} alt="logo Charvin Logistics" />
-
-                <h1>Bienvenue sur la plateforme de rendez-vous Charvin Logistics</h1>   
-                
+                <div className="login-container-title">
+                    <img className="login-container-img"src={charvin} alt="logo Charvin Logistics" />
+                    <h1 className="login-container-h1">Bienvenue sur la plateforme de rendez-vous Charvin Logistics</h1>   
+                </div>
 
                 <form 
                 className="login-form"

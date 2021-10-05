@@ -8,14 +8,14 @@ const INITIAL_STATE = {
     infos: null
 }
 
-
+//store lié à l'utilisateur: soit il est connecté, soit non
 export default function userReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case LOAD_USER_INFO:
             return {isLogged: true, infos: action.payload}
         
         case LOGOUT_USER:
-        	return INITIAL_STATE;
+        	return INITIAL_STATE
         
     }
     
