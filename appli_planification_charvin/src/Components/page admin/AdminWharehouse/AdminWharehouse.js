@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import './AdminWharehouse.css'
 
 
-function AdminWharehouse() {
+export default function AdminWharehouse() {
     
 
 
@@ -13,15 +13,3 @@ function AdminWharehouse() {
         </div>
     )
 }
-
-const mapStateToProps = (store) => {
-    return {
-
-    }
-}
-
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminWharehouse)

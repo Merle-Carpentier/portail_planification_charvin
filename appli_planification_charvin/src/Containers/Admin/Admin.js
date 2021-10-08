@@ -3,7 +3,7 @@ import Navbar from '../../Components/Navbar/Navbar.js'
 import './Admin.css'
 import { connect } from 'react-redux'
 
-function Admin() {
+export default function Admin() {
     return (
         <>
             <Navbar/>
@@ -12,14 +12,3 @@ function Admin() {
     )
 }
 
-const mapStateToProps = (store) => {
-    return {
-
-    }
-}
-
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Admin)

@@ -5,7 +5,7 @@ import Login from './Containers/Login/Login.js';
 import Booking from './Containers/Booking/Booking.js';
 import Admin from './Containers/Admin/Admin.js';
 import Stats from './Containers/Stats/Stats.js';
-import Logout from './Components/Logout/Logout.js';
+import Logout from './Containers/Logout/Logout.js';
 
 
 

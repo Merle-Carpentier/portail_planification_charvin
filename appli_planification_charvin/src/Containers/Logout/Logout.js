@@ -1,20 +1,31 @@
 import { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Redirect } from 'react-router'
 import { logoutUser } from '../../redux/actions/userActions'
 
 //composant de déconnexion de l'utilisateur
-function Logout() {
+export default function Logout() {
+    //initialisation des states
     const [redirect, setRedirect] = useState(false)
 
+    //initialisation du dispatch au store
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        logoutUser()
+
+        //dispatch de l'action au store
+        dispatch(logoutUser())
+
+        //suppression des clés dans le local storage
         window.localStorage.removeItem('rdvCharvin')
+        window.localStorage.removeItem('utilisateurCharvin')
+
+        //state de redirection
         setRedirect(true)
 
     }, [])
 
-
+    //affichage avec un redirection conditionnelle
     return (
         <div>
             {redirect && <Redirect to='/login' />}
@@ -22,14 +33,3 @@ function Logout() {
     )
 }
 
-const mapDispatchToProps = {
-	logoutUser
-}
-
-const mapStateToProps = (store)=>{
-	return {
-		user: store.user
-	}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Logout)

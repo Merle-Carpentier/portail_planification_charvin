@@ -1,47 +1,71 @@
 import { useState } from 'react'
 import { Redirect } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { loadUserInfo } from '../../redux/actions/userActions'
 import { loginUser } from '../../apiCalls/usersCalls'
 import charvin from '../../asset/Charvin_Logistics.jpg'
-
 import './Login.css'
 
 //page login de l'utilisateur
 
 export default function Login() {
 
+    //initialisation des states
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [redirect, setRedirect] = useState(false)
     const [errorConnection, setErrorConnection] = useState(null)
 
+    //initialisation du dispatch au store
+    const dispatch = useDispatch()
+ 
+    //fonction d'appel à l'api
     const onSubmitForm = () => {
+        
+        //envoi du formulaire à l'api
         let data = {
             email: email,
             password: password
         }
-
         loginUser(data)
-        .then((response) => {
-            console.log(response)
 
+        //traitrement de la réponse de l'api
+        .then((response) => {
+            
+            //variable qui servira de payload au dispatch
+            let userInfo = response.data.data
+            
+            //code à traiter si la requête est ok
             if (response.status === 200) {
-                window.localStorage.setItem('rdvCharvin', response.data.token)
+
+                //dispatch de l'action au store
+                dispatch(
+                    loadUserInfo(userInfo)
+                )
                 
+                //envoi du token et des infos utilisateur dans le local storage
+                window.localStorage.setItem('rdvCharvin', response.data.token)
+                window.localStorage.setItem('utilisateurCharvin', [response.data.data.firstName, response.data.data.lastName, response.data.data.role])
+               
+                //redirection vers la page principale
                 setRedirect(true)    
             }
+            
         })
+        //gestion de l'erreur
         .catch((error) => {
             console.log(error)
-            
             setErrorConnection("Vos identifiants sont incorrects, recommencez ou contactez Charvin")
-
         })
+        
     }
-
-
+   
+    //affichage de la page avec une redirection au conditionnel
     return (
         <>
             {redirect && <Redirect to = "/"/>}
+            
+
             <div className="login-container">
 
                 <div className="login-container-title">
