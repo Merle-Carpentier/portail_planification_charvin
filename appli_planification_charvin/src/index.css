@@ -12,11 +12,13 @@ body {
   
 }
 
-#root {
+/* #root {
+  min-height: 100vh;
+} */
+
+.app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-
-

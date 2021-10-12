@@ -1,1 +1,1 @@
-module.exports = 'charvin_private_key'
+module.exports = 'rdvCharvin'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loadUserInfo } from '../../redux/actions/userActions'
 import { loginUser } from '../../apiCalls/usersCalls'
 import charvin from '../../asset/Charvin_Logistics.jpg'
@@ -15,6 +15,8 @@ export default function Login() {
     const [password, setPassword] = useState("")
     const [redirect, setRedirect] = useState(false)
     const [errorConnection, setErrorConnection] = useState(null)
+
+    //const userInfos = useSelector(state => (state.userReducer.infos))
 
     //initialisation du dispatch au store
     const dispatch = useDispatch()
@@ -33,14 +35,15 @@ export default function Login() {
         .then((response) => {
             
             //variable qui servira de payload au dispatch
-            let userInfo = response.data.data
+            let userInfos = response.data.data
+            console.log('userInfo', userInfos)
             
             //code à traiter si la requête est ok
             if (response.status === 200) {
 
                 //dispatch de l'action au store
                 dispatch(
-                    loadUserInfo(userInfo)
+                    loadUserInfo(userInfos)
                 )
                 
                 //envoi du token et des infos utilisateur dans le local storage

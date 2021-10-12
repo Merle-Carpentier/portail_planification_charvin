@@ -28,16 +28,7 @@ export const updateWharehouse = (data, id) => {
 }
 
 
-//récupération de tous les entrepôts
-export const allWharehouses = () => {
-    return axios.get(`${configApi.api_url}/api/allWharehouses`, {headers: {"x-access-token": token}})
-    .then((allWharehouses) => {
-        return allWharehouses.data
-    })
-    .catch((error) => {
-        console.log('allWharehouses err', error) 
-    })
-}
+//récupération de tous les entrepôts => se trouve dans fichier wharehouseActions dans redux
 
 
 //detail d'un entrepôt

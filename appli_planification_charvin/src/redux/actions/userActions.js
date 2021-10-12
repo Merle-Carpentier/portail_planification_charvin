@@ -4,7 +4,7 @@ export const LOGOUT_USER = "LOGOUT_USER"
 
 
 //actions
-export const loadUserInfo = (user) => {
+export const loadUserInfo = user => {
     return {
         type: LOAD_USER_INFO,
         payload: user

@@ -11,7 +11,7 @@ import Logout from './Containers/Logout/Logout.js';
 
 function App() {
   return (
-    <>
+    <div className="app">
       <Router>
 
         <Switch>
@@ -23,11 +23,11 @@ function App() {
           <Route path = '/' component = { Error }/>        
         </Switch>
 
-        <Footer/>
+        <Footer />
 
       </Router>
 
-    </>
+    </div>
   );
 }
 

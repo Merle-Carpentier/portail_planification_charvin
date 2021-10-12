@@ -6,13 +6,13 @@
     flex-direction: column;
     background-color: #104476;
     color: #f1f1f1;
-    padding: 10px 10px 5px 10px;
-    line-height: 15px;
-    font-size: 10px; 
+    padding: 5px 5px 2px 5px;
+    line-height: 12px;
+    font-size: 8px; 
 }
 
 .footer-a {
-    padding: 7px;
+    padding: 5px;
     color: #f1f1f1;
     cursor: pointer;
 }
@@ -38,7 +38,7 @@
 @media screen and (min-width: 769px) {
     .footer {
         font-size: 10px;
-        padding-bottom: 7px;
+        padding-bottom: 5px;
     }
 
 }
@@ -46,8 +46,8 @@
 @media screen and (min-width: 1050px) {
    
     .footer {
-        font-size: 13px;
-        line-height: 19px;
+        font-size: 10px;
+        line-height: 13px;
     }
 
     .footer-img {
