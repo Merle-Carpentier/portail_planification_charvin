@@ -16,7 +16,7 @@ export default function Login() {
     const [redirect, setRedirect] = useState(false)
     const [errorConnection, setErrorConnection] = useState(null)
 
-    //const userInfos = useSelector(state => (state.userReducer.infos))
+    const infos = useSelector(state => (state.userReducer.infos))
 
     //initialisation du dispatch au store
     const dispatch = useDispatch()
@@ -33,27 +33,22 @@ export default function Login() {
 
         //traitrement de la réponse de l'api
         .then((response) => {
-            
-            //variable qui servira de payload au dispatch
-            let userInfos = response.data.data
-            console.log('userInfo', userInfos)
-            
             //code à traiter si la requête est ok
             if (response.status === 200) {
 
                 //dispatch de l'action au store
                 dispatch(
-                    loadUserInfo(userInfos)
+                    loadUserInfo(infos)
                 )
                 
                 //envoi du token et des infos utilisateur dans le local storage
                 window.localStorage.setItem('rdvCharvin', response.data.token)
+                window.localStorage.setItem('id', response.data.data.id)
                 window.localStorage.setItem('utilisateurCharvin', [response.data.data.firstName, response.data.data.lastName, response.data.data.role])
                
                 //redirection vers la page principale
                 setRedirect(true)    
             }
-            
         })
         //gestion de l'erreur
         .catch((error) => {
@@ -70,7 +65,7 @@ export default function Login() {
             
 
             <div className="login-container">
-
+            {/* {console.log('userInfo', infos)} */}
                 <div className="login-container-title">
                     <img className="login-container-img"src={charvin} alt="logo Charvin Logistics" />
                     <h1 className="login-container-h1">Bienvenue sur la plateforme de rendez-vous Charvin Logistics</h1>   

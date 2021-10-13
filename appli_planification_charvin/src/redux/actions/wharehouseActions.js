@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 const token = window.localStorage.getItem('rdvCharvin')
+const userId = window.localStorage.getItem('userId')
 
 //types d'action
 export const LOAD_WHAREHOUSES = "LOAD_WHAREHOUSES"
@@ -33,10 +34,10 @@ export const allWharehouses = () => {
 
         dispatch(loadWharehouses())
 
-        axios.get(`${configApi.api_url}/api/allWharehouses`, {headers: {"x-access-token": token}})
+        axios.get(`${configApi.api_url}/api/allWharehouses`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             console.log('allwharehouses', response)
-            dispatch(loadWharehousesSuccess(response.data))   
+            dispatch(loadWharehousesSuccess(response.data.data))   
         })
 
         .catch((error) => {
@@ -45,17 +46,3 @@ export const allWharehouses = () => {
         })
     }
 }
-
-/**type d'action
-export const LOAD_WHAREHOUSES = "LOAD_WHAREHOUSES"
-
-//fonction d'appel vers l'api pour récupérer tous les entrepôts
-export const loadWharehouses = () => {
-    allWharehouses()
-    .then(wharehouses => {
-        return {
-            type: LOAD_WHAREHOUSES,
-            payload: wharehouses
-        } 
-})
-}*/

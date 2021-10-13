@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { configApi } from './configApi'
 const token = window.localStorage.getItem('rdvCharvin')
+const userId = window.localStorage.getItem('userId')
 
 //Fichier des appels vers l'API (table users)
 
 //ajout d'un utilisateur
 export const addUser = (data) => {
-    return axios.post(`${configApi.api_url}/api/addUser`, data, {headers: {"x-access-token": token}})
+    return axios.post(`${configApi.api_url}/api/addUser`, data, {headers: {"x-access-token": token, "userId": userId}})
     .then((addUser) => {
         return addUser.data
     })
@@ -18,7 +19,7 @@ export const addUser = (data) => {
 
 //mise à jour utilisateur
 export const updateUser = (data, id) => {
-    return axios.put(`${configApi.api_url}/api/updateUser/${id}`, data, {headers: {"x-access-token": token}})
+    return axios.put(`${configApi.api_url}/api/updateUser/${id}`, data, {headers: {"x-access-token": token, "userId": userId}})
     .then((updateUser) => {
         return updateUser.data
     })
@@ -30,7 +31,7 @@ export const updateUser = (data, id) => {
 
 //récupération de tous les utilisateurs
 export const allUsers = () => {
-    return axios.get(`${configApi.api_url}/api/allUsers`, {headers: {"x-access-token": token}})
+    return axios.get(`${configApi.api_url}/api/allUsers`, {headers: {"x-access-token": token, "userId": userId}})
     .then((allUsers) => {
         return allUsers.data
     })
@@ -42,7 +43,7 @@ export const allUsers = () => {
 
 //detail d'un utilisateur
 export const detailUser = (id) => {
-    return axios.put(`${configApi.api_url}/api/detailUser/${id}`, {headers: {"x-access-token": token}})
+    return axios.put(`${configApi.api_url}/api/detailUser/${id}`, {headers: {"x-access-token": token, "userId": userId}})
     .then((detailUser) => {
         return detailUser.data
     })
@@ -54,7 +55,7 @@ export const detailUser = (id) => {
 
 //suppression d'un utilisateur
 export const deleteUser = (id) => {
-    return axios.delete(`${configApi.api_url}/api/deleteUser/${id}`, {headers: {"x-access-token": token}})
+    return axios.delete(`${configApi.api_url}/api/deleteUser/${id}`, {headers: {"x-access-token": token, "userId": userId}})
     .then((deleteUser) => {
         return deleteUser.data
     })
