@@ -44,7 +44,7 @@ export default function Login() {
                 //envoi du token et des infos utilisateur dans le local storage
                 window.localStorage.setItem('rdvCharvin', response.data.token)
                 window.localStorage.setItem('id', response.data.data.id)
-                window.localStorage.setItem('utilisateurCharvin', [response.data.data.firstName, response.data.data.lastName, response.data.data.role])
+                window.localStorage.setItem('role', response.data.data.role)
                
                 //redirection vers la page principale
                 setRedirect(true)    

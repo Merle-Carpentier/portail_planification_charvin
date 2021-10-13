@@ -1,18 +1,21 @@
-import NavbarAdmin from '../../Components/NavbarAdmin/NavbarAdmin.js'
-import Navbar from '../../Components/Navbar/Navbar.js'
-import './Admin.css'
-import { connect } from 'react-redux'
+import Authorized from '../../Components/Authorized/Authorized.js'
+import { useState, useEffect } from 'react'
 import AdminWharehouse from '../../Components/page admin/AdminWharehouse/AdminWharehouse.js'
-
+import './Admin.css'
 
 export default function Admin() {
+
+
     return (
         <>
-            <NavbarAdmin/>
+            <Authorized />
+
+            <div className="admin">
             <AdminWharehouse />
+            </div>
+
             <h1>Admin</h1>
 
-        
         </>
     )
 }

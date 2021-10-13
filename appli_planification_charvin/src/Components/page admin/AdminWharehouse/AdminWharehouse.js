@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link , Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-//import { deleteWharehouse } from '../../../apiCalls/wharehousesCalls'
 import { allWharehouses } from '../../../redux/actions/wharehouseActions'
 import './AdminWharehouse.css'
 
@@ -11,21 +10,22 @@ const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
 
 
-
-
 //Composant pour affichage et suppression des entrepôts prenant en paramètre les states du store et le dispatch des actions
 export default function AdminWharehouse() {    
     
+    //je pointe les states de mon store avec useSelector
     const isLoading = useSelector(state => state.wharehouseReducer.isLoading)
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
     const error = useSelector(state => state.wharehouseReducer.error)
 
+    //j'initialise mes states
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
 
+    //j'initialise uns const pour dispatcher mes actions au store
     const dispatch = useDispatch()
 
-    
+    //suppression d'un entrepôt
     const deleteWharehouse = (id) => {
         axios.delete(`${configApi.api_url}/api/deleteWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
@@ -39,33 +39,32 @@ export default function AdminWharehouse() {
             setErrResponse("impossible de supprimer l'entrepôt, veuillez vérifier s'il n'est pas en lien avec un client ou un rdv")
         })
 
-        allWharehouses()
+        dispatch(allWharehouses())
     }
         
-    
 
-    //appel à l'api au montage et à chaque modification
+    //action d'appel à l'api au montage et à chaque modification
     useEffect(() => {
         dispatch(allWharehouses())     
     }, [])
 
 
-    //affichage du tableau en fonction de l'état des state du store
+    //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
         
         <div className="admin-wharehouse">
-        {/* {console.log("wharehouses", wharehouses)}
-        {console.log("isLoading", isLoading)}
-        {console.log("error", error)} */}
+
+            {/*titre du tableau avec le bouton de renvoi vers l'ajout d'un entrepot */}
             <div className="admin-wharehouse-head">
                 <h2 className="admin-wharehouse-title">entrepôts</h2>
                 <button
-                className="admin-wharehouse-btn-addmod"
+                className="admin-wharehouse-btn-add"
                 onClick = {() => {<Redirect to='/admin/wharehouse/add' />}}>
                     <i className="fas fa-plus-circle"> Ajouter</i>
                 </button>
             </div>
             
+            {/*tableau créé avec l'appel à l'api */}
             <table className="admin-wharehouse-table">
 
                 <thead className="admin-wharehouse-table-head">
@@ -77,6 +76,7 @@ export default function AdminWharehouse() {
                 </thead>
 
                 {<tbody className="admin-wharehouse-table-body">
+                    {/*rendu conditionnel en fonction des 3 states du store suite au dispatch de l'action d'appel à l'api */}
                     {isLoading ? (
                         <tr className="admin-wharehouse-table-trload">
                             <td colSpan="3" className="admin-wharehouse-table-tdload">Chargement...</td>
@@ -93,7 +93,9 @@ export default function AdminWharehouse() {
                         </tr>
                     )
                     :wharehouses.length > 0 && 
+                        
                         wharehouses.map((wharehouse)=> {
+                            {/*je map sur les données renvoyées par l'api */}
                             return(
                                     <tr key={wharehouse.id} className="admin-wharehouse-table-tr">
                                         <td className="admin-wharehouse-table-td">
@@ -104,17 +106,17 @@ export default function AdminWharehouse() {
                                         <td className="admin-wharehouse-table-td">{wharehouse.city}</td>
                                         <td className="admin-wharehouse-table-td-action">
                                             <button
-                                            className="admin-wharehouse-btn-addmod"
+                                            className="admin-wharehouse-btn-mod"
                                             onClick = {() => {
                                                 <Redirect to='/admin/wharehouse/modif' />}}>
-                                                <i class="fas fa-pen"></i>
+                                                <i className="fas fa-pen"><p className="admin-wharehouse-table-p"> modifier</p></i>
                                             </button>
                                             <button
                                             className="admin-wharehouse-btn-supp"
                                             onClick = {(e) => {
                                                 e.preventDefault()
                                                 deleteWharehouse(wharehouse.id)}}>
-                                                <i class="fas fa-trash-alt"></i>
+                                                <i className="fas fa-trash-alt"><p className="admin-wharehouse-table-p"> supprimer</p></i>
                                             </button>
                                         </td>
                                     </tr> 
@@ -124,6 +126,8 @@ export default function AdminWharehouse() {
                 </tbody> }
                 
             </table>
+
+            {/*messages d'information si l'appel api est ok ou non */}
             {successResponse !== null &&
                 <p className="admin-wharehouse-successmessage">{successResponse}</p>
             }
