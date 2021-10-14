@@ -1,6 +1,7 @@
 .login-container {
     width: 100%;
     margin-top: 0;
+    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -11,7 +12,7 @@
 .login-container-title {
     width: 100%;
     margin-top: 0;
-    background: linear-gradient(35deg, #104476, #eb671c);
+    background-color: linear-gradient(35deg, #104476, #eb671c);
 }
 
 .login-container-h1 {

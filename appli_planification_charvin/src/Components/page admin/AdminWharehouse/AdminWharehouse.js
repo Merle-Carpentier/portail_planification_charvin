@@ -16,7 +16,7 @@ export default function AdminWharehouse() {
     //je pointe les states de mon store avec useSelector
     const isLoading = useSelector(state => state.wharehouseReducer.isLoading)
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
-    const error = useSelector(state => state.wharehouseReducer.error)
+    const err = useSelector(state => state.wharehouseReducer.error)
 
     //j'initialise mes states
     const [errResponse, setErrResponse] = useState(null)
@@ -36,7 +36,7 @@ export default function AdminWharehouse() {
         })
         .catch((error) => {
             console.log("err del", error)
-            setErrResponse("impossible de supprimer l'entrepôt, veuillez vérifier s'il n'est pas en lien avec un client ou un rdv")
+            setErrResponse("Impossible de supprimer l'entrepôt, veuillez vérifier s'il n'est pas en lien avec un client ou un rdv")
         })
 
         dispatch(allWharehouses())
@@ -57,10 +57,10 @@ export default function AdminWharehouse() {
             {/*titre du tableau avec le bouton de renvoi vers l'ajout d'un entrepot */}
             <div className="admin-wharehouse-head">
                 <h2 className="admin-wharehouse-title">entrepôts</h2>
-                <button
-                className="admin-wharehouse-btn-add"
-                onClick = {() => {<Redirect to='/admin/wharehouse/add' />}}>
-                    <i className="fas fa-plus-circle"> Ajouter</i>
+                <button className="admin-wharehouse-btn-add">
+                    <Link className="admin-wharehouse-link" to='/admin/wharehouse/add'>
+                        <i className="fas fa-plus-circle"> Ajouter</i>
+                    </Link>
                 </button>
             </div>
             
@@ -68,11 +68,13 @@ export default function AdminWharehouse() {
             <table className="admin-wharehouse-table">
 
                 <thead className="admin-wharehouse-table-head">
-                    <th className="admin-wharehouse-table-th">nom</th>
-                    <th className="admin-wharehouse-table-th">adresse</th>
-                    <th className="admin-wharehouse-table-th">cp</th>
-                    <th className="admin-wharehouse-table-th">ville</th>
-                    <th className="admin-wharehouse-table-th">action</th>
+                    <tr className="admin-wharehouse-table-trth">
+                        <th className="admin-wharehouse-table-th">nom</th>
+                        <th className="admin-wharehouse-table-th">adresse</th>
+                        <th className="admin-wharehouse-table-th">cp</th>
+                        <th className="admin-wharehouse-table-th">ville</th>
+                        <th className="admin-wharehouse-table-th">action</th>
+                    </tr>
                 </thead>
 
                 {<tbody className="admin-wharehouse-table-body">
@@ -82,9 +84,9 @@ export default function AdminWharehouse() {
                             <td colSpan="3" className="admin-wharehouse-table-tdload">Chargement...</td>
                         </tr>
                     )
-                    :error ? (
+                    :err ? (
                         <tr className="admin-wharehouse-table-trerr">
-                            <td colSpan="3" className="admin-wharehouse-table-tderr">{error}</td>
+                            <td colSpan="3" className="admin-wharehouse-table-tderr">{err}</td>
                         </tr>
                     ) 
                     :wharehouses.length === 0 ? (
@@ -92,37 +94,34 @@ export default function AdminWharehouse() {
                             <td colSpan="3" className="admin-wharehouse-table-tdload">aucun entrepôt enregistré</td>
                         </tr>
                     )
-                    :wharehouses.length > 0 && 
-                        
-                        wharehouses.map((wharehouse)=> {
-                            {/*je map sur les données renvoyées par l'api */}
-                            return(
-                                    <tr key={wharehouse.id} className="admin-wharehouse-table-tr">
-                                        <td className="admin-wharehouse-table-td">
-                                            <Link className="admin-wharehouse-table-link" to={`admin/wharehouse/edit/${wharehouse.id}`}>{wharehouse.name}</Link>
-                                        </td>
-                                        <td className="admin-wharehouse-table-td">{wharehouse.address}</td>
-                                        <td className="admin-wharehouse-table-td">{wharehouse.zip}</td>
-                                        <td className="admin-wharehouse-table-td">{wharehouse.city}</td>
-                                        <td className="admin-wharehouse-table-td-action">
-                                            <button
-                                            className="admin-wharehouse-btn-mod"
-                                            onClick = {() => {
-                                                <Redirect to='/admin/wharehouse/modif' />}}>
-                                                <i className="fas fa-pen"><p className="admin-wharehouse-table-p"> modifier</p></i>
-                                            </button>
-                                            <button
-                                            className="admin-wharehouse-btn-supp"
-                                            onClick = {(e) => {
-                                                e.preventDefault()
-                                                deleteWharehouse(wharehouse.id)}}>
-                                                <i className="fas fa-trash-alt"><p className="admin-wharehouse-table-p"> supprimer</p></i>
-                                            </button>
-                                        </td>
-                                    </tr> 
+                    :wharehouses.map((wharehouse)=> {
+                        {/*je map sur les données renvoyées par l'api */}
+                        return(
+                            <tr key={wharehouse.id} className="admin-wharehouse-table-tr">
+                                <td className="admin-wharehouse-table-td">
+                                    <Link className="admin-wharehouse-table-link" to={`/admin/wharehouse/edit/${wharehouse.id}`}>{wharehouse.name}</Link>
+                                </td>
+                                <td className="admin-wharehouse-table-td">{wharehouse.address}</td>
+                                <td className="admin-wharehouse-table-td">{wharehouse.zip}</td>
+                                <td className="admin-wharehouse-table-td td-upper">{wharehouse.city}</td>
+                                <td className="admin-wharehouse-table-td-action">
+                                    <button className="admin-wharehouse-btn-mod">
+                                        <Link className="admin-wharehouse-link" to='/admin/wharehouse/modif'>
+                                            <i className="fas fa-pen"><p className="admin-wharehouse-table-p"> modifier</p></i>
+                                        </Link>                                          
+                                    </button>
+                                    <button
+                                    className="admin-wharehouse-btn-supp"
+                                    onClick = {(e) => {
+                                        e.preventDefault()
+                                        deleteWharehouse(wharehouse.id)}}>
+                                        <i className="fas fa-trash-alt"><p className="admin-wharehouse-table-p"> supprimer</p></i>
+                                    </button>
+                                </td>
+                            </tr> 
                                     
-                            )
-                        })}
+                        )
+                    })}
                 </tbody> }
                 
             </table>

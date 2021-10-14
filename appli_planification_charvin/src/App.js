@@ -6,6 +6,8 @@ import Booking from './Containers/Booking/Booking.js';
 import Admin from './Containers/Admin/Admin.js';
 import Stats from './Containers/Stats/Stats.js';
 import Logout from './Containers/Logout/Logout.js';
+import WharehouseAdd from './Containers/WharehouseAdd/WharehouseAdd.js';
+import WharehouseEdit from './Containers/WharehouseEdit/WharehouseEdit.js';
 
 
 
@@ -18,6 +20,8 @@ function App() {
           <Route exact path = '/login' component = { Login } />
           <Route exact path = '/' component = { Booking } />
           <Route exact path = '/admin' component = { Admin } />
+          <Route exact path = '/admin/wharehouse/add' component = { WharehouseAdd } />
+          <Route exact path = '/admin/wharehouse/edit/:id' component = { WharehouseEdit } />
           <Route exact path = '/stats' component = { Stats } />
           <Route exact path = '/logout' component = { Logout } />
           <Route path = '/' component = { Error }/>        
@@ -28,7 +32,7 @@ function App() {
       </Router>
 
     </div>
-  );
+  )
 }
 
 export default App;

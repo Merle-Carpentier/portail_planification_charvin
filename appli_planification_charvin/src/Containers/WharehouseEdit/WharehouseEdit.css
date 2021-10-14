@@ -1,0 +1,67 @@
+.wharehouseEdit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; 
+    margin: 15px auto;
+    color: #104476;
+}
+
+.wharehouseEdit-title {
+    text-transform: uppercase;
+    padding: 5px;
+    margin-bottom: 25px;
+    font-weight: bolder;
+    padding: 5px;
+    text-shadow: 2px 1px 2px #eb671c;
+}
+
+.wharehouseEdit-article-title {
+    padding: 5px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.wharehouseEdit-article-p {
+    padding: 5px;
+    margin-bottom: 10px;
+
+}
+
+.wharehouseEdit-upper {
+    text-transform: uppercase;
+}
+
+.wharehouseEdit-btn-mod {
+    margin-top: 20px;
+    background-color: #104476;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.fa-pen {
+    color: #f1f1f1;
+    text-transform: uppercase;
+}
+
+.wharehouseEdit-btn-prev {
+    margin-top: 35px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #eb671c;
+    cursor: pointer;
+}
+
+.fa-arrow-left {
+    color: #f1f1f1;
+}
+
+@media screen and (min-width: 769px){
+    .wharehouseEdit-btn-prev {
+        width: 15%;
+    }
+}

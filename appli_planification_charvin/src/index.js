@@ -8,7 +8,7 @@ import store from './redux/store'
 //injection de l'application (avec le Provider redux pour hydrater l'appli avec le store) dans la page html
 ReactDOM.render(
   <Provider store = {store}> 
-    <App />,
+    <App />
   </Provider>,
   document.getElementById('root')
 )

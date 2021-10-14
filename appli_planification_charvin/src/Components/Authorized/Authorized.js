@@ -27,10 +27,10 @@ export default function Authorized() {
     return (
         <>
         {authorized === null ?
-            <Redirect to='/login'/>
+            <Redirect to='/login' />
         :authorized === true ?
             <NavbarAdmin/>
-        : <Navbar/>
+        :<Navbar />
         }
         </>
     )
