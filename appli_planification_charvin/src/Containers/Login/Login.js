@@ -35,7 +35,6 @@ export default function Login() {
         .then((response) => {
             //code à traiter si la requête est ok
             if (response.status === 200) {
-
                 //dispatch de l'action au store
                 dispatch(
                     loadUserInfo(infos)

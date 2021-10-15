@@ -12,7 +12,8 @@
 .login-container-title {
     width: 100%;
     margin-top: 0;
-    background-color: linear-gradient(35deg, #104476, #eb671c);
+    background: linear-gradient(35deg, #104476, #eb671c);
+
 }
 
 .login-container-h1 {

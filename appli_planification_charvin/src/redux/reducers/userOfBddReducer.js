@@ -1,37 +1,37 @@
 //import des actions
-import { LOAD_WHAREHOUSES, LOAD_WHAREHOUSES_SUCCESS, LOAD_WHAREHOUSES_ERROR } from "../actions/wharehouseActions"
+import { LOAD_USERSBDD, LOAD_USERSBDD_SUCCESS, LOAD_USERSBDD_ERROR } from "../actions/userOfBddActions"
 
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
     isLoading: false,
-    wharehouses: [],
+    usersBdd: [],
     error: ""
 }
 
 //(prevState, action) => newState action.type renvoi au type du fichier action
 //reducer lié à l'utilisateur: soit il est connecté, soit non
-const wharehouseReducer = (state = INITIAL_STATE, action) => {
+const userOfBddReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case LOAD_WHAREHOUSES: 
+        case LOAD_USERSBDD: 
             return {
                 ...state,
                 isLoading: true
             }
         
 
-        case LOAD_WHAREHOUSES_SUCCESS: 
+        case LOAD_USERSBDD_SUCCESS: 
             return {
                 ...state,
                 isLoading: false,
-                wharehouses: action.payload
+                usersBdd: action.payload
             }
         
 
-        case LOAD_WHAREHOUSES_ERROR: 
+        case LOAD_USERSBDD_ERROR: 
             return {
                 ...state,
                 isLoading: false,
-                wharehouses: [],
+                usersBdd: [],
                 error: action.payload
             }
         
@@ -40,4 +40,4 @@ const wharehouseReducer = (state = INITIAL_STATE, action) => {
 
 }
 
-export default wharehouseReducer
+export default userOfBddReducer

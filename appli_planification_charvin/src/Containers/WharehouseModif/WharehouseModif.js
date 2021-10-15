@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
@@ -9,7 +9,7 @@ const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
 
 //page de formulaire d'ajout d'un entrepôt
-export default function WharehouseAdd() {
+export default function WharehouseModif(props) {
 
     //initialisation des states du formulaire + message erreur + redirection
     const [name, setName] = useState("")
@@ -18,6 +18,8 @@ export default function WharehouseAdd() {
     const [city, setCity] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+
+    let id = props.match.params.id
 
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
@@ -32,7 +34,8 @@ export default function WharehouseAdd() {
             zip: zip,
             city: city
         }
-        axios.post(`${configApi.api_url}/api/addWharehouse`, datas, {headers: {"x-access-token": token, "userId": userId}})
+
+        axios.put(`${configApi.api_url}/api/updateWharehouse/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)
@@ -44,6 +47,23 @@ export default function WharehouseAdd() {
         })
     }
 
+    //Chargement des infos au chargement du composant
+    useEffect(() => {
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
+        .then((response) => {
+            //console.log("get dans wharehouseModif", response)
+            setName(response.data.data.name)
+            setAddress(response.data.data.address)
+            setZip(response.data.data.zip)
+            setCity(response.data.data.city)
+        })
+        .catch((error) => {
+            console.log('modifWharehouse err', error) 
+            setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
+        })
+       
+    }, [])
+
 
     return (
         <>
@@ -54,7 +74,7 @@ export default function WharehouseAdd() {
 
             <div className="AddMod">
 
-                <h1 className="AddMod-title">ajout d'un entrepôt charvin logistics</h1>
+                <h1 className="AddMod-title">modification d'un entrepôt charvin logistics</h1>
 
                 {/*affichage du message d'erreur*/}
                 {error !== null && <p className="AddMod-error">{error}</p>}
@@ -70,6 +90,7 @@ export default function WharehouseAdd() {
                 <label className="AddMod-label">nom</label>
                 <input 
                 type="text"
+                value= {name}
                 className="AddMod-input input-upper"
                 onChange={(e) => {
                     setName(e.currentTarget.value)
@@ -78,6 +99,7 @@ export default function WharehouseAdd() {
                 <label className="AddMod-label">adresse</label>
                 <input 
                 type="text"
+                value= {address}
                 className="AddMod-input"
                 onChange={(e) => {
                     setAddress(e.currentTarget.value)
@@ -86,6 +108,7 @@ export default function WharehouseAdd() {
                 <label className="AddMod-label">code postal</label>
                 <input 
                 type="text"
+                value= {zip}
                 className="AddMod-input"
                 onChange={(e) => {
                     setZip(e.currentTarget.value)
@@ -94,6 +117,7 @@ export default function WharehouseAdd() {
                 <label className="AddMod-label">ville</label>
                 <input 
                 type="text"
+                value= {city}
                 className="AddMod-input input-upper"
                 onChange={(e) => {
                     setCity(e.currentTarget.value)

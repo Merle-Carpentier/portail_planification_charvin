@@ -36,7 +36,7 @@ export const allWharehouses = () => {
 
         axios.get(`${configApi.api_url}/api/allWharehouses`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
-            console.log('allwharehouses', response)
+            //console.log('allwharehouses', response)
             dispatch(loadWharehousesSuccess(response.data.data))   
         })
 

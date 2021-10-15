@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link , Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { allWharehouses } from '../../../redux/actions/wharehouseActions'
 import './AdminWharehouse.css'
@@ -29,7 +29,7 @@ export default function AdminWharehouse() {
     const deleteWharehouse = (id) => {
         axios.delete(`${configApi.api_url}/api/deleteWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
-            console.log("réponse del", response)
+            //console.log("réponse del", response)
             if(response.status === 200) {
                 setSuccessResponse(response.message)
             }
@@ -106,7 +106,7 @@ export default function AdminWharehouse() {
                                 <td className="admin-wharehouse-table-td td-upper">{wharehouse.city}</td>
                                 <td className="admin-wharehouse-table-td-action">
                                     <button className="admin-wharehouse-btn-mod">
-                                        <Link className="admin-wharehouse-link" to='/admin/wharehouse/modif'>
+                                        <Link className="admin-wharehouse-link" to={`/admin/wharehouse/modif/${wharehouse.id}`}>
                                             <i className="fas fa-pen"><p className="admin-wharehouse-table-p"> modifier</p></i>
                                         </Link>                                          
                                     </button>

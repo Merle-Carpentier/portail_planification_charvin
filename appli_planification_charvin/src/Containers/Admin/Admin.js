@@ -1,7 +1,7 @@
 import Authorized from '../../Components/Authorized/Authorized.js'
-import { useState, useEffect } from 'react'
 import AdminWharehouse from '../../Components/page admin/AdminWharehouse/AdminWharehouse.js'
-import './Admin.css'
+import AdminUserOfBdd from '../../Components/page admin/AdminUserOfBdd/AdminUserOfBdd.js'
+
 
 export default function Admin() {
 
@@ -12,10 +12,9 @@ export default function Admin() {
 
             <div className="admin">
             <AdminWharehouse />
+
+            <AdminUserOfBdd />
             </div>
-
-            <h1>Admin</h1>
-
         </>
     )
 }
