@@ -41,6 +41,19 @@
     color: #104476;
 }
 
+.AddMod-select {
+    width: 80%;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #104476;
+    background-color: lightsteelblue;
+    color: #104476;
+    text-transform: uppercase;
+}
+
+
+
 .input-upper {
     text-transform: uppercase;
 }
@@ -76,5 +89,9 @@
     .AddMod-input-submit:hover {
         background-color: #eb671c;
         color: #104476;
+    }
+
+    .AddMod-select-option:hover {
+        box-shadow: 0 0 10px 100px #eb671c inset;
     }
 }

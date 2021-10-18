@@ -7,15 +7,15 @@ module.exports = (app) => {
         User.findAll({
             include: [{
                 model: Wharehouse,
-                attributes: ['name']
+                attributes: ['id', 'name']
                 },
                 {
                 model: Customer,
-                attributes: ['name']
+                attributes: ['id', 'name']
                 }
             ],
             attributes: {exclude:['password','createdAt', 'updatedAt']},
-            order: ['wharehouseId', 'customerId', 'lastName']
+            order: ['lastName', 'wharehouseId', 'customerId']
         })
         .then(users => {
             const message = `La liste d'utilisateurs a bien été récupérée`

@@ -1,30 +1,42 @@
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
+import { allWharehouses } from '../../redux/actions/wharehouseActions.js'
 
 const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
 
 //page de formulaire d'ajout d'un entrepôt
-export default function WharehouseModif(props) {
+export default function CustomerModif(props) {
 
     //initialisation des states du formulaire + message erreur + redirection
     const [name, setName] = useState("")
     const [address, setAddress] = useState("")
     const [zip, setZip] = useState("")
     const [city, setCity] = useState("")
+    const [wharehouseName, setWharehouseName] = useState("")
+    const [wharehouseId, setWharehouseId] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
 
     let id = props.match.params.id
+    let myWharehouse
+
+    //je prends mon state wharehouses dans le store
+    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
+
+    //j'initialise pour dispatcher mon action du store
+    const dispatch = useDispatch()
+
 
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
         //message d'erreur si les champs ne sont remplis
-        if(name==="" || address==="" || zip==="" || city===""){
+        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId === ""){
             return setError("Tous les champs ne sont pas remplis!")
         }
         //récupération des states dans datas + envoie des données vers l'api
@@ -32,36 +44,42 @@ export default function WharehouseModif(props) {
             name: name,
             address: address,
             zip: zip,
-            city: city
+            city: city,
+            wharehouseId: wharehouseId
         }
 
-        axios.put(`${configApi.api_url}/api/updateWharehouse/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.put(`${configApi.api_url}/api/updateCustomer/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)
             }
         })
         .catch((error) => {
-            console.log('modifWharehouse err', error) 
-            setError("Impossible d'enregistrer l'entrepôt, veuillez recommencer")
+            console.log('modif customer err', error) 
+            setError("Impossible d'enregistrer le client, veuillez recommencer")
         })
     }
 
     //Chargement des infos au chargement du composant
     useEffect(() => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailCustomer/${id}`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
-            //console.log("get dans wharehouseModif", response)
+            //console.log("get dans customerModif", response)
             setName(response.data.data.name)
             setAddress(response.data.data.address)
             setZip(response.data.data.zip)
             setCity(response.data.data.city)
+            setWharehouseName(response.data.data.Wharehouse.name)
+            setWharehouseId(response.data.data.Wharehouse.id)
         })
         .catch((error) => {
             console.log('modifWharehouse err', error) 
-            setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
+            setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
         })
-       
+
+        //je récupère mes entrepôts dans le store
+        dispatch(allWharehouses())
+
     }, [])
 
 
@@ -70,11 +88,11 @@ export default function WharehouseModif(props) {
             {/*retour à la page admin si redirect est true*/}
             {redirect && <Redirect to='/admin' />}
 
-            <Authorized />
+            <Authorized />            
 
             <div className="AddMod">
 
-                <h1 className="AddMod-title">modification d'un entrepôt charvin logistics</h1>
+                <h1 className="AddMod-title">modification d'un client charvin logistics</h1>
 
                 {/*affichage du message d'erreur*/}
                 {error !== null && <p className="AddMod-error">{error}</p>}
@@ -123,6 +141,31 @@ export default function WharehouseModif(props) {
                     setCity(e.currentTarget.value)
                 }}/>
 
+                <label className="AddMod-label">entrepôt d'affectation</label>
+                <select 
+                name="Cliquez pour choisir"
+                className="AddMod-select select-upper"
+                onChange={(e) => {
+                    setWharehouseId(e.currentTarget.value)
+                }}>
+                
+                    <option
+                    className="AddMod-select select-upper"
+                    defaultValue = {wharehouseId}
+                    >{wharehouseName}</option>
+                   
+                    {wharehouses.map((whareh) => {
+                        return(
+                            <option
+                            className="AddMod-select-option"
+                            key={whareh.id}
+                            value={whareh.id}>{whareh.name}</option>
+                        )
+                    })
+                        
+                    }    
+                </select>
+                    
                 <input
                 className="AddMod-input-submit"
                 type="submit"

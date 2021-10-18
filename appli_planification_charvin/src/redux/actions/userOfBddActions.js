@@ -36,7 +36,7 @@ export const allUsersBdd = () => {
 
         axios.get(`${configApi.api_url}/api/allUsers`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
-            console.log('allUsersbdd', response)
+            //console.log('allUsersbdd', response)
             dispatch(loadUsersBddSuccess(response.data.data))   
         })
 

@@ -7,15 +7,15 @@ module.exports = (app) => {
         Booking.findAll({
             include: [{
                 model: Wharehouse,
-                attributes: ['name']
+                attributes: ['id', 'name']
                 },
                 {
                 model: Customer,
-                attributes: ['name']
+                attributes: ['id', 'name']
                 },
                 {
                 model: User,
-                attributes: ['lastName']
+                attributes: ['id', 'lastName']
                 }
             ],
             attributes: {exclude:['createdAt', 'updatedAt']},

@@ -9,6 +9,9 @@ import Logout from './Containers/Logout/Logout.js';
 import WharehouseAdd from './Containers/WharehouseAdd/WharehouseAdd.js';
 import WharehouseEdit from './Containers/WharehouseEdit/WharehouseEdit.js';
 import WharehouseModif from './Containers/WharehouseModif/WharehouseModif.js'
+import UserBddAdd from './Containers/UserBddAdd/UserBddAdd.js';
+import CustomerAdd from './Containers/CustomerAdd/CustomerAdd.js';
+import CustomerModif from './Containers/CustomerModif/CustomerModif.js'
 
 
 function App() {
@@ -23,7 +26,9 @@ function App() {
           <Route exact path = '/admin/wharehouse/add' component = { WharehouseAdd } />
           <Route exact path = '/admin/wharehouse/edit/:id' component = { WharehouseEdit } />
           <Route exact path = '/admin/wharehouse/modif/:id' component = { WharehouseModif } />
-          
+          <Route exact path = '/admin/userBdd/add' component = { UserBddAdd } />
+          <Route exact path = '/admin/customer/add' component = { CustomerAdd } />
+          <Route exact path = '/admin/customer/modif/:id' component = { CustomerModif } />
           <Route exact path = '/stats' component = { Stats } />
           <Route exact path = '/logout' component = { Logout } />
           <Route path = '/' component = { Error }/>        

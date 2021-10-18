@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { allUsersBdd } from '../../../redux/actions/userOfBddActions'
-import './AdminUserOfBdd.css'
+import { allUsersBdd } from '../../redux/actions/userOfBddActions'
+import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
-import { configApi } from '../../../apiCalls/configApi'
+import { configApi } from '../../apiCalls/configApi'
 const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
 
@@ -52,72 +52,72 @@ export default function AdminUserOfBdd() {
     //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
         
-        <div className="admin-userBdd">
+        <div className="admin-comp">
 
             {/*titre du tableau avec le bouton de renvoi vers l'ajout d'un entrepot */}
-            <div className="admin-userBdd-head">
-                <h2 className="admin-userBdd-title">utilisateurs</h2>
-                <button className="admin-userBdd-btn-add">
-                    <Link className="admin-userBdd-link" to='/admin/userBdd/add'>
+            <div className="admin-comp-head">
+                <h2 className="admin-comp-title">utilisateurs</h2>
+                <button className="admin-comp-btn-add">
+                    <Link className="admin-comp-link" to='/admin/userBdd/add'>
                         <i className="fas fa-plus-circle"> Ajouter</i>
                     </Link>
                 </button>
             </div>
             
             {/*tableau créé avec l'appel à l'api */}
-            <table className="admin-userBdd-table">
+            <table className="admin-comp-table">
 
-                <thead className="admin-userBdd-table-head">
-                    <tr className="admin-userBddtable-trth">
-                        <th className="admin-userBdd-table-th">nom, prénom</th>
-                        <th className="admin-userBddtable-th">email</th>
-                        <th className="admin-userBdd-table-th">client</th>
-                        <th className="admin-userBdd-table-th">entrepôt</th>
-                        <th className="admin-userBdd-table-th">role</th>
-                        <th className="admin-userBdd-table-th">action</th>
+                <thead className="admin-comp-table-head">
+                    <tr className="admin-comp-table-trth">
+                        <th className="admin-comp-table-th">nom, prénom</th>
+                        <th className="admin-comp-table-th">email</th>
+                        <th className="admin-comp-table-th">client</th>
+                        <th className="admin-comp-table-th">entrepôt</th>
+                        <th className="admin-comp-table-th">role</th>
+                        <th className="admin-comp-table-th">action</th>
                     </tr>
                 </thead>
 
-                {<tbody className="admin-userBdd-table-body">
+                {<tbody className="admin-comp-table-body">
                     {/*rendu conditionnel en fonction des 3 states du store suite au dispatch de l'action d'appel à l'api */}
                     {isLoading ? (
-                        <tr className="admin-userBdd-table-trload">
-                            <td colSpan="3" className="admin-userBdd-table-tdload">Chargement...</td>
+                        <tr className="admin-comp-table-trload">
+                            <td colSpan="3" className="admin-comp-table-tdload">Chargement...</td>
                         </tr>
                     )
                     :err ? (
-                        <tr className="admin-userBdd-table-trerr">
-                            <td colSpan="3" className="admin-userBdd-table-tderr">{err}</td>
+                        <tr className="admin-comp-table-trerr">
+                            <td colSpan="3" className="admin-comp-table-tderr">{err}</td>
                         </tr>
                     ) 
                     :usersBdd.length === 0 ? (
-                        <tr className="admin-userBdd-table-trload">
-                            <td colSpan="3" className="admin-userBdd-table-tdload">aucun utilisateur enregistré</td>
+                        <tr className="admin-comp-table-trload">
+                            <td colSpan="3" className="admin-comp-table-tdload">aucun utilisateur enregistré</td>
                         </tr>
                     )
                     :usersBdd.map((userBdd)=> {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
-                            <tr key={userBdd.id} className="admin-userBdd-table-tr">
-                                <td className="admin-userBdd-table-td">
-                                    <Link className="admin-userBdd-table-link" to={`/admin/userBdd/edit/${userBdd.id}`}>{userBdd.lastName}, {userBdd.firstName}</Link>
+                            <tr key={userBdd.id} className="admin-comp-table-tr">
+                                <td className="admin-comp-table-td">
+                                    <Link className="admin-comp-table-link" to={`/admin/userBdd/edit/${userBdd.id}`}>{userBdd.lastName}, {userBdd.firstName}</Link>
                                 </td>
-                                <td className="admin-userBdd-table-td">{userBdd.email}</td>
-                                <td className="admin-userBdd-table-td">{userBdd.Customer.name}</td>
-                                <td className="admin-userBdd-table-td">{userBdd.Wharehouse.name}</td>
-                                <td className="admin-userBdd-table-td">{userBdd.role}</td>
-                                <td className="admin-userBdd-table-td-action">
-                                    <button className="admin-userBdd-btn-mod">
-                                        <Link className="admin-userBdd-link" to={`/admin/userBdd/modif/${userBdd.id}`}>
-                                            <i className="fas fa-pen"><p className="admin-userBdd-table-p"> modifier</p></i>
+                                <td className="admin-comp-table-td">{userBdd.email}</td>
+                                <td className="admin-comp-table-td">{userBdd.Customer.name}</td>
+                                <td className="admin-comp-table-td">{userBdd.Wharehouse.name}</td>
+                                <td className="admin-comp-table-td">{userBdd.role}</td>
+                                <td className="admin-comp-table-td-action">
+                                    <button className="admin-comp-btn-mod">
+                                        <Link className="admin-comp-link" to={`/admin/userBdd/modif/${userBdd.id}`}>
+                                            <i className="fas fa-pen"><p className="admin-comp-table-p"> modifier</p></i>
                                         </Link>                                          
                                     </button>
                                     <button
-                                    className="admin-userBdd-btn-supp"
+                                    className="admin-comp-btn-supp"
                                     onClick = {(e) => {
                                         e.preventDefault()
                                         deleteUserBdd(userBdd.id)}}>
-                                        <i className="fas fa-trash-alt"><p className="admin-userBdd-table-p"> supprimer</p></i>
+                                        <i className="fas fa-trash-alt"><p className="admin-comp-table-p"> supprimer</p></i>
                                     </button>
                                 </td>
                             </tr> 
@@ -130,10 +130,10 @@ export default function AdminUserOfBdd() {
 
             {/*messages d'information si l'appel api est ok ou non */}
             {successResponse !== null &&
-                <p className="admin-userBdd-successmessage">{successResponse}</p>
+                <p className="admin-comp-successmessage">{successResponse}</p>
             }
             {errResponse !== null &&
-                <p className="admin-userBdd-errmessage">{errResponse}</p>
+                <p className="admin-comp-errmessage">{errResponse}</p>
             }
         </div>
     )

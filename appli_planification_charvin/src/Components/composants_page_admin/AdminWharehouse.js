@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { allWharehouses } from '../../../redux/actions/wharehouseActions'
-import './AdminWharehouse.css'
+import { allWharehouses } from '../../redux/actions/wharehouseActions'
+import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
-import { configApi } from '../../../apiCalls/configApi'
+import { configApi } from '../../apiCalls/configApi'
 const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
 
@@ -52,70 +52,70 @@ export default function AdminWharehouse() {
     //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
         
-        <div className="admin-wharehouse">
+        <div className="admin-comp">
 
             {/*titre du tableau avec le bouton de renvoi vers l'ajout d'un entrepot */}
-            <div className="admin-wharehouse-head">
-                <h2 className="admin-wharehouse-title">entrepôts</h2>
-                <button className="admin-wharehouse-btn-add">
-                    <Link className="admin-wharehouse-link" to='/admin/wharehouse/add'>
+            <div className="admin-comp-head">
+                <h2 className="admin-comp-title">entrepôts</h2>
+                <button className="admin-comp-btn-add">
+                    <Link className="admin-comp-link" to='/admin/wharehouse/add'>
                         <i className="fas fa-plus-circle"> Ajouter</i>
                     </Link>
                 </button>
             </div>
             
             {/*tableau créé avec l'appel à l'api */}
-            <table className="admin-wharehouse-table">
+            <table className="admin-comp-table">
 
-                <thead className="admin-wharehouse-table-head">
-                    <tr className="admin-wharehouse-table-trth">
-                        <th className="admin-wharehouse-table-th">nom</th>
-                        <th className="admin-wharehouse-table-th">adresse</th>
-                        <th className="admin-wharehouse-table-th">cp</th>
-                        <th className="admin-wharehouse-table-th">ville</th>
-                        <th className="admin-wharehouse-table-th">action</th>
+                <thead className="admin-comp-table-head">
+                    <tr className="admin-comp-table-trth">
+                        <th className="admin-comp-table-th">nom</th>
+                        <th className="admin-comp-table-th">adresse</th>
+                        <th className="admin-comp-table-th">cp</th>
+                        <th className="admin-comp-table-th">ville</th>
+                        <th className="admin-comp-table-th">action</th>
                     </tr>
                 </thead>
 
-                {<tbody className="admin-wharehouse-table-body">
+                {<tbody className="admin-comp-table-body">
                     {/*rendu conditionnel en fonction des 3 states du store suite au dispatch de l'action d'appel à l'api */}
                     {isLoading ? (
-                        <tr className="admin-wharehouse-table-trload">
-                            <td colSpan="3" className="admin-wharehouse-table-tdload">Chargement...</td>
+                        <tr className="admin-comp-table-trload">
+                            <td colSpan="3" className="admin-comp-table-tdload">Chargement...</td>
                         </tr>
                     )
                     :err ? (
-                        <tr className="admin-wharehouse-table-trerr">
-                            <td colSpan="3" className="admin-wharehouse-table-tderr">{err}</td>
+                        <tr className="admin-comp-table-trerr">
+                            <td colSpan="3" className="admin-comp-table-tderr">{err}</td>
                         </tr>
                     ) 
                     :wharehouses.length === 0 ? (
-                        <tr className="admin-wharehouse-table-trload">
-                            <td colSpan="3" className="admin-wharehouse-table-tdload">aucun entrepôt enregistré</td>
+                        <tr className="admin-comp-table-trload">
+                            <td colSpan="3" className="admin-comp-table-tdload">aucun entrepôt enregistré</td>
                         </tr>
                     )
                     :wharehouses.map((wharehouse)=> {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
-                            <tr key={wharehouse.id} className="admin-wharehouse-table-tr">
-                                <td className="admin-wharehouse-table-td">
-                                    <Link className="admin-wharehouse-table-link" to={`/admin/wharehouse/edit/${wharehouse.id}`}>{wharehouse.name}</Link>
+                            <tr key={wharehouse.id} className="admin-comp-table-tr">
+                                <td className="admin-comp-table-td">
+                                    <Link className="admin-comp-table-link" to={`/admin/wharehouse/edit/${wharehouse.id}`}>{wharehouse.name}</Link>
                                 </td>
-                                <td className="admin-wharehouse-table-td">{wharehouse.address}</td>
-                                <td className="admin-wharehouse-table-td">{wharehouse.zip}</td>
-                                <td className="admin-wharehouse-table-td td-upper">{wharehouse.city}</td>
-                                <td className="admin-wharehouse-table-td-action">
-                                    <button className="admin-wharehouse-btn-mod">
-                                        <Link className="admin-wharehouse-link" to={`/admin/wharehouse/modif/${wharehouse.id}`}>
-                                            <i className="fas fa-pen"><p className="admin-wharehouse-table-p"> modifier</p></i>
+                                <td className="admin-comp-table-td">{wharehouse.address}</td>
+                                <td className="admin-comp-table-td">{wharehouse.zip}</td>
+                                <td className="admin-comp-table-td td-upper">{wharehouse.city}</td>
+                                <td className="admin-comp-table-td-action">
+                                    <button className="admin-comp-btn-mod">
+                                        <Link className="admin-comp-link" to={`/admin/wharehouse/modif/${wharehouse.id}`}>
+                                            <i className="fas fa-pen"><p className="admin-comp-table-p"> modifier</p></i>
                                         </Link>                                          
                                     </button>
                                     <button
-                                    className="admin-wharehouse-btn-supp"
+                                    className="admin-comp-btn-supp"
                                     onClick = {(e) => {
                                         e.preventDefault()
                                         deleteWharehouse(wharehouse.id)}}>
-                                        <i className="fas fa-trash-alt"><p className="admin-wharehouse-table-p"> supprimer</p></i>
+                                        <i className="fas fa-trash-alt"><p className="admin-comp-table-p"> supprimer</p></i>
                                     </button>
                                 </td>
                             </tr> 
@@ -128,10 +128,10 @@ export default function AdminWharehouse() {
 
             {/*messages d'information si l'appel api est ok ou non */}
             {successResponse !== null &&
-                <p className="admin-wharehouse-successmessage">{successResponse}</p>
+                <p className="admin-comp-successmessage">{successResponse}</p>
             }
             {errResponse !== null &&
-                <p className="admin-wharehouse-errmessage">{errResponse}</p>
+                <p className="admin-comp-errmessage">{errResponse}</p>
             }
         </div>
     )

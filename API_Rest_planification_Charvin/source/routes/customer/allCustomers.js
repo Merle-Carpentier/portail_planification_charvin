@@ -8,10 +8,10 @@ module.exports = (app) => {
         Customer.findAll({
             include: {
                 model: Wharehouse,
-                attributes: ['name']
+                attributes: ['id','name']
             },
             attributes: {exclude:['createdAt', 'updatedAt']},
-            order: ['wharehouseId', 'name']
+            order: ['name', 'wharehouseId']
         })
             .then(customers => {
                 const message = `La liste de clients a bien été récupérée`

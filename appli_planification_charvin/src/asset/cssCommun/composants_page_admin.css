@@ -1,10 +1,10 @@
-.admin-userBdd {
+.admin-comp {
     text-align: center; 
     margin: 20px 0 10px 0;
     color: #104476;
 }
 
-.admin-userBdd-head {
+.admin-comp-head {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -12,14 +12,14 @@
     text-align: start;
 }
 
-.admin-userBdd-title {
+.admin-comp-title {
     text-transform: uppercase;
     font-weight: bolder;
     padding: 5px;
     text-shadow: 2px 1px 2px #eb671c;
 }
 
-.admin-userBdd-btn-add {
+.admin-comp-btn-add {
     padding: 5px;
     border-radius: 5px;
     border: none;
@@ -27,11 +27,11 @@
     cursor: pointer;
 }
 
-.admin-userBdd-link {
+.admin-comp-link {
     color: #000000;
 }
 
-.admin-userBdd-table {
+.admin-comp-table {
     width: 95%;
     margin: auto;
     text-align: center;
@@ -41,7 +41,7 @@
     border-collapse: collapse;
 }
 
-.admin-userBdd-table-td-action {
+.admin-comp-table-td-action {
     display: flex;
     flex-direction: column;
 
@@ -53,7 +53,7 @@
     text-transform: uppercase;
 }
 
-.admin-userBdd-btn-mod {
+.admin-comp-btn-mod {
     padding: 5px 2px;
     border-radius: 5px;
     border: none;
@@ -62,7 +62,7 @@
     cursor: pointer;
 }
 
-.admin-userBdd-btn-supp {
+.admin-comp-btn-supp {
     padding: 5px 2px ;
     margin-top: 8px;
     border-radius: 5px;
@@ -72,20 +72,20 @@
     cursor: pointer;
 }
 
-.admin-userBdd-table-p {
+.admin-comp-table-p {
     display: none;
 }
 
-.admin-userBdd-table-th {
+.admin-comp-table-th {
     border: 1px solid #eb671c;
     text-transform: uppercase;
 }
 
-.admin-userBdd-table-body tr {
+.admin-comp-table-body tr {
     border: 1px solid #eb671c;
 }
 
-.admin-userBdd-table-td{
+.admin-comp-table-td{
     border: 1px solid #eb671c;
     padding: 3px;
 }
@@ -94,18 +94,18 @@
     text-transform: uppercase;
 }
 
-.admin-userBdd-table-link {
+.admin-comp-table-link {
     text-transform: uppercase;
     font-weight: bold;
     color: #104476;
     cursor: pointer;
 }
 
-.admin-userBdd-table-td-action {
+.admin-comp-table-td-action {
     padding: 5px;
 }
 
-.admin-userBdd-errmessage {
+.admin-comp-errmessage {
     padding: 3px;
     color: #eb671c;
 }
@@ -114,7 +114,7 @@
 
 @media screen and (min-width: 577px){
     
-    .admin-userBdd-table {
+    .admin-comp-table {
         font-size: 15px;
     }
 
@@ -122,11 +122,11 @@
 
 @media screen and (min-width: 1050px){
     
-    .admin-userBdd-table {
+    .admin-comp-table {
         font-size: 18px;
     }
 
-    .admin-userBdd-table-td-action {
+    .admin-comp-table-td-action {
        
         display:flex;
         flex-direction: row;
@@ -134,16 +134,21 @@
         align-items: center;
     }
 
-    .admin-userBdd-btn-mod, .admin-wharehouse-btn-supp {
+    .admin-comp-btn-mod {
         margin: auto;
         padding: 5px;
     }
 
-    .admin-userBdd-table-p {
+    .admin-comp-table-p {
         display: unset;
     }
 
-    .admin-userBdd-table-link:hover {
+    .admin-comp-table-link:hover {
         text-decoration: underline;
+    }
+
+    .admin-comp-btn-supp {
+        margin: auto;
+        padding: 5px;
     }
 }
