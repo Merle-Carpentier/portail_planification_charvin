@@ -8,7 +8,7 @@ export default function Logout() {
     //initialisation des states
     const [redirect, setRedirect] = useState(false)
 
-    //initialisation du dispatch au store
+    //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -19,6 +19,7 @@ export default function Logout() {
         //suppression des clés dans le local storage
         window.localStorage.removeItem('rdvCharvin')
         window.localStorage.removeItem('utilisateurCharvin')
+        window.localStorage.removeItem('role')
 
         //state de redirection
         setRedirect(true)

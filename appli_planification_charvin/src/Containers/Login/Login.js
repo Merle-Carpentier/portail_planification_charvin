@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadUserInfo } from '../../redux/actions/userActions'
-import { loginUser } from '../../apiCalls/usersCalls'
+//import { loadUserInfo } from '../../redux/actions/userActions'
+//import { loginUser } from '../../apiCalls/usersCalls'
+//import { loginUser } from '../../redux/actions/userActions'
 import charvin from '../../asset/Charvin_Logistics.jpg'
+import axios from "axios"
+import { configApi } from '../../apiCalls/configApi'
 import './Login.css'
 
 //page login de l'utilisateur
@@ -29,21 +32,28 @@ export default function Login() {
             email: email,
             password: password
         }
-        loginUser(data)
+        
 
-        //traitrement de la réponse de l'api
+        axios.post(`${configApi.api_url}/api/login`, data)
         .then((response) => {
             //code à traiter si la requête est ok
             if (response.status === 200) {
+                console.log("response.data",response.data)
                 //dispatch de l'action au store
-                dispatch(
-                    loadUserInfo(infos)
-                )
+                //loadUserInfo(infos)
+
+                // let valuesStorage = {
+                //     token: response.data.token,
+                //     id: response.data.data.id,
+                //     firstName: response.data.data.firstName,
+                //     lastName: response.data.data.lastName,
+                //     role: response.data.data.role,
+                //     wharehouseId: response.data.data.wharehouseId,
+                //     customerId: response.data.data.customerId
+                // }
                 
                 //envoi du token et des infos utilisateur dans le local storage
-                window.localStorage.setItem('rdvCharvin', response.data.token)
-                window.localStorage.setItem('id', response.data.data.id)
-                window.localStorage.setItem('role', response.data.data.role)
+                //window.localStorage.setItem('rdvCharvin', valuesStorage)
                
                 //redirection vers la page principale
                 setRedirect(true)    

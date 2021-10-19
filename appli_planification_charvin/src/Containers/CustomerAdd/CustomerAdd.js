@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
-import { allWharehouses } from '../../redux/actions/wharehouseActions.js'
+
 
 const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
@@ -18,6 +18,8 @@ export default function CutomerAdd() {
     const [address, setAddress] = useState("")
     const [zip, setZip] = useState("")
     const [city, setCity] = useState("")
+    const [rowsPerHour, setRowsPerHour] = useState()
+    const [numberOfDays, setNumberOfDays] = useState()
     const [wharehouseId, setWharehouseId] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
@@ -25,14 +27,15 @@ export default function CutomerAdd() {
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
 
-    //j'initialise le dispatch des actions
-    const dispatch = useDispatch()
 
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
         //message d'erreur si les champs ne sont remplis
-        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId===""){
+        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId==="" || rowsPerHour===null || numberOfDays===null){
             return setError("Tous les champs ne sont pas remplis!")
+        }
+        if(isNaN(rowsPerHour) || isNaN(numberOfDays)) {
+            return setError("Les champs nombre de rdv/heure et nombre de jour planifiés doivent être des chiffres")
         }
 
         //récupération des states dans datas + envoie des données vers l'api
@@ -41,6 +44,8 @@ export default function CutomerAdd() {
             address: address,
             zip: zip,
             city: city,
+            rowsPerHour: rowsPerHour,
+            numberOfDays: numberOfDays,
             wharehouseId: wharehouseId
         }
         axios.post(`${configApi.api_url}/api/addCustomer`, datas, {headers: {"x-access-token": token, "userId": userId}})
@@ -55,11 +60,6 @@ export default function CutomerAdd() {
         })
     }
 
-    //je lance mes actions du store pour obtenir les infos des entrepôts et des clients
-    useEffect(() => {
-        dispatch(allWharehouses())
-        
-    }, [])
 
 
     return (
@@ -116,9 +116,25 @@ export default function CutomerAdd() {
                     setCity(e.currentTarget.value)
                 }}/>
 
+                <label className="AddMod-label input-upper">nb de rdv autorisés par heure</label>
+                <input 
+                type="text"
+                className="AddMod-input"
+                onChange={(e) => {
+                    setRowsPerHour(e.currentTarget.value)
+                }}/>
+
+                <label className="AddMod-label input-upper">nb de jours planifiables par semaine</label>
+                <input 
+                type="text"
+                className="AddMod-input"
+                onChange={(e) => {
+                    setNumberOfDays(e.currentTarget.value)
+                }}/>
+
                 <label className="AddMod-label">entrepôt d'affectation</label>
                 <select 
-                name="Cliquez pour choisir"
+                name="entrepôt"
                 className="AddMod-select select-upper"
                 onChange={(e) => {
                     setWharehouseId(e.currentTarget.value)

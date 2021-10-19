@@ -10,13 +10,16 @@ const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
 
 //page de formulaire d'ajout d'un entrepôt
-export default function WharehouseEdit(props) {
+export default function CustomerEdit(props) {
 
     //initialisation des states des données de l'api + message erreur + redirection
     const [name, setName] = useState("")
     const [address, setAddress] = useState("")
     const [zip, setZip] = useState("")
     const [city, setCity] = useState("")
+    const [rowsPerHour, setRowsPerHour] = useState()
+    const [numberOfDays, setNumberOfDays] = useState()
+    const [wharehouseName, setWharehouseName] = useState("")
     const [created, setCreated] = useState("")
     const [updated, setUpdated] = useState("")
     const [error, setError] = useState(null)
@@ -26,28 +29,31 @@ export default function WharehouseEdit(props) {
     
     let id = props.match.params.id
 
-    //fonction de récupération d'un entrepôt
-    const getWharehouse = (whId) => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {"x-access-token": token, "userId": userId}})
+    //fonction de récupération d'un utilisateur
+    const getCustomer = (custId) => {
+        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)
             setAddress(response.data.data.address)
             setZip(response.data.data.zip)
             setCity(response.data.data.city)
+            setRowsPerHour(response.data.data.rowsPerHour)
+            setNumberOfDays(response.data.data.numberOfDays)
+            setWharehouseName(response.data.data.Wharehouse.name)
             setCreated(response.data.data.createdAt)
             setUpdated(response.data.data.updatedAt)
         })
         .catch((error) => {
-            console.log('detailWharehouse err', error) 
-            setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
+            console.log('detailCustomer err', error) 
+            setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
         })
     }
 
     //Chargement des infos au chargement du composant
     useEffect(() => {
 
-        getWharehouse(id)
+        getCustomer(id)
           
     }, [])
 
@@ -58,7 +64,7 @@ export default function WharehouseEdit(props) {
 
             <div className="edit">
 
-                <h1 className="edit-title">affichage détaillé de l'entrepôt:</h1>
+                <h1 className="edit-title">affichage détaillé du client:</h1>
 
                 {/*affichage du message d'erreur*/}
                 {error !== null && <p className="edit-error">{error}</p>}
@@ -70,12 +76,15 @@ export default function WharehouseEdit(props) {
                     <p className="edit-article-p">Adresse: {address}</p>
                     <p className="edit-article-p">Code postale: {zip}</p>
                     <p className="edit-article-p edit-upper">Ville: {city}</p>
+                    <p className="edit-article-p edit-upper">Nombre de rdv autorisé par heure: {rowsPerHour}</p>
+                    <p className="edit-article-p edit-upper">Nombre de jours planifiables par semaine: {numberOfDays}</p>
+                    <p className="edit-article-p edit-upper">Entrepôt d'affectation: {wharehouseName}</p>
                     <p className="edit-article-p">Créé le: {convertDate(created)}</p>
                     <p className="edit-article-p">Mis à jour le: {convertDate(updated)}</p>
                 </article>
 
                 <button className="edit-btn-mod">
-                    <Link className="edit-link" to={`/admin/wharehouse/modif/${id}`}>
+                    <Link className="edit-link" to={`/admin/customer/modif/${id}`}>
                         <i className="fas fa-pen"> modifier</i>
                     </Link>                                          
                 </button>

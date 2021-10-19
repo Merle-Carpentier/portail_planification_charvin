@@ -7,14 +7,14 @@ module.exports = (app) => {
         User.findByPk(req.params.id, {
             include: [{
                 model: Wharehouse,
-                attributes: ['name']
+                attributes: ['id', 'name']
                 },
                 {
                 model: Customer,
-                attributes: ['name']
+                attributes: ['id', 'name']
                 }
             ],
-            attributes: {exclude:['password','createdAt', 'updatedAt']} 
+            attributes: {exclude:['password', 'createdAt', 'updatedAt']} 
         })
             .then(user => {
                 if(user === null) {

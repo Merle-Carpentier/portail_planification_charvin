@@ -1,4 +1,4 @@
-.wharehouseEdit {
+.edit {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -8,7 +8,7 @@
     color: #104476;
 }
 
-.wharehouseEdit-title {
+.edit-title {
     text-transform: uppercase;
     padding: 5px;
     margin-bottom: 25px;
@@ -17,23 +17,23 @@
     text-shadow: 2px 1px 2px #eb671c;
 }
 
-.wharehouseEdit-article-title {
+.edit-article-title {
     padding: 5px;
     text-transform: uppercase;
     margin-bottom: 15px;
 }
 
-.wharehouseEdit-article-p {
+.edit-article-p {
     padding: 5px;
     margin-bottom: 10px;
 
 }
 
-.wharehouseEdit-upper {
+.edit-upper {
     text-transform: uppercase;
 }
 
-.wharehouseEdit-btn-mod {
+.edit-btn-mod {
     margin-top: 20px;
     background-color: #104476;
     padding: 5px;
@@ -47,7 +47,7 @@
     text-transform: uppercase;
 }
 
-.wharehouseEdit-btn-prev {
+.edit-btn-prev {
     margin-top: 35px;
     padding: 5px;
     border: none;
@@ -61,7 +61,7 @@
 }
 
 @media screen and (min-width: 769px){
-    .wharehouseEdit-btn-prev {
+    .edit-btn-prev {
         width: 15%;
     }
 }

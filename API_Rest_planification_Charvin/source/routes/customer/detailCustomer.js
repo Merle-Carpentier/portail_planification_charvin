@@ -7,7 +7,7 @@ module.exports = (app) => {
         Customer.findByPk(req.params.id, {
             include: {
                 model: Wharehouse,
-                attributes: ['name']
+                attributes: ['id', 'name']
             }
         })
             .then(customer => {

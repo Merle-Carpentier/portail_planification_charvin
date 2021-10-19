@@ -21,6 +21,22 @@ export default function WharehouseModif(props) {
 
     let id = props.match.params.id
 
+    //fonction de récupération d'uin entrepôt
+    const getWharehouse = (whId) => {
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {"x-access-token": token, "userId": userId}})
+        .then((response) => {
+            //console.log("get dans wharehouseModif", response)
+            setName(response.data.data.name)
+            setAddress(response.data.data.address)
+            setZip(response.data.data.zip)
+            setCity(response.data.data.city)
+        })
+        .catch((error) => {
+            console.log('modifWharehouse err', error) 
+            setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
+        })
+    }
+
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
         //message d'erreur si les champs ne sont remplis
@@ -49,18 +65,7 @@ export default function WharehouseModif(props) {
 
     //Chargement des infos au chargement du composant
     useEffect(() => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
-        .then((response) => {
-            //console.log("get dans wharehouseModif", response)
-            setName(response.data.data.name)
-            setAddress(response.data.data.address)
-            setZip(response.data.data.zip)
-            setCity(response.data.data.city)
-        })
-        .catch((error) => {
-            console.log('modifWharehouse err', error) 
-            setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
-        })
+        getWharehouse(id)
        
     }, [])
 

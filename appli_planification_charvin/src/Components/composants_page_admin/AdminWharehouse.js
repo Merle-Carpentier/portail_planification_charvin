@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { allWharehouses } from '../../redux/actions/wharehouseActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
@@ -22,9 +22,9 @@ export default function AdminWharehouse() {
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
 
-    //j'initialise uns const pour dispatcher mes actions au store
+    //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
-
+    
     //suppression d'un entrepôt
     const deleteWharehouse = (id) => {
         axios.delete(`${configApi.api_url}/api/deleteWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
@@ -32,20 +32,20 @@ export default function AdminWharehouse() {
             //console.log("réponse del", response)
             if(response.status === 200) {
                 setSuccessResponse(response.message)
+                dispatch(allWharehouses())
             }
         })
         .catch((error) => {
             console.log("err del", error)
             setErrResponse("Impossible de supprimer l'entrepôt, veuillez vérifier s'il n'est pas en lien avec un client ou un rdv")
         })
-
-        dispatch(allWharehouses())
+  
     }
         
 
     //action d'appel à l'api au montage et à chaque modification
     useEffect(() => {
-        dispatch(allWharehouses())     
+        dispatch(allWharehouses())    
     }, [])
 
 

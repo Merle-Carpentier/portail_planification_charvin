@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
-import { allWharehouses } from '../../redux/actions/wharehouseActions.js'
 
 const token = window.localStorage.getItem('rdvCharvin')
 const userId = window.localStorage.getItem('userId')
@@ -18,26 +17,47 @@ export default function CustomerModif(props) {
     const [address, setAddress] = useState("")
     const [zip, setZip] = useState("")
     const [city, setCity] = useState("")
+    const [rowsPerHour, setRowsPerHour] = useState()
+    const [numberOfDays, setNumberOfDays] = useState()
     const [wharehouseName, setWharehouseName] = useState("")
     const [wharehouseId, setWharehouseId] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
 
     let id = props.match.params.id
-    let myWharehouse
 
     //je prends mon state wharehouses dans le store
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
 
-    //j'initialise pour dispatcher mon action du store
-    const dispatch = useDispatch()
 
+    //fonction de récupération d'un client
+    const getCustomer = (custId) => {
+        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {"x-access-token": token, "userId": userId}})
+        .then((response) => {
+            //console.log("get dans customerModif", response)
+            setName(response.data.data.name)
+            setAddress(response.data.data.address)
+            setZip(response.data.data.zip)
+            setCity(response.data.data.city)
+            setRowsPerHour(response.data.data.rowsPerHour)
+            setNumberOfDays(response.data.data.numberOfDays)
+            setWharehouseName(response.data.data.Wharehouse.name)
+            setWharehouseId(response.data.data.Wharehouse.id)
+        })
+        .catch((error) => {
+            console.log('modif customer err', error) 
+            setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
+        })
+    }
 
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
         //message d'erreur si les champs ne sont remplis
-        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId === ""){
+        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId==="" || rowsPerHour===null || numberOfDays===null){
             return setError("Tous les champs ne sont pas remplis!")
+        }
+        if(isNaN(rowsPerHour) || isNaN(numberOfDays)) {
+            return setError("Les champs nombre de rdv/heure et nombre de jour planifiés doivent être des chiffres")
         }
         //récupération des states dans datas + envoie des données vers l'api
         let datas = {
@@ -45,10 +65,12 @@ export default function CustomerModif(props) {
             address: address,
             zip: zip,
             city: city,
+            rowsPerHour: rowsPerHour,
+            numberOfDays: numberOfDays,
             wharehouseId: wharehouseId
         }
 
-        axios.put(`${configApi.api_url}/api/updateCustomer/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.put(`${configApi.api_url}/api/updateCustumer/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)
@@ -60,25 +82,12 @@ export default function CustomerModif(props) {
         })
     }
 
+
+
     //Chargement des infos au chargement du composant
     useEffect(() => {
-        axios.get(`${configApi.api_url}/api/detailCustomer/${id}`, {headers: {"x-access-token": token, "userId": userId}})
-        .then((response) => {
-            //console.log("get dans customerModif", response)
-            setName(response.data.data.name)
-            setAddress(response.data.data.address)
-            setZip(response.data.data.zip)
-            setCity(response.data.data.city)
-            setWharehouseName(response.data.data.Wharehouse.name)
-            setWharehouseId(response.data.data.Wharehouse.id)
-        })
-        .catch((error) => {
-            console.log('modifWharehouse err', error) 
-            setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
-        })
-
-        //je récupère mes entrepôts dans le store
-        dispatch(allWharehouses())
+        
+        getCustomer(id)
 
     }, [])
 
@@ -139,6 +148,24 @@ export default function CustomerModif(props) {
                 className="AddMod-input input-upper"
                 onChange={(e) => {
                     setCity(e.currentTarget.value)
+                }}/>
+
+                <label className="AddMod-label input-upper">nb de rdv autorisés par heure</label>
+                <input 
+                type="text"
+                value={rowsPerHour}
+                className="AddMod-input"
+                onChange={(e) => {
+                    setRowsPerHour(e.currentTarget.value)
+                }}/>
+
+                <label className="AddMod-label input-upper">nb de jours planifiables par semaine</label>
+                <input 
+                type="text"
+                value={numberOfDays}
+                className="AddMod-input"
+                onChange={(e) => {
+                    setNumberOfDays(e.currentTarget.value)
                 }}/>
 
                 <label className="AddMod-label">entrepôt d'affectation</label>

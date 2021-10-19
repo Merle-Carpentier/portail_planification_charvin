@@ -30,7 +30,7 @@ export default function UserBddAdd() {
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
     const customers = useSelector(state => state.customerReducer.customers)
 
-    //j'initialise le dispatch des actions
+    //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
 
     //fonction d'envoi du formulaire
@@ -69,8 +69,7 @@ export default function UserBddAdd() {
     //je lance mes actions du store pour obtenir les infos des entrepôts et des clients
     useEffect(() => {
         dispatch(allWharehouses())
-        dispatch(allCustomers())
-        
+        dispatch(allCustomers())   
     }, [])
 
 

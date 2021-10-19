@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { allCustomers } from '../../redux/actions/customerActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
@@ -22,7 +22,7 @@ export default function AdminCustomer() {
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
 
-    //j'initialise uns const pour dispatcher mes actions au store
+    //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
 
     //suppression d'un entrepôt
@@ -32,20 +32,19 @@ export default function AdminCustomer() {
             //console.log("réponse del", response)
             if(response.status === 200) {
                 setSuccessResponse(response.message)
+                dispatch(allCustomers())
             }
         })
         .catch((error) => {
             console.log("err del", error)
             setErrResponse("Impossible de supprimer le client, recommencez ou vérifier s'il n'est pas en lien avec un entrepôt ou rdv")
-        })
-
-        dispatch(allCustomers())
+        }) 
     }
         
 
     //action d'appel à l'api au montage et à chaque modification
     useEffect(() => {
-        dispatch(allCustomers())     
+        dispatch(allCustomers())    
     }, [])
 
 
@@ -73,7 +72,10 @@ export default function AdminCustomer() {
                         <th className="admin-comp-table-th">adresse</th>
                         <th className="admin-comp-table-th">CP</th>
                         <th className="admin-comp-table-th">ville</th>
+                        <th className="admin-comp-table-th">nb rdv/heure</th>
+                        <th className="admin-comp-table-th">nb jours/semaine</th>
                         <th className="admin-comp-table-th">entrepôt</th>
+                        <th className="admin-comp-table-th">action</th>
                     </tr>
                 </thead>
 
@@ -103,8 +105,10 @@ export default function AdminCustomer() {
                                 </td>
                                 <td className="admin-comp-table-td">{customer.address}</td>
                                 <td className="admin-comp-table-td">{customer.zip}</td>
-                                <td className="admin-comp-table-td">{customer.city}</td>
-                                <td className="admin-comp-table-td">{customer.Wharehouse.name}</td>
+                                <td className="admin-comp-table-td td-upper">{customer.city}</td>
+                                <td className="admin-comp-table-td td-upper">{customer.rowsPerHour}</td>
+                                <td className="admin-comp-table-td td-upper">{customer.numberOfDays}</td>
+                                <td className="admin-comp-table-td td-upper">{customer.Wharehouse.name}</td>
                                 <td className="admin-comp-table-td-action">
                                     <button className="admin-comp-btn-mod">
                                         <Link className="admin-comp-link" to={`/admin/customer/modif/${customer.id}`}>

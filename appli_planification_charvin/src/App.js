@@ -10,7 +10,10 @@ import WharehouseAdd from './Containers/WharehouseAdd/WharehouseAdd.js';
 import WharehouseEdit from './Containers/WharehouseEdit/WharehouseEdit.js';
 import WharehouseModif from './Containers/WharehouseModif/WharehouseModif.js'
 import UserBddAdd from './Containers/UserBddAdd/UserBddAdd.js';
+import UserBddEdit from './Containers/UserBddEdit/UserBddEdit.js';
+import UserBddModif from './Containers/UserBddModif/UserBddModif.js'
 import CustomerAdd from './Containers/CustomerAdd/CustomerAdd.js';
+import CustomerEdit from './Containers/CustomerEdit/CustomerEdit.js';
 import CustomerModif from './Containers/CustomerModif/CustomerModif.js'
 
 
@@ -22,13 +25,18 @@ function App() {
         <Switch>
           <Route exact path = '/login' component = { Login } />
           <Route exact path = '/' component = { Booking } />
+
           <Route exact path = '/admin' component = { Admin } />
           <Route exact path = '/admin/wharehouse/add' component = { WharehouseAdd } />
           <Route exact path = '/admin/wharehouse/edit/:id' component = { WharehouseEdit } />
           <Route exact path = '/admin/wharehouse/modif/:id' component = { WharehouseModif } />
           <Route exact path = '/admin/userBdd/add' component = { UserBddAdd } />
+          <Route exact path = '/admin/userBdd/edit/:id' component = { UserBddEdit } />
+          <Route exact path = '/admin/userBdd/modif/:id' component = { UserBddModif } />
           <Route exact path = '/admin/customer/add' component = { CustomerAdd } />
+          <Route exact path = '/admin/customer/edit/:id' component = { CustomerEdit } />
           <Route exact path = '/admin/customer/modif/:id' component = { CustomerModif } />
+
           <Route exact path = '/stats' component = { Stats } />
           <Route exact path = '/logout' component = { Logout } />
           <Route path = '/' component = { Error }/>        

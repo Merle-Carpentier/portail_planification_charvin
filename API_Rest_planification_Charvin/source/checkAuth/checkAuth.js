@@ -6,8 +6,8 @@ const key = require('./key')
 module.exports = (req, res, next) => {
     //on pointe le jeton dans l'entête
     const token = req.headers['x-access-token']
-    console.log("token checkAuth", token)
-    console.log("key", key)
+    //console.log("token checkAuth", token)
+    //console.log("key", key)
 
     //on vérifie s'il y a un jeton dans l'entête http, si non gestion erreur 401
     if(!token) {

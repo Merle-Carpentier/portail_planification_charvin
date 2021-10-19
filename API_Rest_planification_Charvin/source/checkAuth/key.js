@@ -1,1 +1,1 @@
-module.exports = 'rdvCharvin'
+module.exports = 'keyForRdvCharvin'

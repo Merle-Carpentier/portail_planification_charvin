@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { allUsersBdd } from '../../redux/actions/userOfBddActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
@@ -22,8 +22,9 @@ export default function AdminUserOfBdd() {
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
 
-    //j'initialise uns const pour dispatcher mes actions au store
+    //j'initialise mon dispatch d'action du store
     const dispatch = useDispatch()
+
 
     //suppression d'un entrepôt
     const deleteUserBdd = (id) => {
@@ -32,6 +33,7 @@ export default function AdminUserOfBdd() {
             //console.log("réponse del", response)
             if(response.status === 200) {
                 setSuccessResponse(response.message)
+                dispatch(allUsersBdd())
             }
         })
         .catch((error) => {
@@ -39,7 +41,6 @@ export default function AdminUserOfBdd() {
             setErrResponse("Impossible de supprimer l'utilisateur, recommencez ou vérifier s'il n'est pas en lien avec un rdv")
         })
 
-        dispatch(allUsersBdd())
     }
         
 
@@ -103,9 +104,9 @@ export default function AdminUserOfBdd() {
                                     <Link className="admin-comp-table-link" to={`/admin/userBdd/edit/${userBdd.id}`}>{userBdd.lastName}, {userBdd.firstName}</Link>
                                 </td>
                                 <td className="admin-comp-table-td">{userBdd.email}</td>
-                                <td className="admin-comp-table-td">{userBdd.Customer.name}</td>
-                                <td className="admin-comp-table-td">{userBdd.Wharehouse.name}</td>
-                                <td className="admin-comp-table-td">{userBdd.role}</td>
+                                <td className="admin-comp-table-td td-upper">{userBdd.Customer.name}</td>
+                                <td className="admin-comp-table-td td-upper">{userBdd.Wharehouse.name}</td>
+                                <td className="admin-comp-table-td td-upper">{userBdd.role}</td>
                                 <td className="admin-comp-table-td-action">
                                     <button className="admin-comp-btn-mod">
                                         <Link className="admin-comp-link" to={`/admin/userBdd/modif/${userBdd.id}`}>

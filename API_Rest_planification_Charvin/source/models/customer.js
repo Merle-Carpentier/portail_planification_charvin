@@ -40,6 +40,22 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La ville est une propriété requise' }
             }
         },
+        rowsPerHour: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                notEmpty: { msg: 'Le nombre de plage par heure ne peut pas être vide' },
+                notNull: { msg: 'Le nombre de plage par heure est une propriété requise' }
+            }
+        },
+        numberOfDays: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                notEmpty: { msg: 'Le nombre de jour d\'ouverture ne peut pas être vide' },
+                notNull: { msg: 'Le nombre de jour d\'ouverture est une propriété requise' }
+            }
+        },
         wharehouseId: {
             type: DataTypes.INTEGER,
             allowNull: false,

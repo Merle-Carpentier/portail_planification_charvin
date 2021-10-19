@@ -4,7 +4,7 @@ const checkAuth = require('../../checkAuth/checkAuth')
 
 //Route de modification d'un client avec update + findByPk (pour vérifier son existence dans la bdd)
 module.exports = (app) => {
-    app.put('/api/updateCustumer/:id', /*checkAuth, */(req, res) => {
+    app.put('/api/updateCustumer/:id', checkAuth, (req, res) => {
         const id = req.params.id
         Customer.update(req.body, {
             where: { id: id }
