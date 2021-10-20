@@ -5,7 +5,7 @@ import { LOAD_USER_INFO, LOGOUT_USER } from "../actions/userActions";
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
     isLogged: false,
-    infos: null
+    infos: []
 }
 
 //(prevState, action) => newState action.type renvoi au type du fichier action

@@ -6,8 +6,9 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
-const token = window.localStorage.getItem('rdvCharvin')
-const userId = window.localStorage.getItem('userId')
+const token = localStorage.rdvCharvin
+const userCharvin = JSON.parse(localStorage.userCharvin)
+const userId = userCharvin[0].id
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddEdit(props) {
@@ -29,8 +30,8 @@ export default function UserBddEdit(props) {
     let id = props.match.params.id
 
     //fonction de récupération d'un utilisateur
-    const getUserBdd = (userId) => {
-        axios.get(`${configApi.api_url}/api/detailUser/${userId}`, {headers: {"x-access-token": token, "userId": userId}})
+    const getUserBdd = (usId) => {
+        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)

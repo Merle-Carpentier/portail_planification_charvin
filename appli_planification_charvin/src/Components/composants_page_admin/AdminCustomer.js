@@ -6,8 +6,9 @@ import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
-const token = window.localStorage.getItem('rdvCharvin')
-const userId = window.localStorage.getItem('userId')
+const token = localStorage.rdvCharvin
+const userCharvin = JSON.parse(localStorage.userCharvin)
+const userId = userCharvin[0].id
 
 
 //Composant pour affichage et suppression des clients prenant en paramètre les states du store et le dispatch des actions
@@ -21,6 +22,7 @@ export default function AdminCustomer() {
     //j'initialise mes states
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
+    const [width, setWidth] = useState(window.innerWidth)
 
     //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
@@ -44,7 +46,18 @@ export default function AdminCustomer() {
 
     //action d'appel à l'api au montage et à chaque modification
     useEffect(() => {
-        dispatch(allCustomers())    
+        dispatch(allCustomers())  
+        
+        //je vérifie la taille de l'écran pour affichage au conditionnel
+        const ChangeWidth = () => {
+            setWidth(window.innerWidth)
+        }
+        window.addEventListener('resize', ChangeWidth)
+
+        return () => {
+            window.removeEventListener('resize', ChangeWidth)
+        }
+    
     }, [])
 
 
@@ -72,9 +85,9 @@ export default function AdminCustomer() {
                         <th className="admin-comp-table-th">adresse</th>
                         <th className="admin-comp-table-th">CP</th>
                         <th className="admin-comp-table-th">ville</th>
-                        <th className="admin-comp-table-th">nb rdv/heure</th>
-                        <th className="admin-comp-table-th">nb jours/semaine</th>
-                        <th className="admin-comp-table-th">entrepôt</th>
+                        {width > 849 && <th className="admin-comp-table-th">nb rdv/heure</th>}
+                        {width > 849 && <th className="admin-comp-table-th">nb jours/semaine</th>}
+                        {width > 849 && <th className="admin-comp-table-th">entrepôt</th>}
                         <th className="admin-comp-table-th">action</th>
                     </tr>
                 </thead>
@@ -106,9 +119,9 @@ export default function AdminCustomer() {
                                 <td className="admin-comp-table-td">{customer.address}</td>
                                 <td className="admin-comp-table-td">{customer.zip}</td>
                                 <td className="admin-comp-table-td td-upper">{customer.city}</td>
-                                <td className="admin-comp-table-td td-upper">{customer.rowsPerHour}</td>
-                                <td className="admin-comp-table-td td-upper">{customer.numberOfDays}</td>
-                                <td className="admin-comp-table-td td-upper">{customer.Wharehouse.name}</td>
+                                {width > 849 && <td className="admin-comp-table-td td-upper">{customer.rowsPerHour}</td>}
+                                {width > 849 && <td className="admin-comp-table-td td-upper">{customer.numberOfDays}</td>}
+                                {width > 849 && <td className="admin-comp-table-td td-upper">{customer.Wharehouse.name}</td>}
                                 <td className="admin-comp-table-td-action">
                                     <button className="admin-comp-btn-mod">
                                         <Link className="admin-comp-link" to={`/admin/customer/modif/${customer.id}`}>

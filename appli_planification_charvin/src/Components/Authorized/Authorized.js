@@ -1,24 +1,27 @@
 import NavbarAdmin from '../NavbarAdmin/NavbarAdmin.js'
 import Navbar from '../Navbar/Navbar.js'
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 //composant pour vérifier si l'utilisateur est un user ou admin pour limiter l'accès et choisir la barre de navigation
 export default function Authorized() {
-    //je récupère le role utilisateur dans la storage
-    const token = window.localStorage.getItem('rdvCharvin')
-    const role = window.localStorage.getItem('role')
-    const id = window.localStorage.getItem('id')
+    //je récupère les infos utilisateur dans la store
+    const infos = useSelector(state => state.userReducer.infos)
+
+    //je récupère mon token dans le local storage
+    const token = localStorage.rdvCharvin
 
     //state pour le return
-    const [authorized, setAuthorized] = useState()
+    const [authorized, setAuthorized] = useState(false)
+    const [redirect, setRedirect] = useState(false)
 
-    //au chargement, je vérifie le role
+    //au chargement, je vérifie si j'ai les infos utilisateur dans le store et le token + affichage de la barre de navigation enfonction du role utilisateur
     useEffect(() => {
-        if(!role || !token || !id) {
-            window.localStorage.clear()
-            setAuthorized(null)
-        }else if(token && id && role === "admin") {
+        if(infos.length === 0 || !token) {
+            localStorage.clear()
+            setRedirect(true)
+        }else if(infos.role === "admin") {
             setAuthorized(true)
         }else {
             setAuthorized(false)
@@ -26,14 +29,12 @@ export default function Authorized() {
         
     }, [])
 
-    //rendu conditionnel
+    //rendu conditionnel affichage du menu 4 choix ou du menu 2 choix en fonction du role utilisateur
     return (
         <>
-        
-        {authorized === null ?
-            <Redirect to='/login' />
-        :authorized === true ?
-            <NavbarAdmin/>
+        {redirect && <Redirect to='/' />}
+        {authorized ?
+            <NavbarAdmin/>   
         :<Navbar />
         }
         </>

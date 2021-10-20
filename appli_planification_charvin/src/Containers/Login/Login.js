@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-//import { loadUserInfo } from '../../redux/actions/userActions'
-//import { loginUser } from '../../apiCalls/usersCalls'
-//import { loginUser } from '../../redux/actions/userActions'
+import { loadUserInfo } from '../../redux/actions/userActions'
 import charvin from '../../asset/Charvin_Logistics.jpg'
 import axios from "axios"
 import { configApi } from '../../apiCalls/configApi'
@@ -19,7 +17,10 @@ export default function Login() {
     const [redirect, setRedirect] = useState(false)
     const [errorConnection, setErrorConnection] = useState(null)
 
-    const infos = useSelector(state => (state.userReducer.infos))
+    const infos = useSelector(state => state.userReducer.infos)
+
+    let infosStorage = []
+
 
     //initialisation du dispatch au store
     const dispatch = useDispatch()
@@ -38,22 +39,26 @@ export default function Login() {
         .then((response) => {
             //code à traiter si la requête est ok
             if (response.status === 200) {
-                console.log("response.data",response.data)
-                //dispatch de l'action au store
-                //loadUserInfo(infos)
+                //console.log("login response.data",response)
+                let datasUser = {
+                    id: response.data.data.id,
+                    firstName: response.data.data.firstName,
+                    lastName: response.data.data.lastName,
+                    email: response.data.data.email,
+                    role: response.data.data.role,
+                    wharehouseId: response.data.data.wharehouseId,
+                    customerId: response.data.data.customerId
+                }
 
-                // let valuesStorage = {
-                //     token: response.data.token,
-                //     id: response.data.data.id,
-                //     firstName: response.data.data.firstName,
-                //     lastName: response.data.data.lastName,
-                //     role: response.data.data.role,
-                //     wharehouseId: response.data.data.wharehouseId,
-                //     customerId: response.data.data.customerId
-                // }
-                
+                //on stocke les infos de l'utilisateur connecté
+                infosStorage.push(datasUser) 
+                       
+                //dispatch de l'action au store avec stockage des infos user dans le store
+                dispatch(loadUserInfo(datasUser))
+
                 //envoi du token et des infos utilisateur dans le local storage
-                //window.localStorage.setItem('rdvCharvin', valuesStorage)
+                localStorage.rdvCharvin = response.data.token
+                localStorage.userCharvin = JSON.stringify(infosStorage)
                
                 //redirection vers la page principale
                 setRedirect(true)    
@@ -70,8 +75,7 @@ export default function Login() {
     //affichage de la page avec une redirection au conditionnel
     return (
         <>
-            {redirect && <Redirect to = "/"/>}
-            
+            {redirect && <Redirect to = "/booking"/>}
 
             <div className="login-container">
             {/* {console.log('userInfo', infos)} */}

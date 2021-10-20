@@ -8,8 +8,9 @@ import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 import { allWharehouses } from '../../redux/actions/wharehouseActions.js'
 import { allCustomers } from '../../redux/actions/customerActions.js'
 
-const token = window.localStorage.getItem('rdvCharvin')
-const userId = window.localStorage.getItem('userId')
+const token = localStorage.rdvCharvin
+const userCharvin = JSON.parse(localStorage.userCharvin)
+const userId = userCharvin[0].id
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddAdd() {

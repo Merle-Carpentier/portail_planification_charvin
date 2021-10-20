@@ -23,8 +23,8 @@ function App() {
       <Router>
 
         <Switch>
-          <Route exact path = '/login' component = { Login } />
-          <Route exact path = '/' component = { Booking } />
+          <Route exact path = '/' component = { Login } />
+          <Route exact path = '/booking' component = { Booking } />
 
           <Route exact path = '/admin' component = { Admin } />
           <Route exact path = '/admin/wharehouse/add' component = { WharehouseAdd } />

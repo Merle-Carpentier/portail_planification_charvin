@@ -110,6 +110,8 @@
     color: #eb671c;
 }
 
+
+
 /* Responsive */
 
 @media screen and (min-width: 577px){
@@ -151,4 +153,6 @@
         margin: auto;
         padding: 5px;
     }
+
+
 }

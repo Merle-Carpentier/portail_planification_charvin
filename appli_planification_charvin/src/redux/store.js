@@ -5,6 +5,7 @@ import  userReducer  from '../redux/reducers/userReducer'
 import wharehouseReducer from "./reducers/wharehouseReducer"
 import userOfBddReducer from "./reducers/userOfBddReducer"
 import customerReducer from "./reducers/customerReducer"
+import bookingReducer from "./reducers/bookingReducer"
 
 
 //groupage des tous les reducers dans rootReducer
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     userReducer,
     wharehouseReducer,
     userOfBddReducer,
-    customerReducer
+    customerReducer,
+    bookingReducer
 })
 
 

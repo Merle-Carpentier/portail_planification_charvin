@@ -6,8 +6,9 @@ import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
-const token = window.localStorage.getItem('rdvCharvin')
-const userId = window.localStorage.getItem('userId')
+const token = localStorage.rdvCharvin
+const userCharvin = JSON.parse(localStorage.userCharvin)
+const userId = userCharvin[0].id
 
 
 //Composant pour affichage et suppression des entrepôts prenant en paramètre les states du store et le dispatch des actions

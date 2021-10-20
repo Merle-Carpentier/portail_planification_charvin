@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { allUsersBdd } from '../../redux/actions/userOfBddActions'
+import { allBookings } from '../../redux/actions/bookingActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
@@ -10,13 +10,14 @@ const token = localStorage.rdvCharvin
 const userCharvin = JSON.parse(localStorage.userCharvin)
 const userId = userCharvin[0].id
 
+
 //Composant pour affichage et suppression des entrepôts prenant en paramètre les states du store et le dispatch des actions
-export default function AdminUserOfBdd() {    
+export default function AdminBooking() {    
     
     //je pointe les states de mon store avec useSelector
-    const isLoading = useSelector(state => state.userOfBddReducer.isLoading)
-    const usersBdd = useSelector(state => state.userOfBddReducer.usersBdd)
-    const err = useSelector(state => state.userOfBddReducer.error)
+    const isLoading = useSelector(state => state.bookingReducer.isLoading)
+    const bookings = useSelector(state => state.bookingReducer.bookings)
+    const err = useSelector(state => state.bookingReducer.error)
 
     //j'initialise mes states
     const [errResponse, setErrResponse] = useState(null)
@@ -28,18 +29,18 @@ export default function AdminUserOfBdd() {
 
 
     //suppression d'un entrepôt
-    const deleteUserBdd = (id) => {
-        axios.delete(`${configApi.api_url}/api/deleteUser/${id}`, {headers: {"x-access-token": token, "userId": userId}})
+    const deleteBooking = (id) => {
+        axios.delete(`${configApi.api_url}/api/deleteBooking/${id}`, {headers: {"x-access-token": token, "userId": userId}})
         .then((response) => {
             //console.log("réponse del", response)
             if(response.status === 200) {
                 setSuccessResponse(response.message)
-                dispatch(allUsersBdd())
+                dispatch(allBookings())
             }
         })
         .catch((error) => {
             console.log("err del", error)
-            setErrResponse("Impossible de supprimer l'utilisateur, recommencez ou vérifier s'il n'est pas en lien avec un rdv")
+            setErrResponse("Impossible de supprimer le rdv")
         })
 
     }
@@ -47,8 +48,8 @@ export default function AdminUserOfBdd() {
 
     //action d'appel à l'api au montage et à chaque modification
     useEffect(() => {
-        dispatch(allUsersBdd())     
-
+        dispatch(allBookings()) 
+        
         //je vérifie la taille de l'écran pour affichage au conditionnel
         const ChangeWidth = () => {
             setWidth(window.innerWidth)
@@ -68,9 +69,9 @@ export default function AdminUserOfBdd() {
 
             {/*titre du tableau avec le bouton de renvoi vers l'ajout d'un entrepot */}
             <div className="admin-comp-head">
-                <h2 className="admin-comp-title">utilisateurs</h2>
+                <h2 className="admin-comp-title">rdv programmés</h2>
                 <button className="admin-comp-btn-add">
-                    <Link className="admin-comp-link" to='/admin/userBdd/add'>
+                    <Link className="admin-comp-link" to='/admin/booking/add'>
                         <i className="fas fa-plus-circle"> Ajouter</i>
                     </Link>
                 </button>
@@ -81,11 +82,15 @@ export default function AdminUserOfBdd() {
 
                 <thead className="admin-comp-table-head">
                     <tr className="admin-comp-table-trth">
-                        <th className="admin-comp-table-th">nom, prénom</th>
-                        <th className="admin-comp-table-th">email</th>
-                        <th className="admin-comp-table-th">client</th>
+                        <th className="admin-comp-table-th">date / heure rdv</th>
+                        <th className="admin-comp-table-th">nom</th>
+                        <th className="admin-comp-table-th">nature</th>
+                        {width > 849 && <th className="admin-comp-table-th">référence</th>}
+                        <th className="admin-comp-table-th">nb palettes</th>
+                        {width > 1100 && <th className="admin-comp-table-th">transporteur</th>}
+                        {width > 849 && <th className="admin-comp-table-th">client</th>}
                         <th className="admin-comp-table-th">entrepôt</th>
-                        {width > 849 && <th className="admin-comp-table-th">role</th>}
+                        {width > 1100 && <th className="admin-comp-table-th">utilisateur</th>}
                         <th className="admin-comp-table-th">action</th>
                     </tr>
                 </thead>
@@ -102,25 +107,29 @@ export default function AdminUserOfBdd() {
                             <td colSpan="3" className="admin-comp-table-tderr">{err}</td>
                         </tr>
                     ) 
-                    :usersBdd.length === 0 ? (
+                    :bookings.length === 0 ? (
                         <tr className="admin-comp-table-trload">
-                            <td colSpan="3" className="admin-comp-table-tdload">aucun utilisateur enregistré</td>
+                            <td colSpan="3" className="admin-comp-table-tdload">aucun rdv enregistré</td>
                         </tr>
                     )
-                    :usersBdd.map((userBdd)=> {
+                    :bookings.map((booking)=> {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
-                            <tr key={userBdd.id} className="admin-comp-table-tr">
+                            <tr key={booking.id} className="admin-comp-table-tr">
                                 <td className="admin-comp-table-td">
-                                    <Link className="admin-comp-table-link" to={`/admin/userBdd/edit/${userBdd.id}`}>{userBdd.lastName}, {userBdd.firstName}</Link>
+                                    <Link className="admin-comp-table-link" to={`/admin/booking/edit/${booking.id}`}>{booking.bookingDate}, {booking.bookingTime}</Link>
                                 </td>
-                                <td className="admin-comp-table-td">{userBdd.email}</td>
-                                <td className="admin-comp-table-td td-upper">{userBdd.Customer.name}</td>
-                                <td className="admin-comp-table-td td-upper">{userBdd.Wharehouse.name}</td>
-                                {width > 849 && <td className="admin-comp-table-td td-upper">{userBdd.role}</td>}
+                                <td className="admin-comp-table-td">{booking.bookingName}</td>
+                                <td className="admin-comp-table-td td-upper">{booking.natureBooking}</td>
+                                {width > 849 && <td className="admin-comp-table-td td-upper">{booking.refNumber}</td>}
+                                <td className="admin-comp-table-td td-upper">{booking.paletsQuantity}</td>
+                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.carrierSupplier}</td>}
+                                {width > 849 && <td className="admin-comp-table-td td-upper">{booking.Customer.name}</td>}
+                                <td className="admin-comp-table-td td-upper">{booking.Wharehouse.name}</td>
+                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.User.name}</td>}
                                 <td className="admin-comp-table-td-action">
                                     <button className="admin-comp-btn-mod">
-                                        <Link className="admin-comp-link" to={`/admin/userBdd/modif/${userBdd.id}`}>
+                                        <Link className="admin-comp-link" to={`/admin/booking/modif/${booking.id}`}>
                                             <i className="fas fa-pen"><p className="admin-comp-table-p"> modifier</p></i>
                                         </Link>                                          
                                     </button>
@@ -128,7 +137,7 @@ export default function AdminUserOfBdd() {
                                     className="admin-comp-btn-supp"
                                     onClick = {(e) => {
                                         e.preventDefault()
-                                        deleteUserBdd(userBdd.id)}}>
+                                        deleteBooking(booking.id)}}>
                                         <i className="fas fa-trash-alt"><p className="admin-comp-table-p"> supprimer</p></i>
                                     </button>
                                 </td>

@@ -6,8 +6,9 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
-const token = window.localStorage.getItem('rdvCharvin')
-const userId = window.localStorage.getItem('userId')
+const token = localStorage.rdvCharvin
+const userCharvin = JSON.parse(localStorage.userCharvin)
+const userId = userCharvin[0].id
 
 //page de formulaire d'ajout d'un entrepôt
 export default function CustomerModif(props) {
