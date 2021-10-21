@@ -117,7 +117,7 @@ export default function AdminBooking() {
                         return(
                             <tr key={booking.id} className="admin-comp-table-tr">
                                 <td className="admin-comp-table-td">
-                                    <Link className="admin-comp-table-link" to={`/admin/booking/edit/${booking.id}`}>{booking.bookingDate}, {booking.bookingTime}</Link>
+                                    <Link className="admin-comp-table-link" to={`/admin/booking/edit/${booking.id}`}>{booking.startDateTime}</Link>
                                 </td>
                                 <td className="admin-comp-table-td">{booking.bookingName}</td>
                                 <td className="admin-comp-table-td td-upper">{booking.natureBooking}</td>

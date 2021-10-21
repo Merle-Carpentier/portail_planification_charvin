@@ -5,21 +5,28 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        bookingDate: {
-            type: DataTypes.DATEONLY,
+        startDateTime: {
+            type: DataTypes.DATETIME,
             allowNull: false,
             validate: {
-                notEmpty: { msg: 'La date ne peut pas être vide' },
-                notNull: { msg: 'La date est une propriété requise' },
-                isDate: { msg: 'un format date est requis' }
+                notEmpty: { msg: 'La date et heure de début ne peut pas être vide' },
+                notNull: { msg: 'La date et heure de début est une propriété requise' },
             }
         },
-        bookingTime: {
-            type: DataTypes.TIME,
+        endDateTime: {
+            type: DataTypes.DATETIME,
             allowNull: false,
             validate: {
-                notEmpty: { msg: 'L\'heure ne peut pas être vide' },
-                notNull: { msg: 'L\'heure est une propriété requise' }
+                notEmpty: { msg: 'La date et heure de fin ne peut pas être vide' },
+                notNull: { msg: 'La date et heure de fin est une propriété requise' }
+            }
+        },
+        classeColor: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: { msg: 'La couleur ne peut pas être vide' },
+                notNull: { msg: 'La couleur est une propriété requise' }
             }
         },
         natureBooking: {

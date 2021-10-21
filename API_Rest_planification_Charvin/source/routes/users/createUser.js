@@ -7,7 +7,7 @@ const saltRounds = 10
 //route de création d'un utilisateur
 //cryptage du mdp avec bcrypt
 module.exports = (app) => {
-    app.post('/api/addUser', /*checkAuth, */(req, res) => {
+    app.post('/api/addUser', checkAuth, (req, res) => {
         bcrypt.hash(req.body.password, saltRounds)
             .then(hash => {
                 User.create({

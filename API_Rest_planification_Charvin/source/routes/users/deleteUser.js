@@ -4,7 +4,7 @@ const checkAuth = require('../../checkAuth/checkAuth')
 
 //route de suppression d'un utilisateur (on extrait d'abord l'utilisateur concerné avec findByPk)
 module.exports = (app) => {
-    app.delete('/api/deleteUser/:id', /*checkAuth, */(req, res) => {
+    app.delete('/api/deleteUser/:id', checkAuth, (req, res) => {
         User.findByPk(req.params.id)
             .then(user => {
                 if(user === null) {

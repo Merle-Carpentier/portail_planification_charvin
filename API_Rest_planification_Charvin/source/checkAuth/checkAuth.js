@@ -1,7 +1,7 @@
 const jwt  = require('jsonwebtoken')
 const key = require('./key')
 
-//Middleware d'authentification 
+//Middleware d'authentification lors des requêtes
 
 module.exports = (req, res, next) => {
     //on pointe le jeton dans l'entête
