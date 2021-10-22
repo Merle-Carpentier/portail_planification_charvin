@@ -2,7 +2,7 @@ const jwt  = require('jsonwebtoken')
 const key = require('../checkAuth/key')
 const checkAuth = require('../checkAuth/checkAuth')
 
-//route de vérification de validité du token
+//route de vérification de validité du token grace au middleware
 
 module.exports = (app) => {
     app.get('/api/checkToken', checkAuth, (req, res) => {

@@ -26,24 +26,6 @@ export default function AdminBooking() {
 
     //j'initialise mon dispatch d'action du store
     const dispatch = useDispatch()
-
-
-    //suppression d'un entrepôt
-    const deleteBooking = (id) => {
-        axios.delete(`${configApi.api_url}/api/deleteBooking/${id}`, {headers: {"x-access-token": token, "userId": userId}})
-        .then((response) => {
-            //console.log("réponse del", response)
-            if(response.status === 200) {
-                setSuccessResponse(response.message)
-                dispatch(allBookings())
-            }
-        })
-        .catch((error) => {
-            console.log("err del", error)
-            setErrResponse("Impossible de supprimer le rdv")
-        })
-
-    }
         
 
     //action d'appel à l'api au montage et à chaque modification
@@ -67,13 +49,11 @@ export default function AdminBooking() {
         
         <div className="admin-comp">
 
-            {/*titre du tableau avec le bouton de renvoi vers l'ajout d'un entrepot */}
+            {/*titre du tableau avec le bouton de renvoi vers page booking pour ajout ou modif */}
             <div className="admin-comp-head">
                 <h2 className="admin-comp-title">rdv programmés</h2>
                 <button className="admin-comp-btn-add">
-                    <Link className="admin-comp-link" to='/admin/booking/add'>
-                        <i className="fas fa-plus-circle"> Ajouter</i>
-                    </Link>
+                    <Link className="admin-comp-link-booking" to='/booking'>Ajouter, modifier ou supprimer un rdv</Link>
                 </button>
             </div>
             
@@ -116,9 +96,7 @@ export default function AdminBooking() {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
                             <tr key={booking.id} className="admin-comp-table-tr">
-                                <td className="admin-comp-table-td">
-                                    <Link className="admin-comp-table-link" to={`/admin/booking/edit/${booking.id}`}>{booking.startDateTime}</Link>
-                                </td>
+                                <td className="admin-comp-table-td">{booking.startDateTime}</td>
                                 <td className="admin-comp-table-td">{booking.bookingName}</td>
                                 <td className="admin-comp-table-td td-upper">{booking.natureBooking}</td>
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{booking.refNumber}</td>}
@@ -127,20 +105,6 @@ export default function AdminBooking() {
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{booking.Customer.name}</td>}
                                 <td className="admin-comp-table-td td-upper">{booking.Wharehouse.name}</td>
                                 {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.User.name}</td>}
-                                <td className="admin-comp-table-td-action">
-                                    <button className="admin-comp-btn-mod">
-                                        <Link className="admin-comp-link" to={`/admin/booking/modif/${booking.id}`}>
-                                            <i className="fas fa-pen"><p className="admin-comp-table-p"> modifier</p></i>
-                                        </Link>                                          
-                                    </button>
-                                    <button
-                                    className="admin-comp-btn-supp"
-                                    onClick = {(e) => {
-                                        e.preventDefault()
-                                        deleteBooking(booking.id)}}>
-                                        <i className="fas fa-trash-alt"><p className="admin-comp-table-p"> supprimer</p></i>
-                                    </button>
-                                </td>
                             </tr> 
                                     
                         )

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         startDateTime: {
-            type: DataTypes.DATETIME,
+            type: DataTypes.DATE,
             allowNull: false,
             validate: {
                 notEmpty: { msg: 'La date et heure de début ne peut pas être vide' },
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         endDateTime: {
-            type: DataTypes.DATETIME,
+            type: DataTypes.DATE,
             allowNull: false,
             validate: {
                 notEmpty: { msg: 'La date et heure de fin ne peut pas être vide' },
@@ -91,6 +91,14 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: { msg: 'L\'identifiant utilisateur ne peut pas être vide' },
                 notNull: { msg: 'L\'identifiant utilisateur est une propriété requise' }
+            }
+        },
+        _id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: { msg: 'L\'id rdv ne peut pas être vide' },
+                notNull: { msg: 'L\'id rdv est une propriété requise' }
             }
         }
     })

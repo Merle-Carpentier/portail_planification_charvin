@@ -31,6 +31,11 @@
     color: #000000;
 }
 
+.admin-comp-link-booking {
+    color: #104476;
+    text-transform: uppercase;
+}
+
 .admin-comp-table {
     width: 95%;
     margin: auto;
@@ -154,5 +159,7 @@
         padding: 5px;
     }
 
-
+    .admin-comp-link-booking:hover {
+        text-decoration: underline;
+    }
 }

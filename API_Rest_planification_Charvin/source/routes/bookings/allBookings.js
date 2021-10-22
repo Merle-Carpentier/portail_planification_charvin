@@ -5,6 +5,9 @@ const checkAuth = require('../../checkAuth/checkAuth')
 module.exports = (app) => {
     app.get('/api/allBookings', checkAuth, (req, res) => {
         Booking.findAll({
+            where: {
+                startDateTime:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
+            },
             include: [{
                 model: Wharehouse,
                 attributes: ['id', 'name']
@@ -19,7 +22,7 @@ module.exports = (app) => {
                 }
             ],
             attributes: {exclude:['createdAt', 'updatedAt']},
-            order: ['bookingDate', 'bookingTime']
+            order: ['startDateTime']
         })
         .then(bookings => {
             const message = `La liste de rdv a bien été récupérée`

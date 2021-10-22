@@ -12,7 +12,7 @@ const userId = userCharvin[0].id
 
 //composant pour vérifier si l'utilisateur est un user ou admin pour limiter l'accès et choisir la barre de navigation
 export default function Authorized() {
-    //je récupère les infos utilisateur dans la store
+    //je récupère les infos utilisateur dans le store
     const infos = useSelector(state => state.userReducer.infos)
 
     

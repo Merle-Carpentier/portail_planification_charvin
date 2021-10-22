@@ -4,7 +4,7 @@ const checkAuth = require('../../checkAuth/checkAuth')
 //route de récupération de tous les rdv avec nom entrepôt, client et utilisateur
 module.exports = (app) => {
     app.get('/api/detailBooking/:id', checkAuth, (req, res) => {
-        Booking.findByPk(req.params.id, {
+        Booking.findByPk(req.params._id, {
             include: [{
                 model: Wharehouse,
                 attributes: ['name']
@@ -19,7 +19,7 @@ module.exports = (app) => {
                 }
             ],
             attributes: {exclude:['createdAt', 'updatedAt']},
-            order: ['bookingDate', 'bookingTime']
+            order: ['startDateTime']
         })
             .then(booking => {
                 if(booking === null) {
