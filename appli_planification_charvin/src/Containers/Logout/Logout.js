@@ -12,7 +12,7 @@ export default function Logout() {
     const dispatch = useDispatch()
 
     //je pointe mon tableau des infos utilisateur
-    const infos = useSelector(state => state.userReducer.infos)
+    const {infos} = useSelector(state => ({...state.userReducer.infos}))
 
     useEffect(() => {
 

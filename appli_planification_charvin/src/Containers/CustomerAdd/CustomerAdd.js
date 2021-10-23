@@ -26,7 +26,7 @@ export default function CutomerAdd() {
     const [redirect, setRedirect] = useState(false)
 
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
-    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
+    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses})) 
 
 
     //fonction d'envoi du formulaire

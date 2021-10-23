@@ -17,8 +17,6 @@ export default function Login() {
     const [redirect, setRedirect] = useState(false)
     const [errorConnection, setErrorConnection] = useState(null)
 
-    const infos = useSelector(state => state.userReducer.infos)
-
     let infosStorage = []
 
 

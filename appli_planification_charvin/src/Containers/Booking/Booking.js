@@ -36,7 +36,7 @@ export default function Booking() {
     const [error, setError] = useState(null)
 
     //Je récupère mes infos utilisateur dans le store
-    const user = useSelector(state => state.userReducer.infos)
+    const {infos} = useSelector(state => ({...state.userReducer.infos}))
 
     //je crée un tableau de récupération de rdv selon les requêtes
     let bookings = []
@@ -209,16 +209,16 @@ export default function Booking() {
     
     //choix de la requête d'affichage des rdv en fonction de l'utilisateur
     const getGoogBookings = () => {
-        if(user.role === "admin" || user.role === "charvin") {
-            getBookingsByWharehouseId(user.wharehouseId)
+        if(infos.role === "admin" || infos.role === "charvin") {
+            getBookingsByWharehouseId(infos.wharehouseId)
         }else {
-            getBookingsByCustomerId(user.customerId)
+            getBookingsByCustomerId(infos.customerId)
         }
     }
     
 
     useEffect(() => {
-        console.log('user', user)
+        console.log('user', infos)
 
         //getGoogBookings()
         

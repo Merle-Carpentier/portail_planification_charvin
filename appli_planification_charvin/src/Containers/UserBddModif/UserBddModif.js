@@ -30,8 +30,8 @@ export default function UserBddModif(props) {
     let id = props.match.params.id
 
     //je prends mon state wharehouses et customers dans le store
-    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
-    const customers = useSelector(state => state.customerReducer.customers)
+    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses}))
+    const {customers} = useSelector(state => ({...state.customerReducer.customers}))
 
 
     //fonction de récupération d'un client

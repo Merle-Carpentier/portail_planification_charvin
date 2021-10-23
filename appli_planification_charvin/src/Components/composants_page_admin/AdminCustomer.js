@@ -14,12 +14,12 @@ const userId = userCharvin[0].id
 //Composant pour affichage et suppression des clients prenant en paramètre les states du store et le dispatch des actions
 export default function AdminCustomer() {    
     
-    //je pointe les states de mon store avec useSelector
-    const isLoading = useSelector(state => state.customerReducer.isLoading)
-    const customers = useSelector(state => state.customerReducer.customers)
-    const err = useSelector(state => state.customerReducer.error)
+    //je pointe les states de mon store avec useSelector 
+    const {isLoading} = useSelector(state => ({...state.customerReducer.isLoading}))
+    const {customers} = useSelector(state => ({...state.customerReducer.customers}))
+    const {err} = useSelector(state => ({...state.customerReducer.error}))
 
-    //j'initialise mes states
+    //j'initialise mes states pour les eventuels messages erreur et réponse pour modif et suppression + taille fenêtre
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
     const [width, setWidth] = useState(window.innerWidth)

@@ -28,8 +28,8 @@ export default function UserBddAdd() {
     const [redirect, setRedirect] = useState(false)
 
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
-    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
-    const customers = useSelector(state => state.customerReducer.customers)
+    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses})) 
+    const {customers} = useSelector(state => ({...state.customerReducer.customers}))
 
     //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()

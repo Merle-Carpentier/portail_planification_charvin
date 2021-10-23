@@ -1,5 +1,5 @@
 //import des actions
-import { LOAD_BOOKINGS, LOAD_BOOKINGS_SUCCESS, LOAD_BOOKINGS_ERROR } from "../actions/bookingActions";
+import { LOAD_BOOKINGS, LOAD_BOOKINGS_SUCCESS, LOAD_BOOKINGS_ERROR, ADD_BOOKING, MODIF_BOOKING, DELETE_BOOKING } from "../actions/bookingActions";
 
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
@@ -33,6 +33,31 @@ const bookingReducer = (state = INITIAL_STATE, action) => {
                 isLoading: false,
                 bookings: [],
                 error: action.payload
+            }
+
+        case ADD_BOOKING:
+            const newArrBookings = [...state.bookings]
+            newArrBookings.unshift(action.payload)
+            return {
+                bookings: newArrBookings
+            }
+
+        case MODIF_BOOKING: 
+            const newArrBookings = [...state.bookings]
+            const newArrBookings = [...state.bookings]
+            const indexDelete = newArrBookings.indexOf(action.payload._id)
+            newArrBookings.splice(indexDelete, 1)
+            newArrBookings.unshift(action.payload)
+            return {
+                bookings: newArrBookings
+            }
+
+        case DELETE_BOOKING:
+            const newArrBookings = [...state.bookings]
+            const indexDelete = newArrBookings.indexOf(action.payload._id)
+            newArrBookings.splice(indexDelete, 1)
+            return {
+                bookings: newArrBookings
             }
         
         default: return state

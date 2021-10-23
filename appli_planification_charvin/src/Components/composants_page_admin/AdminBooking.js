@@ -4,24 +4,16 @@ import { useSelector, useDispatch } from 'react-redux'
 import { allBookings } from '../../redux/actions/bookingActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
-import axios from 'axios'
-import { configApi } from '../../apiCalls/configApi'
-const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
 
-
-//Composant pour affichage et suppression des entrepôts prenant en paramètre les states du store et le dispatch des actions
+//Composant pour affichage des rdv prenant en paramètre les states du store et le dispatch des actions
 export default function AdminBooking() {    
     
     //je pointe les states de mon store avec useSelector
-    const isLoading = useSelector(state => state.bookingReducer.isLoading)
-    const bookings = useSelector(state => state.bookingReducer.bookings)
-    const err = useSelector(state => state.bookingReducer.error)
+    const {isLoading} = useSelector(state => ({...state.bookingReducer.isLoading}))
+    const{bookings} = useSelector(state => ({...state.bookingReducer.bookings}))
+    const {err} = useSelector(state => ({...state.bookingReducer.error}))
 
-    //j'initialise mes states
-    const [errResponse, setErrResponse] = useState(null)
-    const [successResponse, setSuccessResponse] = useState(null)
+    //j'initialise ma state pour obtenir largeur fenêtre
     const [width, setWidth] = useState(window.innerWidth)
 
     //j'initialise mon dispatch d'action du store
@@ -112,14 +104,6 @@ export default function AdminBooking() {
                 </tbody> }
                 
             </table>
-
-            {/*messages d'information si l'appel api est ok ou non */}
-            {successResponse !== null &&
-                <p className="admin-comp-successmessage">{successResponse}</p>
-            }
-            {errResponse !== null &&
-                <p className="admin-comp-errmessage">{errResponse}</p>
-            }
         </div>
     )
 }

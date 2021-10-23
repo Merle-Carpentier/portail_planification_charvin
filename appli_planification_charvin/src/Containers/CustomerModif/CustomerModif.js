@@ -28,7 +28,7 @@ export default function CustomerModif(props) {
     let id = props.match.params.id
 
     //je prends mon state wharehouses dans le store
-    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
+    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses}))
 
 
     //fonction de récupération d'un client
