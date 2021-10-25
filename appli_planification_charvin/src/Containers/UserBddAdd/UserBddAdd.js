@@ -9,8 +9,7 @@ import { allWharehouses } from '../../redux/actions/wharehouseActions.js'
 import { allCustomers } from '../../redux/actions/customerActions.js'
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddAdd() {
@@ -28,8 +27,8 @@ export default function UserBddAdd() {
     const [redirect, setRedirect] = useState(false)
 
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
-    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses})) 
-    const {customers} = useSelector(state => ({...state.customerReducer.customers}))
+    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
+    const customers = useSelector(state => state.customerReducer.customers)
 
     //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()

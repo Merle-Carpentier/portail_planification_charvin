@@ -17,8 +17,6 @@ export default function Login() {
     const [redirect, setRedirect] = useState(false)
     const [errorConnection, setErrorConnection] = useState(null)
 
-    let infosStorage = []
-
 
     //initialisation du dispatch au store
     const dispatch = useDispatch()
@@ -47,16 +45,13 @@ export default function Login() {
                     wharehouseId: response.data.data.wharehouseId,
                     customerId: response.data.data.customerId
                 }
-
-                //on stocke les infos de l'utilisateur connecté
-                infosStorage.push(datasUser) 
                        
                 //dispatch de l'action au store avec stockage des infos user dans le store
                 dispatch(loadUserInfo(datasUser))
 
                 //envoi du token et des infos utilisateur dans le local storage
                 localStorage.rdvCharvin = response.data.token
-                localStorage.userCharvin = JSON.stringify(infosStorage)
+                localStorage.userCharvin = response.data.data.id
                
                 //redirection vers la page principale
                 setRedirect(true)    

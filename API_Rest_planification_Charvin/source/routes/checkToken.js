@@ -1,11 +1,12 @@
 const jwt  = require('jsonwebtoken')
 const key = require('../checkAuth/key')
-const checkAuth = require('../checkAuth/checkAuth')
+//const checkAuth = require('../checkAuth/checkAuth')
 
 //route de vérification de validité du token grace au middleware
 
 module.exports = (app) => {
-    app.get('/api/checkToken', checkAuth, (req, res) => {
+    app.get('/api/checkToken', (req, res) => {
+
         //on pointe le jeton dans l'entête
         const token = req.headers['x-access-token']
 
@@ -17,8 +18,6 @@ module.exports = (app) => {
             }
             const message = `Token authentifié`
             res.json({ message, data: decodedToken.UserId })
-        })
-        
+        })  
     })
-
 }

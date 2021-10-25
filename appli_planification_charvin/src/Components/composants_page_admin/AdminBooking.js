@@ -9,9 +9,9 @@ import '../../asset/cssCommun/composants_page_admin.css'
 export default function AdminBooking() {    
     
     //je pointe les states de mon store avec useSelector
-    const {isLoading} = useSelector(state => ({...state.bookingReducer.isLoading}))
-    const{bookings} = useSelector(state => ({...state.bookingReducer.bookings}))
-    const {err} = useSelector(state => ({...state.bookingReducer.error}))
+    const isLoading = useSelector(state => state.bookingReducer.isLoading)
+    const bookings = useSelector(state => state.bookingReducer.bookings)
+    const err = useSelector(state => state.bookingReducer.error)
 
     //j'initialise ma state pour obtenir largeur fenêtre
     const [width, setWidth] = useState(window.innerWidth)

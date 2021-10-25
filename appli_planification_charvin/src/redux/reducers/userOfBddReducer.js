@@ -3,13 +3,13 @@ import { LOAD_USERSBDD, LOAD_USERSBDD_SUCCESS, LOAD_USERSBDD_ERROR } from "../ac
 
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
-    isLoading: false,
-    usersBdd: [],
-    error: ""
+    isLoading: false,   //message de chargement lors de la requète
+    usersBdd: [],       //tableau de tous les utilisateurs
+    error: ""           //message d'erreur de la requète
 }
 
 //(prevState, action) => newState action.type renvoi au type du fichier action
-//reducer lié à l'utilisateur: soit il est connecté, soit non
+//reducer lié aux utilisateurs stockés en bdd
 const userOfBddReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case LOAD_USERSBDD: 

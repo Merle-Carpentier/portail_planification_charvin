@@ -7,8 +7,7 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddModif(props) {
@@ -30,8 +29,8 @@ export default function UserBddModif(props) {
     let id = props.match.params.id
 
     //je prends mon state wharehouses et customers dans le store
-    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses}))
-    const {customers} = useSelector(state => ({...state.customerReducer.customers}))
+    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
+    const customers = useSelector(state => state.customerReducer.customers)
 
 
     //fonction de récupération d'un client

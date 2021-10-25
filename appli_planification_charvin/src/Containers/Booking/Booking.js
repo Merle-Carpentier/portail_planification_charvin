@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { ReactAgenda , ReactAgendaCtrl , guid ,  Modal } from 'react-agenda'
+import { useSelector, useDispatch } from 'react-redux'
+import { ReactAgenda , guid ,  Modal } from 'react-agenda'
+import ReactAgendaCtrl from '../../Components/ReactAgendaCtrl/ReactAgendaCtrl'
 import moment from 'moment'
-import { allBookings } from '../../redux/actions/bookingActions'
+import { bookingsByWharehouse, bookingsByCustomer, addBooking, modifBooking, deleteBooking } from '../../redux/actions/bookingActions'
 import { configApi } from '../../apiCalls/configApi'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
+import 'react-agenda/build/styles.css';
+import 'react-datetime/css/react-datetime.css';
 import './Booking.css'
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //Initialisation des couleurs pour l'agenda
 let colors = {
@@ -24,27 +26,45 @@ let now = new Date()
 
 export default function Booking() {
 
-    //initialisation des states
-    const [items, setItems] = useState([])   //rdv
-    const [selected, setSelected] = useState()     //créneaux
-    const [cellHeight, setCellHeight] = useState(40)       //taille cellules
+    //initialisation des states non gérées par react agenda pour alimenter la bdd
+    const [natureBooking, setNatureBooking] = useState("")
+    const [bookingName, setbookingName] = useState("")
+    const [refNumber, setRefNumber] = useState("")
+    const [paletsQuantity, setpaletsQuantity] = useState("")
+    const [carrierSupplier, setCarrierSupplier] = useState("")
+    
+
+    //initialisation des states de l'agenda
+    const [items, setItems] = useState([])                  //rdv
+    const [selected, setSelected] = useState()              //créneaux
+    const [cellHeight, setCellHeight] = useState(30)       //taille cellules
     const [showModal, setShowModal] = useState(false)      //affichage ou non popUp
-    const [locale, setLocale] = useState('fr')             //fuseau horaire
-    const [rowsPerHour, setRowsPerHour] = useState(4)       //nombre de cellule par heure (récupération dans le store customersi utilisateur=user)
-    const [numberOfDays, setNumberOfDays] = useState(6)    //nombre de jour (récupération dans le store customer si utilisateur=user)
+    const [locale, setLocale] = useState("fr")             //fuseau horaire
+    const [rowsPerHour, setRowsPerHour] = useState(3)       //nombre de cellule par heure (récupération dans le store customersi utilisateur=user)
+    const [numberOfDays, setNumberOfDays] = useState(5)    //nombre de jour (récupération dans le store customer si utilisateur=user)
     const [startDate, setStartDate] = useState(new Date()) //date de départ (actuelle)
-    const [error, setError] = useState(null)
+    
+    const [error, setError] = useState(null)               //affichage des messages d'erreurs
 
     //Je récupère mes infos utilisateur dans le store
-    const {infos} = useSelector(state => ({...state.userReducer.infos}))
+    const infos = useSelector(state => state.userReducer.infos)
+    //je récupère mon tableau de rdv dans le store
+    const bookingsById = useSelector(state => state.bookingReducer.bookingsById)
+    //j'initialise mon dispatch d'actions
+    const dispatch = useDispatch()
 
     //je crée un tableau de récupération de rdv selon les requêtes
-    let bookings = []
+    //let bookings = []
 
     /////////////////////////////////////  FONCTIONS POUR L'AGENDA /////////////////////////////////////////////////
-    //fonction: je verifie les cellules selectionnées
+    
+    ////////////////////////////////// AJOUTER UN RDV /////////////////////////////////////////////
+    //fonction: j'ouvre une popup pour ajouter un rdv quand un horaire selectionné
     const handleCellSelection = (item) => {
         console.log('handleCellSelection item', item)
+        setSelected(item)
+        setShowModal(true)
+        console.log('selected',selected)
     }
 
     //fonction: j'ouvre une popup pour ajouter un rdv quand selection plage horaire
@@ -62,23 +82,24 @@ export default function Booking() {
         //datas du rdv pour envoyer dans bdd
         const datas = {
             startDateTime: moment(newItem.startDateTime).format('YYYY-MM-DD HH:mm:ss'),
-            endDateTime: moment(newItem.endDateTime).format('YYYY-MM-DD HH:mm:ss'),
+            endDateTime: moment(newItem.startDateTime).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
             natureBooking: newItem.natureBooking,
             classColor: newItem.classColor,
             bookingName: newItem.bookingName,
             refNumber: newItem.refNumber,
             paletsQuantity: newItem.paletsQuantity,
             carrierSuppier: newItem.carrierSuppier,
-            customerId: newItem.customerId,
-            wharehouseId: newItem.wharehouseId,
-            userId: user.id,
-            _id: newItem._id
+            customerId: infos.customerId,
+            wharehouseId: infos.wharehouseId,
+            userId: infos.id,
+            _id: guid()
         }
         //envoi bdd
         axios.post(`${configApi.api_url}/api/addBooking`, datas, {headers: {"x-access-token": token, "userId": userId}})
         .then(response => {
             console.log('rep addNewEvent', response)
             if(response.status === 200){
+                dispatch(addBooking(datas))
                 setItems(items)
             }
             setShowModal(false)
@@ -89,8 +110,9 @@ export default function Booking() {
         })
     }
     
+    /////////////////////////////// AFFICHER ET MODIFIER UN RDV ////////////////////////////////////////////
     //fonction: j'ouvre la popup du rdv pour éventuellement le modifier
-    const handleItemEditModif = (item, newItem) =>{
+    const handleItemEdit = (item, newItem) =>{
         console.log('handleItemEdit item', item)
         console.log('handleItemEdit newItem', newItem)
         //mise à jour de la state selected et showModal
@@ -100,7 +122,7 @@ export default function Booking() {
     }
 
     //fonction mise à jour du rdv
-    const ModifEvent = (item, newItem)=> {
+    const editEvent = (item, newItem)=> {
         console.log('ModifEvent item', item)
         console.log('ModifEvent newItem', newItem)
 
@@ -114,9 +136,9 @@ export default function Booking() {
             refNumber: newItem.refNumber,
             paletsQuantity: newItem.paletsQuantity,
             carrierSuppier: newItem.carrierSuppier,
-            customerId: newItem.customerId,
-            wharehouseId: newItem.wharehouseId,
-            userId: user.id,
+            customerId: infos.customerId,
+            wharehouseId: infos.wharehouseId,
+            userId: infos.id,
             _id: newItem._id
         }
 
@@ -125,7 +147,8 @@ export default function Booking() {
         .then(response => {
             console.log('rep addNewEvent', response)
             if(response.status === 200){
-                //setItems(items) => reloader le tableau
+                dispatch(modifBooking(datas))
+                setItems(bookingsById)
             }
             setShowModal(false)
         })
@@ -135,7 +158,7 @@ export default function Booking() {
         })
     }
 
-
+    ////////////////////////////// SUPPRIMER UN RDV //////////////////////////////////////
     //fonction: je supprime le rdv
     const handleItemRemove = (items, deleteItem) => {
         console.log('handleItemRemove items', items)
@@ -146,6 +169,7 @@ export default function Booking() {
         .then(response => {
             console.log('rep handleItemRemove')
             if(response.status === 200){
+                dispatch(deleteBooking(deleteItem._id))
                 setItems(items)
             }
         })
@@ -155,79 +179,143 @@ export default function Booking() {
         })
     }
 
-    ////////////////////////////// FONCTIONS POUR LE USEEFFECT ///////////////////////////////////////
-    //requête des rdv par wharehouseId pour le useEffect
-    const getBookingsByWharehouseId = (whId) => {
-        axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${whId}`, {headers: {"x-access-token": token, "userId": userId}})
-        .then((response) => {
-            console.log('rep bookingbywh', response)
-            //je mets les datas dans mon tableau booking
-            bookings.push(response.data.data)
-            //je mape pour transformer les datee de la bdd
-            bookings.map((book) => {
-                book.startDateTime = new Date(book.startDateTime)
-                book.endDateTime = new Date(book.endDateTime)
-            })
-            //mise à jour de la state avec les bonnes heures
-            setItems(bookings)
-        })
-        .catch((error) => {
-            console.log('err bookingbywh', error)
-            setError("impossible de charger les rdv, veuillez recommencer ou contacter Charvin")
-        })
-    }
-    
-    
-    //requête des rdv par customerID pour le useEffect
-    const getBookingsByCustomerId = (custId) => {
-        axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${custId}`, {headers: {"x-access-token": token, "userId": userId}})
-        .then((response) => {
-            console.log('rep bookingbycust', response)
-            //je mets les datas dans mon tableau booking
-            bookings.push(response.data.data)
-            //je mape pour transformer les datee de la bdd
-            bookings.map((book) => {
-                book.startDateTime = new Date(book.startDateTime)
-                book.endDateTime = new Date(book.endDateTime)
-            })
-            //mise à jour de la state avec les bonnes heures
-            setItems(bookings)
 
+    ////////////////////////////// FONCTION POUR LE USE EFFECT ///////////////////////////////////////
+    
+    //choix de la requête d'affichage des rdv en fonction de l'utilisateur
+    const getBookingsById = () => {
+        if(infos.role === "admin" || infos.role === "charvin") {
+            dispatch(bookingsByWharehouse(infos.wharehouseId))
+        }else {
+            dispatch(bookingsByCustomer(infos.customerId))
             //récupération des infos client par l'id pour obtenir rowsPerHour et numberOfDays
-            axios.get(`${configApi.api_url}/api/detaiCustomer/${custId}`, {headers: {"x-access-token": token, "userId": userId}})
+            axios.get(`${configApi.api_url}/api/detaiCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
             .then((response) => {
                 console.log('rep detail customer ds bookingbycust', response)
                 setRowsPerHour(response.data.data.rowsPerHour)
                 setNumberOfDays(response.data.data.numberOfDays)
             })
-        })
-        .catch((error) => {
-            console.log('err bookingbywh', error)
-            setError("impossible de charger les rdv, veuillez recommencer ou contacter Charvin")
-        })
-    }
-    
-    //choix de la requête d'affichage des rdv en fonction de l'utilisateur
-    const getGoogBookings = () => {
-        if(infos.role === "admin" || infos.role === "charvin") {
-            getBookingsByWharehouseId(infos.wharehouseId)
-        }else {
-            getBookingsByCustomerId(infos.customerId)
         }
+        bookingsById.map((book) => {
+            book.startDateTime = new Date(book.startDateTime)
+            book.endDateTime = new Date(book.endDateTime)
+        })
+        //mise à jour de la state avec les bonnes heures
+        setItems(bookingsById)
     }
     
+    /////////////////////////////////// itemComponent de l'agenda//////////////////////////////////////////
+    const itemAgenda = (item) => {
+        return (
+            <form className="booking-agenda-item">
+
+                <select
+                name="natureBooking"
+                className="booking-agenda-item-select"
+                onChange={(e) => {
+                    setNatureBooking(e.currentTarget.value)
+                }}>
+                    <option defaultvalue={item.natureBooking} className="booking-agenda-item-select-option">{item.natureBooking}</option>
+                    <option value="réception" className="booking-agenda-item-select-option">livraison</option>
+                    <option value="expédition" className="booking-agenda-item-select-option">chargement</option>
+                </select>
+
+                <label className="booking-agenda-item-label">Nom rdv: </label>
+                <input
+                type="text"
+                className="booking-agenda-item-input"
+                value={item.bookingName}
+                onChange= {(e) => {
+                    setbookingName(e.currentTarget.value)
+                }} />
+
+                <label className="booking-agenda-item-label">Ref rdv: </label>
+                <input
+                type="text"
+                className="booking-agenda-item-input"
+                value={item.refNumber}
+                onChange= {(e) => {
+                    setRefNumber(e.currentTarget.value)
+                }} />
+
+                <label className="booking-agenda-item-label">Nb palettes: </label>
+                <input
+                type="text"
+                className="booking-agenda-item-input"
+                value={item.paletsQuantity}
+                onChange= {(e) => {
+                    setpaletsQuantity(e.currentTarget.value)
+                }} />
+
+                <label className="booking-agenda-item-label">Transporteur: </label>
+                <input
+                type="text"
+                className="booking-agenda-item-input"
+                value={item.carrierSupplier}
+                onChange= {(e) => {
+                    setCarrierSupplier(e.currentTarget.value)
+                }} />
+
+            </form>
+        )
+    }
 
     useEffect(() => {
         console.log('user', infos)
+        console.log('react agenda', ReactAgenda)
 
-        //getGoogBookings()
+        //getBookingsById()
         
     }, [])
 
     return (
         <>
             <Authorized />
-            <h1>Booking</h1>
+            <div className="booking">
+                <h1 className="booking-title">planning charvin</h1>
+
+                {error !== null && <p className="booking-p-error">{error}</p>}
+
+                {showModal &&
+                    <Modal clickOutside={()=>setShowModal(false)} >
+
+                        <div className="modal-content">
+                          <ReactAgendaCtrl
+                            // items={items}
+                            // itemColors={colors}
+                            // selectedCells={selected}
+                            // Addnew={addNewEvent}
+                            // edit={editEvent}  
+                            
+                            />
+                        </div>
+
+                    </Modal>
+                }
+
+            <ReactAgenda
+                minDate={now}
+                maxDate={new Date(now.getFullYear(), now.getMonth()+3)}
+                disablePrevButton={false}
+                startDate={startDate}
+                cellHeight={cellHeight}
+                startAtTime={8}
+                endAtTime={17}
+                locale={locale}
+                items={items}
+                numberOfDays={numberOfDays}
+                rowsPerHour={rowsPerHour}
+                itemComponent={itemAgenda}
+                itemColors={colors}
+                autoScale={false}
+                fixedHeader={true}
+                onItemEdit={() => handleItemEdit}
+                onItemRemove={handleItemRemove}
+                onCellSelect={handleCellSelection}
+                onRangeSelection={handleRangeSelection}
+            />
+
+            </div>
         </>
     )
 }

@@ -7,10 +7,9 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire de récupération d'un entrepôt
 export default function WharehouseEdit(props) {
 
     //initialisation des states des données de l'api + message erreur + redirection

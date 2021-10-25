@@ -2,8 +2,7 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //types d'action
 export const LOAD_WHAREHOUSES = "LOAD_WHAREHOUSES"

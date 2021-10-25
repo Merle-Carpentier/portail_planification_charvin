@@ -2,8 +2,7 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //types d'action
 export const LOAD_USERSBDD = "LOAD_USERSBDD"
@@ -30,7 +29,7 @@ const loadUsersBddError = error => {
         } 
 }
 
-//fonction d'appel vers l'api pour récupérer tous les entrepôts
+//fonction d'appel vers l'api pour récupérer tous les utilisateurs
 export const allUsersBdd = () => {
     return dispatch => {
 

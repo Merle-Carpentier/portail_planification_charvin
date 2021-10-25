@@ -25,7 +25,7 @@ module.exports = (app) => {
                 const token = jwt.sign( { userId: user.id }, key, { expiresIn: '10h' } )
                 const message = `L'utilisateur s'est connecté avec succès`
     
-                console.log('token de login ds back', token)
+                //console.log('token de login ds back', token)
                 return res.json({ message, data: user, token })  
             })
         })

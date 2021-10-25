@@ -4,13 +4,13 @@ import { LOAD_CUSTOMERS, LOAD_CUSTOMERS_SUCCESS, LOAD_CUSTOMERS_ERROR } from '..
 
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
-    isLoading: false,
-    customers: [],
-    error: ""
+    isLoading: false,   //message de chargement pendant la requête
+    customers: [],      //tableau de tous les clients
+    error: ""           //message d'erreur requète
 }
 
 //(prevState, action) => newState action.type renvoi au type du fichier action
-//reducer lié à l'utilisateur: soit il est connecté, soit non
+//reducer lié aux cients
 const customerReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case LOAD_CUSTOMERS: 

@@ -8,8 +8,7 @@ import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function CutomerAdd() {
@@ -26,7 +25,7 @@ export default function CutomerAdd() {
     const [redirect, setRedirect] = useState(false)
 
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
-    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses})) 
+    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
 
 
     //fonction d'envoi du formulaire

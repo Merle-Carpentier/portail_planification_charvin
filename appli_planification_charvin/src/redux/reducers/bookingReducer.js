@@ -1,15 +1,16 @@
 //import des actions
-import { LOAD_BOOKINGS, LOAD_BOOKINGS_SUCCESS, LOAD_BOOKINGS_ERROR, ADD_BOOKING, MODIF_BOOKING, DELETE_BOOKING } from "../actions/bookingActions";
+import { LOAD_BOOKINGS, LOAD_BOOKINGS_SUCCESS, LOAD_BOOKINGS_BY_ID_SUCCESS, LOAD_BOOKINGS_ERROR, ADD_BOOKING, MODIF_BOOKING, DELETE_BOOKING } from "../actions/bookingActions";
 
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
-    isLoading: false,
-    bookings: [],
-    error: ""
+    isLoading: false,     //affichage message de chargement lors de la requète
+    bookings: [],         //tous les rdv dans la page admin
+    bookingsById: [],     //rdv obtenus par l'id de l'entrepôt ou du client (soit l'un soit l'autre)
+    error: ""             //message d'erreur de la requète
 }
 
 //(prevState, action) => newState action.type renvoi au type du fichier action
-//reducer lié à l'utilisateur: soit il est connecté, soit non
+//reducer lié au rdv
 const bookingReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case LOAD_BOOKINGS: 
@@ -26,6 +27,12 @@ const bookingReducer = (state = INITIAL_STATE, action) => {
                 bookings: action.payload
             }
         
+        case LOAD_BOOKINGS_BY_ID_SUCCESS: 
+            return {
+                ...state,
+                isLoading: false,
+                bookingsById: action.payload
+            }
 
         case LOAD_BOOKINGS_ERROR: 
             return {
@@ -35,29 +42,29 @@ const bookingReducer = (state = INITIAL_STATE, action) => {
                 error: action.payload
             }
 
+
         case ADD_BOOKING:
-            const newArrBookings = [...state.bookings]
-            newArrBookings.unshift(action.payload)
+            const newArrAdd = [...state.bookingsById]
+            newArrAdd.unshift(action.payload)
             return {
-                bookings: newArrBookings
+                bookingsById: newArrAdd
             }
 
         case MODIF_BOOKING: 
-            const newArrBookings = [...state.bookings]
-            const newArrBookings = [...state.bookings]
-            const indexDelete = newArrBookings.indexOf(action.payload._id)
-            newArrBookings.splice(indexDelete, 1)
-            newArrBookings.unshift(action.payload)
+            const newArrModif = [...state.bookingsById]
+            const indexModif = newArrModif.indexOf(action.payload._id)
+            newArrModif.splice(indexModif, 1)
+            newArrModif.unshift(action.payload)
             return {
-                bookings: newArrBookings
+                bookingsById: newArrModif
             }
 
         case DELETE_BOOKING:
-            const newArrBookings = [...state.bookings]
-            const indexDelete = newArrBookings.indexOf(action.payload._id)
-            newArrBookings.splice(indexDelete, 1)
+            const newArrDel = [...state.bookingsById]
+            const indexDelete = newArrDel.indexOf(action.payload._id)
+            newArrDel.splice(indexDelete, 1)
             return {
-                bookings: newArrBookings
+                bookingsById: newArrDel
             }
         
         default: return state

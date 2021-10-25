@@ -7,17 +7,16 @@ import '../../asset/cssCommun/composants_page_admin.css'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 
 //Composant pour affichage et suppression des entrepôts prenant en paramètre les states du store et le dispatch des actions
 export default function AdminWharehouse() {    
     
     //je pointe les states de mon store avec useSelector
-    const {isLoading} = useSelector(state => ({...state.wharehouseReducer.isLoading}))
-    const {wharehouses} = useSelector(state => ({...state.wharehouseReducer.wharehouses}))
-    const {err} = useSelector(state => ({...state.wharehouseReducer.error}))
+    const isLoading = useSelector(state => state.wharehouseReducer.isLoading)
+    const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
+    const err = useSelector(state => state.wharehouseReducer.error)
 
     //j'initialise mes states pour les eventuels messages erreur et réponse pour modif et suppression + taille fenêtre
     const [errResponse, setErrResponse] = useState(null)

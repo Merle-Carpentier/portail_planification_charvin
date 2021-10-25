@@ -3,13 +3,13 @@ import { LOAD_WHAREHOUSES, LOAD_WHAREHOUSES_SUCCESS, LOAD_WHAREHOUSES_ERROR } fr
 
 //initialisation de la state de départ (toujours un objet)
 const INITIAL_STATE = {
-    isLoading: false,
-    wharehouses: [],
-    error: ""
+    isLoading: false,  //message chargement lors de la requète
+    wharehouses: [],   //tableau de tous les entrepôts
+    error: ""          //message d'erreur de la requète
 }
 
 //(prevState, action) => newState action.type renvoi au type du fichier action
-//reducer lié à l'utilisateur: soit il est connecté, soit non
+//reducer lié aux entrepôts
 const wharehouseReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case LOAD_WHAREHOUSES: 

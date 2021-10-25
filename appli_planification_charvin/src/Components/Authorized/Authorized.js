@@ -7,13 +7,12 @@ import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 const token = localStorage.rdvCharvin
-const userCharvin = JSON.parse(localStorage.userCharvin)
-const userId = userCharvin[0].id
+const userId = localStorage.userCharvin
 
 //composant pour vérifier si l'utilisateur est un user ou admin pour limiter l'accès et choisir la barre de navigation
 export default function Authorized() {
     //je récupère les infos utilisateur dans le store
-    const {infos} = useSelector(state => ({...state.userReducer.infos}))
+    const infos = useSelector(state => state.userReducer.infos)
 
     
     //state pour le return
