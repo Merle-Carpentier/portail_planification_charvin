@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Authorized from '../../Components/Authorized/Authorized.js'
+import { logoutUser } from '../../redux/actions/userActions.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
@@ -32,6 +34,8 @@ export default function UserBddModif(props) {
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
     const customers = useSelector(state => state.customerReducer.customers)
 
+    //const pour appel action store
+    const dispatch = useDispatch()
 
     //fonction de récupération d'un client
     const getUser = (usId) => {
@@ -76,6 +80,9 @@ export default function UserBddModif(props) {
             }
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('modif user err', error) 
             setError("Impossible de modifier l'utilisateur', veuillez recommencer")
         })

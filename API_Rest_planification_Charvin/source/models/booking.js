@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'Le type de rdv est une propriété requise' }
             }
         },
-        bookingName: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {

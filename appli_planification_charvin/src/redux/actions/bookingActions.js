@@ -1,8 +1,10 @@
 import axios from 'axios'
+import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
 const userId = localStorage.userCharvin
+
 
 //types d'action
 export const LOAD_BOOKINGS = "LOAD_BOOKINGS"                             //message de chargement pendant la requète
@@ -74,6 +76,9 @@ export const allBookings = () => {
         })
 
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             dispatch(loadBookingsError(error))
             console.log('Bookings err', error.message) 
         })
@@ -91,6 +96,9 @@ export const bookingsByWharehouse = (whId) => {
             dispatch(loadBookingsByIdSuccess(response.data.data))
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             dispatch(loadBookingsError(error))
             console.log('Bookings err', error.message) 
         })
@@ -109,6 +117,9 @@ export const bookingsByCustomer = (custId) => {
             dispatch(loadBookingsByIdSuccess(response.data.data))
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             dispatch(loadBookingsError(error))
             console.log('Bookings err', error.message) 
         })

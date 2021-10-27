@@ -1,51 +1,43 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import moment from 'moment'
 import './ReactAgendaCtrl.css'
 
-let now = new Date()
 
-//Initialisation des couleurs pour l'agenda
-let colors = {
-    "color-b": "rgba(16, 68, 118, 1)",
-    "color-v": "rgba(132, 255, 128, 1)",
-    "color-o": "rgba(234, 103, 23, 0.4)"
-}
+//composant enfant: détails de la popup de création ou d'affichage d'un rdv sur l'agenda
+export default function ReactAgendaCtrl(props) {
 
-export default function ReactAgendaCtrl() {
+    const onClickEvent = () => {
+        if(props.name ==="") {
+            return props.addNewEvent
+        }else if(props.name!=="") {
+            return props.editEvent
+        }
+    }
 
-    //initialisation des states
-    const [startDateTime, setStartDateTime] = useState(new Date())
-    // pas besoin de endDateTime car il est par défaut de 30 minutes après startDateTime avant envoi à la bdd
-    const [natureBooking, setNatureBooking] = useState("")
-    const [classColor, setClassColor] = useState("")                        //voir pour mettre une condition typebooking=color
-    const [bookingName, setbookingName] = useState("")
-    const [refNumber, setRefNumber] = useState("")
-    const [paletsQuantity, setpaletsQuantity] = useState("")
-    const [carrierSupplier, setCarrierSupplier] = useState("")
-
+    useEffect(() => {
+        console.log('props', props)
+        onClickEvent()
+    }, [])
 
 
     return (
-        <form className="booking-agendactrl">
+        <form
+        className="booking-agendactrl"
+        
+        >
 
-            <h2 className="booking-agendactrl-title">détail du rdv</h2>
+            <h2 className="booking-agendactrl-title">Détail du rdv</h2>
+            <p className="booking-agendactrl-p">du {moment(props.selected).format('DD-MM-YYYY à HH:mm')}</p>
 
-            <label className="booking-agendactrl-label">Heure du rdv: </label>
-            <input
-            type="text"
-            className="booking-agendactrl-input"
-            value={new Date(startDateTime)}
-            onChange= {(e) => {
-                setStartDateTime(e.currentTarget.value)
-            }} />
-
+            <label className="booking-agendactrl-label">Choix du type de rdv</label>
             <select
             name="natureBooking"
             className="booking-agendactrl-select"
             onChange={(e) => {
-                setNatureBooking(e.currentTarget.value)
+                props.setNatureBooking(e.currentTarget.value)
 
             }}>
-                <option defaultvalue={natureBooking} className="booking-agendactrl-select-option">{natureBooking}</option>
+                <option defaultValue={props.natureBooking} className="booking-agendactrl-select-option">{props.natureBooking}</option>
                 <option value="reception" className="booking-agendactrl-select-option">livraison</option>
                 <option value="expedition" className="booking-agendactrl-select-option">chargement</option>
                 <option value="reserve" className="booking-agenda-ctrl-select-option">réservé Charvin</option>
@@ -55,37 +47,39 @@ export default function ReactAgendaCtrl() {
             <input
             type="text"
             className="booking-agendactrl-input"
-            value={bookingName}
+            value={props.name}
             onChange= {(e) => {
-                setbookingName(e.currentTarget.value)
+                props.setName(e.currentTarget.value)
             }} />
 
             <label className="booking-agendactrl-label">Ref rdv: </label>
             <input
             type="text"
             className="booking-agendactrl-input"
-            value={refNumber}
+            value={props.refNumber}
             onChange= {(e) => {
-                setRefNumber(e.currentTarget.value)
+                props.setRefNumber(e.currentTarget.value)
             }} />
 
             <label className="booking-agendactrl-label">Nb palettes: </label>
             <input
             type="text"
             className="booking-agendactrl-input"
-            value={paletsQuantity}
+            value={props.paletsQuantity}
             onChange= {(e) => {
-                setpaletsQuantity(e.currentTarget.value)
+                props.setpaletsQuantity(e.currentTarget.value)
             }} />
 
             <label className="booking-agendactrl-label">Transporteur: </label>
             <input
             type="text"
             className="booking-agendactrl-input"
-            value={carrierSupplier}
+            value={props.carrierSupplier}
             onChange= {(e) => {
-                setCarrierSupplier(e.currentTarget.value)
+                props.setCarrierSupplier(e.currentTarget.value)
             }} />
+
+            <input className="booking-agendactrl-btn" type="submit" value="enregistrer" />
 
             </form>
     )

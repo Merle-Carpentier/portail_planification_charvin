@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link , useHistory} from 'react-router-dom'
 import { convertDate } from '../../util/util.js'
 import Authorized from '../../Components/Authorized/Authorized.js'
+import { logoutUser } from '../../redux/actions/userActions.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
@@ -26,6 +28,9 @@ export default function CustomerEdit(props) {
 
     //on utilise le hook history pour revenir en arrière
     const history = useHistory()
+
+    //const pour dispatch actions
+    const dispatch = useDispatch()
     
     let id = props.match.params.id
 
@@ -45,6 +50,9 @@ export default function CustomerEdit(props) {
             setUpdated(response.data.data.updatedAt)
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('detailCustomer err', error) 
             setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
         })

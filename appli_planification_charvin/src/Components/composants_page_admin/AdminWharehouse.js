@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { allWharehouses } from '../../redux/actions/wharehouseActions'
+import { logoutUser } from '../../redux/actions/userActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
@@ -36,6 +37,9 @@ export default function AdminWharehouse() {
             }
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log("err del", error)
             setErrResponse("Impossible de supprimer l'entrepôt, veuillez vérifier s'il n'est pas en lien avec un client ou un rdv")
         })

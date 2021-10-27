@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
@@ -42,6 +43,9 @@ export const allWharehouses = () => {
         })
 
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             dispatch(loadWharehousesError(error))
             console.log('allWharehouses err', error.message) 
         })

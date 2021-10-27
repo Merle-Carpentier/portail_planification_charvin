@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
+import { logoutUser } from './userActions'
 
 const token = localStorage.rdvCharvin
 const userId = localStorage.userCharvin
@@ -42,6 +43,9 @@ export const allCustomers = () => {
         })
 
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             dispatch(loadCustomersError(error))
             console.log('allCustomers err', error.message) 
         })

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import Authorized from '../../Components/Authorized/Authorized.js'
+import { logoutUser } from '../../redux/actions/userActions.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
@@ -21,6 +23,9 @@ export default function WharehouseModif(props) {
 
     let id = props.match.params.id
 
+    //appel action du store
+    const dispatch = useDispatch()
+
     //fonction de récupération d'uin entrepôt
     const getWharehouse = (whId) => {
         axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {"x-access-token": token, "userId": userId}})
@@ -32,6 +37,9 @@ export default function WharehouseModif(props) {
             setCity(response.data.data.city)
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('modifWharehouse err', error) 
             setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
         })

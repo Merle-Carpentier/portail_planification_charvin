@@ -46,7 +46,6 @@ require('./source/routes/bookings/allBookings')(app)
 require('./source/routes/bookings/getBookingsByWharehouseId')(app)
 require('./source/routes/bookings/detailBooking')(app)
 require('./source/routes/bookings/deleteBooking')(app)
-require('./source/routes/checkToken')(app)
 
 //gestion des erreurs 404
 app.use(({res}) => {

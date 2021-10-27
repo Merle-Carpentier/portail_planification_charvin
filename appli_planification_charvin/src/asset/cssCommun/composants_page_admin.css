@@ -34,7 +34,8 @@
 }
 
 .admin-comp-link-booking {
-    color: #104476;
+    color: #000000;
+    font-weight: bold;
     text-transform: uppercase;
 }
 

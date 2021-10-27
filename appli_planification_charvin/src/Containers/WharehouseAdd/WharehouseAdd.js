@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import Authorized from '../../Components/Authorized/Authorized.js'
+import { logoutUser } from '../../redux/actions/userActions.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
@@ -18,6 +20,9 @@ export default function WharehouseAdd() {
     const [city, setCity] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+
+    //appel action du store
+    const dispatch = useDispatch()
 
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
@@ -39,6 +44,9 @@ export default function WharehouseAdd() {
             }
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('addWharehouse err', error) 
             setError("Impossible d'enregistrer l'entrepôt, veuillez recommencer")
         })

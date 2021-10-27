@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { ReactAgenda , guid ,  Modal } from 'react-agenda'
-import ReactAgendaCtrl from '../../Components/ReactAgendaCtrl/ReactAgendaCtrl'
+import { ReactAgenda , guid ,  Modal , ReactAgendaCtrl } from 'react-agenda'
+//import ReactAgendaCtrl from '../../Components/ReactAgendaCtrl/ReactAgendaCtrl'
 import moment from 'moment'
 import { bookingsByWharehouse, bookingsByCustomer, addBooking, modifBooking, deleteBooking } from '../../redux/actions/bookingActions'
 import { configApi } from '../../apiCalls/configApi'
+import { logoutUser } from '../../redux/actions/userActions'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
 import 'react-agenda/build/styles.css';
@@ -24,15 +25,17 @@ let colors = {
 //initialisation de la date
 let now = new Date()
 
-export default function Booking() {
-
-    //initialisation des states non gérées par react agenda pour alimenter la bdd
-    const [natureBooking, setNatureBooking] = useState("")
-    const [bookingName, setbookingName] = useState("")
+export default function Booking(props) {
+    
+    //initialisation des states qui serviront à afficher les données du rdv + alimentation de la bdd
+    const [natureBooking, setNatureBooking] = useState("")                      //voir pour mettre une condition typebooking=color
+    const [name, setName] = useState("")
     const [refNumber, setRefNumber] = useState("")
     const [paletsQuantity, setpaletsQuantity] = useState("")
     const [carrierSupplier, setCarrierSupplier] = useState("")
-    
+
+    //initialisation de la state classColor pour la définir en fonction de la nature du rdv
+    const [classColor, setClassColor] = useState()
 
     //initialisation des states de l'agenda
     const [items, setItems] = useState([])                  //rdv
@@ -64,7 +67,7 @@ export default function Booking() {
         console.log('handleCellSelection item', item)
         setSelected(item)
         setShowModal(true)
-        console.log('selected',selected)
+        console.log('selected', selected)
     }
 
     //fonction: j'ouvre une popup pour ajouter un rdv quand selection plage horaire
@@ -78,14 +81,22 @@ export default function Booking() {
     const addNewEvent = (items, newItem) =>{
         console.log('addNewEvent items', items)
         console.log('addNewEvent newItem', newItem)
+
+        if(props.natureBooking === "reception") {
+            setClassColor("color-v")
+        } else if(props.natureBooking === "expedition") {
+            setClassColor("color-o")
+        }else {
+            setClassColor("color-b")
+        }
         
         //datas du rdv pour envoyer dans bdd
         const datas = {
-            startDateTime: moment(newItem.startDateTime).format('YYYY-MM-DD HH:mm:ss'),
-            endDateTime: moment(newItem.startDateTime).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+            startDateTime: moment(newItem.selected).format('YYYY-MM-DD HH:mm:ss'),
+            endDateTime: moment(newItem.selected).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
             natureBooking: newItem.natureBooking,
             classColor: newItem.classColor,
-            bookingName: newItem.bookingName,
+            name: newItem.name,
             refNumber: newItem.refNumber,
             paletsQuantity: newItem.paletsQuantity,
             carrierSuppier: newItem.carrierSuppier,
@@ -105,6 +116,9 @@ export default function Booking() {
             setShowModal(false)
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('err handleItemRemove', error)
             setError("impossible d'enregistrer le rdv, veuillez recommencer ou contacter Charvin")
         })
@@ -126,20 +140,28 @@ export default function Booking() {
         console.log('ModifEvent item', item)
         console.log('ModifEvent newItem', newItem)
 
+        if(props.natureBooking === "reception") {
+            setClassColor("color-v")
+        } else if(props.natureBooking === "expedition") {
+            setClassColor("color-o")
+        }else {
+            setClassColor("color-b")
+        }
+
         //datas du rdv pour envoyer dans bdd
         const datas = {
-            startDateTime: moment(newItem.startDateTime).format('YYYY-MM-DD HH:mm:ss'),
-            endDateTime: moment(newItem.endDateTime).format('YYYY-MM-DD HH:mm:ss'),
+            startDateTime: moment(newItem.selected).format('YYYY-MM-DD HH:mm:ss'),
+            endDateTime: moment(newItem.selected).format('YYYY-MM-DD HH:mm:ss'),
             natureBooking: newItem.natureBooking,
             classColor: newItem.classColor,
-            bookingName: newItem.bookingName,
+            name: newItem.name,
             refNumber: newItem.refNumber,
             paletsQuantity: newItem.paletsQuantity,
             carrierSuppier: newItem.carrierSuppier,
             customerId: infos.customerId,
             wharehouseId: infos.wharehouseId,
             userId: infos.id,
-            _id: newItem._id
+            _id: item._id
         }
 
         //envoi bdd
@@ -153,6 +175,9 @@ export default function Booking() {
             setShowModal(false)
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('err handleItemRemove', error)
             setError("impossible de modifier le rdv, veuillez recommencer ou contacter Charvin")
         })
@@ -174,6 +199,9 @@ export default function Booking() {
             }
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('err handleItemRemove', error)
             setError("impossible de supprimer le rdv, veuillez recommencer ou contacter Charvin")
         })
@@ -204,65 +232,12 @@ export default function Booking() {
         setItems(bookingsById)
     }
     
-    /////////////////////////////////// itemComponent de l'agenda//////////////////////////////////////////
-    const itemAgenda = (item) => {
-        return (
-            <form className="booking-agenda-item">
-
-                <select
-                name="natureBooking"
-                className="booking-agenda-item-select"
-                onChange={(e) => {
-                    setNatureBooking(e.currentTarget.value)
-                }}>
-                    <option defaultvalue={item.natureBooking} className="booking-agenda-item-select-option">{item.natureBooking}</option>
-                    <option value="réception" className="booking-agenda-item-select-option">livraison</option>
-                    <option value="expédition" className="booking-agenda-item-select-option">chargement</option>
-                </select>
-
-                <label className="booking-agenda-item-label">Nom rdv: </label>
-                <input
-                type="text"
-                className="booking-agenda-item-input"
-                value={item.bookingName}
-                onChange= {(e) => {
-                    setbookingName(e.currentTarget.value)
-                }} />
-
-                <label className="booking-agenda-item-label">Ref rdv: </label>
-                <input
-                type="text"
-                className="booking-agenda-item-input"
-                value={item.refNumber}
-                onChange= {(e) => {
-                    setRefNumber(e.currentTarget.value)
-                }} />
-
-                <label className="booking-agenda-item-label">Nb palettes: </label>
-                <input
-                type="text"
-                className="booking-agenda-item-input"
-                value={item.paletsQuantity}
-                onChange= {(e) => {
-                    setpaletsQuantity(e.currentTarget.value)
-                }} />
-
-                <label className="booking-agenda-item-label">Transporteur: </label>
-                <input
-                type="text"
-                className="booking-agenda-item-input"
-                value={item.carrierSupplier}
-                onChange= {(e) => {
-                    setCarrierSupplier(e.currentTarget.value)
-                }} />
-
-            </form>
-        )
-    }
+    
 
     useEffect(() => {
         console.log('user', infos)
-        console.log('react agenda', ReactAgenda)
+        console.log('props', props)
+        console.log('reactAgendaCtrl', ReactAgendaCtrl)
 
         //getBookingsById()
         
@@ -280,14 +255,35 @@ export default function Booking() {
                     <Modal clickOutside={()=>setShowModal(false)} >
 
                         <div className="modal-content">
-                          <ReactAgendaCtrl
-                            // items={items}
+
+                        <ReactAgendaCtrl
+                            items={items}
+                            itemColors={colors}
+                            selected={selected}
+                            Addnew={addNewEvent}
+                            edit={editEvent}  
+                        
+                        />
+
+                          {/* <ReactAgendaCtrl
+                            items={items}
+                            selected={selected}
+                            natureBooking={natureBooking}
+                            setNatureBooking={setNatureBooking}
+                            name={name}
+                            setName={setName}
+                            refNumber={refNumber}
+                            setRefNumber={setRefNumber}
+                            paletsQuantity={paletsQuantity}
+                            setpaletsQuantity={setpaletsQuantity}
+                            carrierSupplier={carrierSupplier}
+                            setCarrierSupplier={setCarrierSupplier}
                             // itemColors={colors}
                             // selectedCells={selected}
-                            // Addnew={addNewEvent}
-                            // edit={editEvent}  
+                            Addnew={addNewEvent}
+                            edit={editEvent}  
                             
-                            />
+                            /> */}
                         </div>
 
                     </Modal>
@@ -305,7 +301,7 @@ export default function Booking() {
                 items={items}
                 numberOfDays={numberOfDays}
                 rowsPerHour={rowsPerHour}
-                itemComponent={itemAgenda}
+                //itemComponent={itemAgenda}
                 itemColors={colors}
                 autoScale={false}
                 fixedHeader={true}

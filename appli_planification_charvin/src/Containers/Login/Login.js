@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { loadUserInfo } from '../../redux/actions/userActions'
 import charvin from '../../asset/Charvin_Logistics.jpg'
 import axios from "axios"
@@ -45,13 +45,13 @@ export default function Login() {
                     wharehouseId: response.data.data.wharehouseId,
                     customerId: response.data.data.customerId
                 }
-                       
-                //dispatch de l'action au store avec stockage des infos user dans le store
-                dispatch(loadUserInfo(datasUser))
 
                 //envoi du token et des infos utilisateur dans le local storage
                 localStorage.rdvCharvin = response.data.token
                 localStorage.userCharvin = response.data.data.id
+                       
+                //dispatch de l'action au store avec stockage des infos user dans le store
+                dispatch(loadUserInfo(datasUser))
                
                 //redirection vers la page principale
                 setRedirect(true)    
@@ -64,6 +64,7 @@ export default function Login() {
         })
         
     }
+
    
     //affichage de la page avec une redirection au conditionnel
     return (

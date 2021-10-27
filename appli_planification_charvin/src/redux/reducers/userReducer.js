@@ -20,6 +20,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
             }
         
         case LOGOUT_USER: 
+            localStorage.clear()   //j'enlève mon token du local storage
         	return {
                 INITIAL_STATE 
             }

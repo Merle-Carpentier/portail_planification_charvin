@@ -11,17 +11,9 @@ export default function Logout() {
     //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
 
-    //je pointe mon tableau des infos utilisateur
-    const {infos} = useSelector(state => ({...state.userReducer.infos}))
-
     useEffect(() => {
-
         //dispatch de l'action au store
         dispatch(logoutUser())
-        infos.length = 0
-
-        //suppression des clés dans le local storage
-        localStorage.clear()
 
         //state de redirection
         setRedirect(true)

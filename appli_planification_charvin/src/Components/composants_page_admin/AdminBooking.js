@@ -89,7 +89,7 @@ export default function AdminBooking() {
                         return(
                             <tr key={booking.id} className="admin-comp-table-tr">
                                 <td className="admin-comp-table-td">{booking.startDateTime}</td>
-                                <td className="admin-comp-table-td">{booking.bookingName}</td>
+                                <td className="admin-comp-table-td">{booking.name}</td>
                                 <td className="admin-comp-table-td td-upper">{booking.natureBooking}</td>
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{booking.refNumber}</td>}
                                 <td className="admin-comp-table-td td-upper">{booking.paletsQuantity}</td>

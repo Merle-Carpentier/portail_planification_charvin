@@ -8,7 +8,7 @@ function Navbar() {
        <nav className="navbar">
            <ul className="navbar-list">
                 <li className="navbar-list-item">
-                    <Link className="navbar-list-item navbar-list-item-1" to='/'>Planning</Link></li>
+                    <Link className="navbar-list-item navbar-list-item-1" to='/booking'>Planning</Link></li>
                 <li className="navbar-list-item">
                     <img className="navbar-img" src={charvin} alt="logo Charvin"/>
                 </li>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { allUsersBdd } from '../../redux/actions/userOfBddActions'
+import { logoutUser } from '../../redux/actions/userActions'
 import '../../asset/cssCommun/composants_page_admin.css'
 
 import axios from 'axios'
@@ -37,6 +38,9 @@ export default function AdminUserOfBdd() {
             }
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc direction login
+            }
             console.log("err del", error)
             setErrResponse("Impossible de supprimer l'utilisateur, recommencez ou vérifier s'il n'est pas en lien avec un rdv")
         })

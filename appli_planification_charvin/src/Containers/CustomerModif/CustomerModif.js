@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Authorized from '../../Components/Authorized/Authorized.js'
+import { logoutUser } from '../../redux/actions/userActions.js'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
@@ -29,6 +30,8 @@ export default function CustomerModif(props) {
     //je prends mon state wharehouses dans le store
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses)
 
+    //const pour dispatch des actions
+    const dispatch = useDispatch()
 
     //fonction de récupération d'un client
     const getCustomer = (custId) => {
@@ -45,6 +48,9 @@ export default function CustomerModif(props) {
             setWharehouseId(response.data.data.Wharehouse.id)
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
             console.log('modif customer err', error) 
             setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
         })

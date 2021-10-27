@@ -1,11 +1,13 @@
 const { Booking, User, Customer, Wharehouse } = require('../../sequelize')
 const checkAuth = require('../../checkAuth/checkAuth')
+const { Op, Sequelize } = require('sequelize')
 
 //route de récupération de tous les rdv avec leur entrepot + client attitrés ainsi que l'utilisateur ayant créée le rdv
 module.exports = (app) => {
     app.get('/api/allBookings', checkAuth, (req, res) => {
         Booking.findAll({
             where: {
+                //rdv égales ou supérieures à la date du jour
                 startDateTime:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
             },
             include: [{
