@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { ReactAgenda , guid ,  Modal , ReactAgendaCtrl } from 'react-agenda'
-//import ReactAgendaCtrl from '../../Components/ReactAgendaCtrl/ReactAgendaCtrl'
+import { ReactAgenda , guid ,  Modal } from 'react-agenda'
+import ReactAgendaCtrl from '../../Components/ReactAgendaCtrl/ReactAgendaCtrl'
 import moment from 'moment'
 import { bookingsByWharehouse, bookingsByCustomer, addBooking, modifBooking, deleteBooking } from '../../redux/actions/bookingActions'
 import { configApi } from '../../apiCalls/configApi'
@@ -27,19 +27,9 @@ let now = new Date()
 
 export default function Booking(props) {
     
-    //initialisation des states qui serviront à afficher les données du rdv + alimentation de la bdd
-    const [natureBooking, setNatureBooking] = useState("")                      //voir pour mettre une condition typebooking=color
-    const [name, setName] = useState("")
-    const [refNumber, setRefNumber] = useState("")
-    const [paletsQuantity, setpaletsQuantity] = useState("")
-    const [carrierSupplier, setCarrierSupplier] = useState("")
-
-    //initialisation de la state classColor pour la définir en fonction de la nature du rdv
-    const [classColor, setClassColor] = useState()
-
     //initialisation des states de l'agenda
     const [items, setItems] = useState([])                  //rdv
-    const [selected, setSelected] = useState()              //créneaux
+    const [selected, setSelected] = useState()              //heure créneau
     const [cellHeight, setCellHeight] = useState(30)       //taille cellules
     const [showModal, setShowModal] = useState(false)      //affichage ou non popUp
     const [locale, setLocale] = useState("fr")             //fuseau horaire
@@ -81,14 +71,6 @@ export default function Booking(props) {
     const addNewEvent = (items, newItem) =>{
         console.log('addNewEvent items', items)
         console.log('addNewEvent newItem', newItem)
-
-        if(props.natureBooking === "reception") {
-            setClassColor("color-v")
-        } else if(props.natureBooking === "expedition") {
-            setClassColor("color-o")
-        }else {
-            setClassColor("color-b")
-        }
         
         //datas du rdv pour envoyer dans bdd
         const datas = {
@@ -139,14 +121,6 @@ export default function Booking(props) {
     const editEvent = (item, newItem)=> {
         console.log('ModifEvent item', item)
         console.log('ModifEvent newItem', newItem)
-
-        if(props.natureBooking === "reception") {
-            setClassColor("color-v")
-        } else if(props.natureBooking === "expedition") {
-            setClassColor("color-o")
-        }else {
-            setClassColor("color-b")
-        }
 
         //datas du rdv pour envoyer dans bdd
         const datas = {
@@ -267,19 +241,9 @@ export default function Booking(props) {
 
                           {/* <ReactAgendaCtrl
                             items={items}
-                            selected={selected}
-                            natureBooking={natureBooking}
-                            setNatureBooking={setNatureBooking}
-                            name={name}
-                            setName={setName}
-                            refNumber={refNumber}
-                            setRefNumber={setRefNumber}
-                            paletsQuantity={paletsQuantity}
-                            setpaletsQuantity={setpaletsQuantity}
-                            carrierSupplier={carrierSupplier}
-                            setCarrierSupplier={setCarrierSupplier}
-                            // itemColors={colors}
-                            // selectedCells={selected}
+                            //selected={selected}
+                            itemColors={colors}
+                            selectedCells={selected}
                             Addnew={addNewEvent}
                             edit={editEvent}  
                             

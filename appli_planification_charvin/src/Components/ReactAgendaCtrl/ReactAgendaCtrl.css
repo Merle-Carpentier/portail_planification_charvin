@@ -10,6 +10,12 @@
     padding:5px;
 }
 
+.booking-agendactrl-p-error {
+    color: #eb671c;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .booking-agendactrl-title {
     color: #eb671c;
     padding: 5px;

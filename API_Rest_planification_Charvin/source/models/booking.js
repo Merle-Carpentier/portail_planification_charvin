@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La date et heure de fin est une propriété requise' }
             }
         },
-        classeColor: {
+        classes: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
