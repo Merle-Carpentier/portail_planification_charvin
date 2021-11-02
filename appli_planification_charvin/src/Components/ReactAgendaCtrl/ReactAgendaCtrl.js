@@ -1,329 +1,328 @@
-import { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { guid } from 'react-agenda'
-import moment from 'moment'
-import './ReactAgendaCtrl.css'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import {guid , getLast , getFirst } from 'react-agenda';
+import Rdate from 'react-datetime';
+import './ReactAgendaCtrl.css';
 
-let now = new Date()
+var now = new Date();
 
 
-//composant enfant: détails de la popup de création ou d'affichage d'un rdv sur l'agenda
-//composant natif à react-agenda remanipulé => https://github.com/Revln9/react-agenda/blob/master/src/reactAgendaCtrl.js
-export default function ReactAgendaCtrl(props) {
-
-    //initialisation de l'objet des states qui serviront à afficher les données du rdv + alimentation de la bdd
-    const [rdv, setRdv] = useState({
+export default class ReactAgendaCtrl extends Component {
+  constructor() {
+    super();
+    this.state = {
         editMode: false,
-        showCrtl: false,
+        showCtrl: false,
         multiple: {},
-        name: "",
+        name: '',
         natureBooking: "",
         refNumber: "",
         paletsQuantity: "",
         carrierSupplier: "",
-        classes: "",
-        startDateTime: props.selected,
-        endDateTime: moment(props.selected).add(30, 'minutes')
+        classes: 'color-v',
+        startDateTime: now,
+        endDateTime: now
+    }
+    this.handleDateChange = this.handleDateChange.bind(this)
+    this.addEvent = this.addEvent.bind(this)
+    this.updateEvent = this.updateEvent.bind(this)
+    this.dispatchEvent = this.dispatchEvent.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleEdit = this.handleEdit.bind(this)
+  }
+
+  componentDidMount() {
+
+  if (this.props.itemColors) {
+    this.setState({
+      classes: Object.keys(this.props.itemColors)[0]
     })
 
-    const [error, setError] = useState(null)
-
-    //fonction pour récupérer la bonne couleur de classes en fonction de la nature du rdv
-    const getColor = () => {
-        if(rdv.natureBooking === "reception") {
-            return setRdv({
-                classes: "color-v"})
-        } else if(rdv.natureBooking === "expedition") {
-            return setRdv({
-                classes: "color-o"})
-        }else {
-            return setRdv({
-                classes: "color-b"})
-        }
+  }
+  setTimeout(function() {
+    if(this.refs.eventName){
+        this.refs.eventName.focus()
     }
 
-    ///au chargement du composant (fonction du composant natif reactAgendaCtrl de react-agenda adapté à l'appli)
-    useEffect(() => {
-        console.log('props', props)
+  }.bind(this), 50);
 
-        //j'appelle ma couleur de l'agenda
-        if(props.itemColors) {
-            setRdv({
-                classes: props.itemColors
-            })
-        }
+  if (!this.props.selectedCells) {
+    let start = now
+    let endT = moment(now).add(15, 'Minutes');
+    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT});
+  }
 
-        //je vérifie si la cellule selectionnée ou plage selectionnée est vide (si oui, mode add) ou pleine (si oui, mode edit)
-        if(!props.selectedCells) {
-            return setRdv({
-                editMode: false,
-                name: "",
-                natureBooking: "",
-                refNumber: "",
-                paletsQuantity: "",
-                carrierSupplier: "",
-                startDateTime: props.selected,
-                endDateTime: moment(props.selected).add(30, 'minutes')
-            })
-        }
+  if (this.props.selectedCells && this.props.selectedCells[0] && this.props.selectedCells[0]._id) {
 
-        if(props.selectedCells && props.selectedCells.length === 1) {
-            return setRdv({
-                editMode: false,
-                name: "",
-                natureBooking: "",
-                refNumber: "",
-                paletsQuantity: "",
-                carrierSupplier: "",
-                startDateTime: props.selected,
-                endDateTime: moment(props.selected).add(30, 'minutes')
-            })
-        }
+    let start = moment(this.props.selectedCells[0].startDateTime);
+    let endT = moment(this.props.selectedCells[0].endDateTime);
 
-        if(props.selectedCells && props.selectedCells.length > 0) {
-            return setRdv({
-                editMode: false,
-                name: "",
-                natureBooking: "",
-                refNumber: "",
-                paletsQuantity: "",
-                carrierSupplier: "",
-                startDateTime: props.selected,
-                endDateTime: moment(props.selected).add(30, 'minutes')
-            })
-        }
+    return this.setState({editMode: true, name: this.props.selectedCells[0].name, classes: this.props.selectedCells[0].classes, startDateTime: start, endDateTime: endT});
 
-        if(props.selectedCells && props.selectedCells[0] && props.selectedCells[0]._id) {
-            return setRdv({
-                editMode: true,
-                name: props.selectedCells[0].name,
-                natureBooking: props.selectedCells[0].natureBooking,
-                refNumber: props.selectedCells[0].refNumber,
-                paletsQuantity: props.selectedCells[0].paletsQuantity,
-                carrierSupplier: props.selectedCells[0].carrierSupplier,
-                classes: props.selectedCells[0].classes,
-                startDateTime: props.selected,
-                endDateTime: moment(props.selected).add(30, 'minutes')
-            })
-        }
-        
-    }, [])
+  }
 
-    //fonction de choix des cellules (fonction du composant natif reactAgendaCtrl)
-    const dispatchEvent = (obj) => {
-        let newAdded = []         //tableau qui va accueillir l'ajout
-        let items = props.items   //tableau de tous les rdv
-        let objAdd                //initialisation de l'objet du rdv
+  if (this.props.selectedCells && this.props.selectedCells.length === 1) {
+    let start = moment(getFirst(this.props.selectedCells));
+    let endT = moment(getLast(this.props.selectedCells)).add(15, 'Minutes');
+    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT});
+  }
 
+  if (this.props.selectedCells && this.props.selectedCells.length > 0) {
+    let start = moment(getFirst(this.props.selectedCells));
+    let endT = moment(getLast(this.props.selectedCells)) || now;
+    this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT});
+  }
 
-        if(obj['multiple']) {
-            let array = obj['multiple']
-            array.forEach(((key) => {
-                let newArr = array[key].filter((val, ind) => {
-                    return array[key].indexOf(val) == ind
-                })
-                let start = newArr[0]
-                let end = newArr[newArr.length - 1]
-                objAdd = {
-                    _id: guid(),
-                    name: obj.name,
-                    natureBooking: obj.natureBooking,
-                    refNumber: obj.refNumber,
-                    paletsQuantity: obj.paletsQuantity,
-                    carrierSupplier: obj.carrierSupplier,
-                    classes: getColor(),
-                    startDateTime: new Date(start),
-                    endDateTime: new Date(end)
-                }
-                items.push(objAdd)
-                newAdded.push(objAdd)
-            }))
-            return props.Addnew(items, newAdded)
-        }
-        obj._id = guid()
-        items.push(obj)
-        props.Addnew(items, obj)
-        
+}
+
+  handleChange(event) {
+    if(event.target.tagName === 'BUTTON'){
+      event.preventDefault();
     }
 
-    //Ajout d'un rdv (fonction du composant natif reactAgendaCtrl de react-agenda)
-    const addEvent = () => {
-        if(rdv.name.length < 1) {
-            return
-        }
+    var data = this.state;
+    data[event.target.name] = event.target.value;
 
-        if(props.selectedCells && props.selectedCells.length > 0) {
-            let obj = props.selectedCells.reduce((r, v, i, a, k = v.substring(0, 10)) => ((r[k] = r[k] || []).push(v), r), {})
-        
-            if(Object.values(obj).length > 1) {
-                let newObj = {
-                    name: rdv.name,
-                    natureBooking: rdv.natureBooking,
-                    refNumber: rdv.refNumber,
-                    paletsQuantity: rdv.paletsQuantity,
-                    carrierSupplier: rdv.carrierSupplier,
-                    classes: getColor(),
-                    startDateTime: new Date(rdv.startDateTime),
-                    endDateTime: new Date(rdv.endDateTime),
-                    multiple: obj
-                }
-                return dispatchEvent(newObj)
-            }
-        
-            let newObj = {
-                name: rdv.name,
-                natureBooking: rdv.natureBooking,
-                refNumber: rdv.refNumber,
-                paletsQuantity: rdv.paletsQuantity,
-                carrierSupplier: rdv.carrierSupplier,
-                classes: getColor(),
-                startDateTime: new Date(rdv.startDateTime),
-                endDateTime: new Date(rdv.endDateTime)
-            }
-            return dispatchEvent(newObj)
-        }
+    this.setState(data);
+  }
+
+  handleDateChange(ev, date) {
+    var endD = moment(this.state.endDateTime)
+  var data = this.state;
+  data[ev] = date;
+
+  if(ev === 'startDateTime' && endD.diff(date)< 0 ){
+    data['endDateTime'] = moment(date).add(15 , 'minutes');
+  }
+
+  this.setState(data);
+
+  }
+
+
+dispatchEvent(obj) {
+  var newAdded = []
+  var items = this.props.items;
+  if (obj['multiple']) {
+    var array = obj['multiple']
+    Object.keys(array).forEach(function(key) {
+      var newAr = array[key].filter(function(val, ind) {
+        return array[key].indexOf(val) == ind;
+      })
+      var start = newAr[0];
+      var endT = newAr[newAr.length - 1] || now;
+      var lasobj = {
+        _id: guid(),
+        name: obj.name,
+        natureBooking: obj.natureBooking,
+        refNumber: obj.refNumber,
+        paletsQuantity: obj.paletsQuantity,
+        carrierSupplier: obj.carrierSupplier,
+        startDateTime: new Date(start),
+        endDateTime: new Date(endT),
+        classes: obj.classes
+      }
+      items.push(lasobj)
+      newAdded.push(lasobj)
+    }.bind(this));
+    return this.props.Addnew(items, newAdded)
+  }
+
+  obj._id = guid();
+  items.push(obj)
+  this.props.Addnew(items, obj)
+}
+
+addEvent(e) {
+  if (this.state.name.length < 1) {
+    return;
+  }
+
+  if(this.props.selectedCells && this.props.selectedCells.length > 0){
+
+    var obj = this.props.selectedCells.reduce((r, v, i, a, k = v.substring(0, 10)) => ((r[k] = r[k] || []).push(v), r), {});
+
+    if (Object.values(obj).length > 1) {
+      var newObj = {
+        name: this.state.name,
+        natureBooking: this.state.natureBooking,
+        refNumber: this.state.refNumber,
+        paletsQuantity: this.state.paletsQuantity,
+        carrierSupplier: this.state.carrierSupplier,
+        startDateTime: new Date(this.state.startDateTime),
+        endDateTime: new Date(this.state.endDateTime),
+        classes: this.state.classes,
+        multiple: obj
+      }
+
+      return this.dispatchEvent(newObj);
+
     }
 
-    //modification d'un rdv (fonction du composant natif reactAgendaCtrl de react-agenda)
-    const updateEvent = () => {
-        if(props.selectedCells[0]._id && props.item) {
-            let newObj = {
-                _id: props.selectedCells[0]._id,
-                name: rdv.name,
-                natureBooking: rdv.natureBooking,
-                refNumber: rdv.refNumber,
-                paletsQuantity: rdv.paletsQuantity,
-                carrierSupplier: rdv.carrierSupplier,
-                classes: getColor(),
-                startDateTime: new Date(rdv.startDateTime),
-                endDateTime: new Date(rdv.endDateTime)
-            }
-            let items = props.items
-            for(let i=0; i<items.length; i++) {
-                if(items[i]._id === newObj._id) {
-                    items[i] = newObj
-                }
-            }
-            if(props.edit) {
-                props.edit(items, newObj)
-            }
+  }
+
+  var newObj = {
+    name: this.state.name,
+    natureBooking: this.state.natureBooking,
+    refNumber: this.state.refNumber,
+    paletsQuantity: this.state.paletsQuantity,
+    carrierSupplier: this.state.carrierSupplier,
+    startDateTime: new Date(this.state.startDateTime),
+    endDateTime: new Date(this.state.endDateTime),
+    classes: this.state.classes
+  }
+
+  this.dispatchEvent(newObj);
+}
+
+updateEvent(e) {
+  if (this.props.selectedCells[0]._id && this.props.items) {
+
+    var newObj = {
+      _id: this.props.selectedCells[0]._id,
+      name: this.state.name,
+      natureBooking: this.state.natureBooking,
+      refNumber: this.state.refNumber,
+      paletsQuantity: this.state.paletsQuantity,
+      carrierSupplier: this.state.carrierSupplier,
+      startDateTime: new Date(this.state.startDateTime),
+      endDateTime: new Date(this.state.endDateTime),
+      classes: this.state.classes
+    }
+    var items = this.props.items
+    for (var i = 0; i < items.length; i++) {
+      if (items[i]._id === newObj._id)
+        items[i] = newObj;
+      }
+    if (this.props.edit) {
+      this.props.edit(items, newObj);
     }
 
-    // fonction d'envoi du formulaire pour une création de rdv
-    const handleSubmit = (e) => {
-        if(rdv.name || rdv.natureBooking || rdv.refNumber || rdv.paletsQuantity || rdv.carrierSupplier || rdv.classes || rdv.startDateTime || rdv.endDateTime) {
-            return setError("tous les champs ne sont pas remplis, veuillez terminer la saisie")
-        }
-        e.preventDefault()
-        addEvent()
-       
-    }
+  }
 
-    // fonction d'envoi du formulaire pour une modification de rdv
-    const handleEdit = (e) => {
-        if(rdv.name || rdv.natureBooking || rdv.refNumber || rdv.paletsQuantity || rdv.carrierSupplier || rdv.classes || rdv.startDateTime || rdv.endDateTime) {
-            return setError("tous les champs ne sont pas remplis, veuillez terminer la saisie")
-        }
-        e.preventDefault()
-        updateEvent()
-    }
+}
 
+
+handleSubmit(e) {
+  e.preventDefault();
+  this.addEvent(e);
+}
+
+handleEdit(e) {
+  e.preventDefault();
+  this.updateEvent(e);
+}
+
+render() {
+  var itc = Object.keys(this.props.itemColors)
+  var colors = itc.map(function(item, idx) {
+
+    return <div style={{
+      background: this.props.itemColors[item]
+    }} className="agendCtrls-radio-buttons" key={item}>
+      <button name="classes"  value={item} className={this.state.classes === item?'agendCtrls-radio-button--checked':'agendCtrls-radio-button'} onClick={this.handleChange.bind(this)}/>
+    </div>
+  }.bind(this))
+
+  const divStyle = {};
+
+  if (this.state.editMode) {
+
+    var select = this.props.selectedCells[0];
 
     return (
-        <div className="booking-agendactrl-container">
+      <div className="agendCtrls-wrapper" style={divStyle}>
+        <form onSubmit={this.handleEdit}>
+          <div className="agendCtrls-label-wrapper">
+            <div className="agendCtrls-label-inline">
+              <label>Nom</label>
+              <input type="text" name="name" autoFocus ref="nom" className="agendCtrls-event-input" value={this.state.name} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+            </div>
+            <div className="agendCtrls-label-inline">
+              <label>Nature rdv</label>
+              <input type="text" name="nature" autoFocus ref="nature rdv" className="agendCtrls-event-input" value={this.state.natureBooking} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+            </div>
+            <div className="agendCtrls-label-inline">
+              <label>Référence</label>
+              <input type="text" name="ref" autoFocus ref="ref" className="agendCtrls-event-input" value={this.state.refNumber} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+            </div>
+            <div className="agendCtrls-label-inline">
+              <label>Nb de palettes</label>
+              <input type="text" name="nb palettes" autoFocus ref="nb palettes" className="agendCtrls-event-input" value={this.state.paletsQuantity} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+            </div>
+            <div className="agendCtrls-label-inline">
+              <label>Transporteur</label>
+              <input type="text" name="transporteur" autoFocus ref="transporteur" className="agendCtrls-event-input" value={this.state.carrierSupplier} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+            </div>
+            <div className="agendCtrls-label-inline ">
+              <label>Color</label>
+              <div className="agendCtrls-radio-wrapper">
+                {colors}</div>
+            </div>
+          </div>
+          <div className="agendCtrls-timePicker-wrapper">
+            <div className="agendCtrls-time-picker">
+              <label >Start Date</label>
+              <Rdate value={this.state.startDateTime} onChange={this.handleDateChange.bind(null, 'startDateTime')} input={false} viewMode="time" ></Rdate>
+            </div>
+            <div className="agendCtrls-time-picker">
+              <label >End Date</label>
+              <Rdate value={this.state.endDateTime} onChange={this.handleDateChange.bind(null, 'endDateTime')} input={false} viewMode="time" ></Rdate>
+            </div>
+          </div>
 
-            {error!==null &&<p className="booking-agendactrl-p-error">{error}</p>}
+          <input type="submit" value="Save"/>
+        </form>
+      </div>
+    );
 
-            {/* formulaire d'affichage uniquement pour le mode édition du rdv */}
-            {rdv.editMode &&
-            <form
-            className="booking-agendactrl"
-            onSubmit={rdv.editMode ? handleEdit() : rdv.editMode === false && handleSubmit()}
-                
-            >
-                <h2 className="booking-agendactrl-title">Détail du rdv</h2>
-                <p className="booking-agendactrl-p">du {moment(props.selected).format('DD-MM-YYYY à HH:mm')}</p>
+  }
 
-                <label className="booking-agendactrl-label">Choix du type de rdv</label>
-                <select
-                name="natureBooking"
-                className="booking-agendactrl-select"
-                onChange={(e) => {
-                    props.setNatureBooking(e.currentTarget.value)
-
-                }}>
-                    {rdv.editMode && 
-                        <option defaultValue={props.natureBooking} className="booking-agendactrl-select-option">{props.natureBooking}</option>
-                    }
-                    {rdv.editMode === false &&
-                        <option className="booking-agendactrl-select-option">--choisissez dans la liste--</option>
-                    }
-                    <option value="reception" className="booking-agendactrl-select-option">livraison</option>
-                    <option value="expedition" className="booking-agendactrl-select-option">chargement</option>
-                    <option value="reserve" className="booking-agenda-ctrl-select-option">réservé Charvin</option>
-                </select>
-
-                <label className="booking-agendactrl-label">Nom du rdv: </label>
-                <input
-                type="text"
-                className="booking-agendactrl-input"
-                value={rdv.name}
-                onChange= {(e) => {
-                    setRdv({
-                        name: e.currentTarget.value})
-                }} />
-
-                <label className="booking-agendactrl-label">Ref rdv: </label>
-                <input
-                type="text"
-                className="booking-agendactrl-input"
-                value={rdv.refNumber}
-                onChange= {(e) => {
-                    setRdv({
-                        refNumber: e.currentTarget.value})
-                }} />
-
-                <label className="booking-agendactrl-label">Nb palettes: </label>
-                <input
-                type="text"
-                className="booking-agendactrl-input"
-                value={rdv.paletsQuantity}
-                onChange= {(e) => {
-                    setRdv({
-                        paletsQuantity: e.currentTarget.value})
-                }} />
-
-                <label className="booking-agendactrl-label">Transporteur: </label>
-                <input
-                type="text"
-                className="booking-agendactrl-input"
-                value={rdv.carrierSupplier}
-                onChange= {(e) => {
-                    setRdv({
-                        carrierSupplier: e.currentTarget.value})
-                }} />
-
-                <input className="booking-agendactrl-btn" type="submit" value="enregistrer" />
-
-                </form>
-                }
-
+  return (
+    <div className="agendCtrls-wrapper" style={divStyle}>
+      <form onSubmit={this.handleSubmit}>
+        <div className="agendCtrls-label-wrapper">
+          <div className="agendCtrls-label-inline">
+            <label>Event name</label>
+            <input type="text" ref="eventName" autoFocus name="name" className="agendCtrls-event-input" value={this.state.name} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+          </div>
+          <div className="agendCtrls-label-inline">
+            <label>Color</label>
+            <div className="agendCtrls-radio-wrapper">
+              {colors}</div>
+          </div>
         </div>
-    )
+        <div className="agendCtrls-timePicker-wrapper">
+          <div className="agendCtrls-time-picker">
+            <label >Start Date</label>
+            <Rdate value={this.state.startDateTime} onChange={this.handleDateChange.bind(null, 'startDateTime')} input={false} viewMode="time" ></Rdate>
+          </div>
+          <div className="agendCtrls-time-picker">
+            <label >End Date</label>
+            <Rdate value={this.state.endDateTime} onChange={this.handleDateChange.bind(null, 'endDateTime')} input={false} viewMode="time" ></Rdate>
+          </div>
+        </div>
+
+        <input type="submit" value="Save"/>
+      </form>
+    </div>
+  );
 }
 }
+
 
 ReactAgendaCtrl.propTypes = {
-    items: PropTypes.array,
-    itemColors: PropTypes.object,
-    selectedCells: PropTypes.array,
-    edit: PropTypes.func,
-    Addnew: PropTypes.func
-  
-  };
-  
-  ReactAgendaCtrl.defaultProps = {
-    items: [],
-    itemColors: {},
-    selectedCells: []
-    }
+  items: PropTypes.array,
+  itemColors: PropTypes.object,
+  selectedCells: PropTypes.array,
+  edit: PropTypes.func,
+  Addnew: PropTypes.func
+
+};
+
+ReactAgendaCtrl.defaultProps = {
+  items: [],
+  itemColors: {},
+  selectedCells: []
+  }

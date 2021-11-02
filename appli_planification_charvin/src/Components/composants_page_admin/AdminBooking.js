@@ -55,10 +55,8 @@ export default function AdminBooking() {
                 <thead className="admin-comp-table-head">
                     <tr className="admin-comp-table-trth">
                         <th className="admin-comp-table-th">date / heure rdv</th>
-                        <th className="admin-comp-table-th">nom</th>
+                        <th className="admin-comp-table-th">nom et nb de palettes</th>
                         <th className="admin-comp-table-th">nature</th>
-                        {width > 849 && <th className="admin-comp-table-th">référence</th>}
-                        <th className="admin-comp-table-th">nb palettes</th>
                         {width > 1100 && <th className="admin-comp-table-th">transporteur</th>}
                         {width > 849 && <th className="admin-comp-table-th">client</th>}
                         <th className="admin-comp-table-th">entrepôt</th>
@@ -88,12 +86,10 @@ export default function AdminBooking() {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
                             <tr key={booking.id} className="admin-comp-table-tr">
-                                <td className="admin-comp-table-td">{booking.startDateTime}</td>
-                                <td className="admin-comp-table-td">{booking.name}</td>
-                                <td className="admin-comp-table-td td-upper">{booking.natureBooking}</td>
-                                {width > 849 && <td className="admin-comp-table-td td-upper">{booking.refNumber}</td>}
-                                <td className="admin-comp-table-td td-upper">{booking.paletsQuantity}</td>
-                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.carrierSupplier}</td>}
+                                <td className="admin-comp-table-td">{booking.start}</td>
+                                <td className="admin-comp-table-td">{booking.title}</td>
+                                <td className="admin-comp-table-td td-upper">{booking.customClass}</td>
+                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.carrier}</td>}
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{booking.Customer.name}</td>}
                                 <td className="admin-comp-table-td td-upper">{booking.Wharehouse.name}</td>
                                 {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.User.name}</td>}

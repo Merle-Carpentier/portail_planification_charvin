@@ -12,7 +12,7 @@ module.exports = (app) => {
                 startDateTime:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
             },
             attributes: {exclude: ['createdAt', 'updatedAt']},
-            order: ['startDateTime']
+            order: ['start']
         })
         .then(bookingsCustomer => {
             //console.log("bookingCust", bookingsCustomer)

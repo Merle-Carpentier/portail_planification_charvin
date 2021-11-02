@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        startDateTime: {
+        start: {
             type: DataTypes.DATE,
             allowNull: false,
             validate: {
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La date et heure de début est une propriété requise' },
             }
         },
-        endDateTime: {
+        end: {
             type: DataTypes.DATE,
             allowNull: false,
             validate: {
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La date et heure de fin est une propriété requise' }
             }
         },
-        classes: {
+        customClass: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -29,15 +29,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La couleur est une propriété requise' }
             }
         },
-        natureBooking: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: { msg: 'Le type de rdv ne peut pas être vide' },
-                notNull: { msg: 'Le type de rdv est une propriété requise' }
-            }
-        },
-        name: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -45,28 +37,20 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'Le nom du rdv est une propriété requise' },
             }
         },
-        refNumber: {
+        nbPal: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: { msg: 'La référence rdv ne peut pas être vide' },
-                notNull: { msg: 'La référence rdv est une propriété requise' }
+                notEmpty: { msg: 'Le nombre de palettes du rdv ne peut pas être vide' },
+                notNull: { msg: 'Le nombre de palettes du rdv est une propriété requise' },
             }
         },
-        paletsQuantity: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            validate: {
-                notEmpty: { msg: 'La quantité ne peut pas être vide' },
-                notNull: { msg: 'La quantité est une propriété requise' }
-            }
-        },
-        carrierSupplier: {
+        carrier: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: { msg: 'Le fournisseur ou transporteur ne peut pas être vide' },
-                notNull: { msg: 'Le fournisseur ou transporteur est une propriété requise' }
+                notEmpty: { msg: 'Le transporteur ne peut pas être vide' },
+                notNull: { msg: 'Le transporteur est une propriété requise' }
             }
         },
         wharehouseId: {
@@ -91,14 +75,6 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: { msg: 'L\'identifiant utilisateur ne peut pas être vide' },
                 notNull: { msg: 'L\'identifiant utilisateur est une propriété requise' }
-            }
-        },
-        _id: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: { msg: 'L\'id rdv ne peut pas être vide' },
-                notNull: { msg: 'L\'id rdv est une propriété requise' }
             }
         }
     })

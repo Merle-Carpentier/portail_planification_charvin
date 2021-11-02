@@ -5,18 +5,18 @@ const checkAuth = require('../../checkAuth/checkAuth')
 //route de modification d'un rdv avec update + findByPk (pour vérifier son existence dans la bdd)
 module.exports = (app) => {
     app.put('/api/updateBooking/:id', checkAuth, (req, res) => {
-        const _id = req.params._id
+        const id = req.params.id
         Booking.update(req.body, {
-            where: { _id: _id }
+            where: { id: id }
         })
         .then(_ => {
-            return Booking.findByPk(_id)
+            return Booking.findByPk(id)
             .then(booking => {
                 if(booking === null) {
                     const message = `Le rdv demandé n'éxiste pas, veuillez réessayer avec un autre numéro de rdv`
                     return res.status(404).json({ message })
                 }
-                const message = `Le rdv ${booking.bookingName} a bien été modifié`
+                const message = `Le rdv ${booking.title} a bien été modifié`
                 res.json({ message, data: booking })
             })
         })

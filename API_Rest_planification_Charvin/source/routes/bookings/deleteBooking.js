@@ -5,15 +5,15 @@ const checkAuth = require('../../checkAuth/checkAuth')
 //route de suppression d'un rdv (on extrait d'abord le client concerné avec findByPk)
 module.exports = (app) => {
     app.delete('/api/deleteBooking/:id', checkAuth, (req, res) => {
-        Booking.findByPk(req.params._id)
+        Booking.findByPk(req.params.id)
             .then(booking => {
                 if(booking === null) {
                     const message = `Le rdv demandé n'existe pas, utilisez un autre identifiant`
                     return res.status(404).json({ message })
                 }
-                return Booking.destroy({ where: {_id: booking._id} })
+                return Booking.destroy({ where: {id: booking.id} })
                     .then(_ => {
-                        const message = `Le rdv  ${booking.bookingName} a été supprimé`
+                        const message = `Le rdv  ${booking.title} a été supprimé`
                         res.json({ message, data: booking })
                     })
             })
