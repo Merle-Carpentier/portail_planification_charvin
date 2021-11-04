@@ -21,14 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La date et heure de fin est une propriété requise' }
             }
         },
-        customClass: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: { msg: 'La couleur ne peut pas être vide' },
-                notNull: { msg: 'La couleur est une propriété requise' }
-            }
-        },
+        
         title: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -37,20 +30,12 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'Le nom du rdv est une propriété requise' },
             }
         },
-        nbPal: {
+        description: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: { msg: 'Le nombre de palettes du rdv ne peut pas être vide' },
-                notNull: { msg: 'Le nombre de palettes du rdv est une propriété requise' },
-            }
-        },
-        carrier: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: { msg: 'Le transporteur ne peut pas être vide' },
-                notNull: { msg: 'Le transporteur est une propriété requise' }
+                notEmpty: { msg: 'La description du rdv ne peut pas être vide' },
+                notNull: { msg: 'La description de palettes du rdv est une propriété requise' },
             }
         },
         wharehouseId: {

@@ -53,8 +53,7 @@ const bookingReducer = (state = INITIAL_STATE, action) => {
         case MODIF_BOOKING: 
             const newArrModif = [...state.bookingsById]
             const indexModif = newArrModif.indexOf(action.payload._id)
-            newArrModif.splice(indexModif, 1)
-            newArrModif.unshift(action.payload)
+            newArrModif.splice(indexModif, 1, action.payload)
             return {
                 bookingsById: newArrModif
             }

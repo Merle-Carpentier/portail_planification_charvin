@@ -9,7 +9,7 @@ module.exports = (app) => {
         Booking.findAll({
             where: {
                 wharehouseId: wharehouseId,
-                startDateTime:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
+                start:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
             },
             attributes: {exclude: ['createdAt', 'updatedAt']},
             order: ['start']
