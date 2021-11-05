@@ -55,18 +55,18 @@ const DatePick = (props) => {
 export default function ModalEvent(props) {
 
     //appel des props du calendrier
-    const { title, start, end, desc, id } = props.modalEvent
+    const { title, start, end, description, id, wharehouseId, custumerId, userId } = props.modalEvent
 
     //initialisation des states
     const [stateModalEvent, setStateModalEvent] = useState({
         title,
         start,
         end,
-        desc,
-        id: props.id,
-        wharehouseId: props.wharehouseId,
-        customerId: props.wharehouseId,
-        userId: props.UserId
+        description,
+        id: id,
+        wharehouseId: wharehouseId,
+        customerId: custumerId,
+        userId: userId
     })
     const [err, setErr] = useState(null)
 
@@ -81,6 +81,8 @@ export default function ModalEvent(props) {
         e.preventDefault()
         if(stateModalEvent.start > stateModalEvent.end) {
             return setErr("la date de début est supérieure à la date de fin !")
+        } else if(!stateModalEvent.start || !stateModalEvent.end || !stateModalEvent.title || !stateModalEvent.description) {
+            return setErr("Vous devez remplir tous les champs !")
         }
         props.handleEventSave(stateModalEvent)
         props.closeModal()
@@ -97,11 +99,14 @@ export default function ModalEvent(props) {
         onRequestClose={closeModal}
         closeTimeoutMS={200}
         >
-
-            {err!==null && <p className="ModalEvent-err">{err}</p>}
+  
             <form
             className="ModalEvent-form"
             onSubmit={handleSubmit}>
+
+            <p className="ModalEvent-form-p">Vous devez remplir tous les champs avant de valider</p>
+            {err!==null && <p className="ModalEvent-err">{err}</p>}
+
                 <label className="ModalEvent-label">Référence rdv + nb palettes
                     <input
                     type="text"
@@ -132,7 +137,7 @@ export default function ModalEvent(props) {
                     className="ModalEvent-input-title"
                     placeholder="Fournisseur/transporteur, commentaires"
                     onChange={(e) => {
-                        setStateModalEvent({desc: e.currentTarget.value})
+                        setStateModalEvent({description: e.currentTarget.value})
                     }} />
                 </label>
                 <div className="ModalEvent-div-buttons">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loadUserInfo, logoutUser } from '../../redux/actions/userActions'
+import { loadUserInfo } from '../../redux/actions/userActions'
 import charvin from '../../asset/Charvin_Logistics.jpg'
 import axios from "axios"
 import { configApi } from '../../apiCalls/configApi'
@@ -66,7 +66,8 @@ export default function Login() {
     }
 
     useEffect(() => {
-        // dispatch(logoutUser())
+        //je supprime les données stockées dans mon local storage
+        //localStorage.clear()
     }, [])
 
    

@@ -1,0 +1,38 @@
+.ModalEvent-form {
+    width: 50%;
+    margin: auto;
+    cursor: pointer;
+    border: 1px solid #104476;
+    border-radius: 5px;
+    text-align: center;
+    color: #104476;
+}
+
+.ModalEvent-form-p {
+    font-size: 20px;
+    font-style: italic;
+}
+
+.ModalEvent-err {
+    color: #eb671c;
+    font-size: 15px;
+}
+
+.ModalEvent-label {
+    text-decoration: underline;
+    width: 90%;
+    
+}
+
+.ModalEvent-input-title {
+    text-decoration: none;
+    
+}
+
+.ModalEvent-date-inuput-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #104476;
+    color: #f1f1f1;
+}

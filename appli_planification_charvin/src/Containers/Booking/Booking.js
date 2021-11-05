@@ -8,11 +8,10 @@ import moment from 'moment'
 //import 'moment/locale/fr'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
-import events from './events'
 import ModalEvent from '../../Components/ModalEvent/ModalEvent'
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import './Booking.css'
-import { bookingsByCustomer, bookingsByWharehouse, addBooking, modifBooking, deleteBooking } from '../../redux/actions/bookingActions'
+
 
 const token = localStorage.rdvCharvin
 const userId = localStorage.userCharvin
@@ -52,23 +51,22 @@ let formats = {
 //page booking concetant le calendrier de rdv
 export default function Booking() {
 
-    //je pointe les states de mon store et j'initialise le dispatch des actions
-    const bookingsById = useSelector(state => state.bookingReducer.bookingsById)
-    const isLoading = useSelector(state => state.bookingReducer.isLoading)
-    const error = useSelector(state => state.bookingReducer.isLoading)
+    //je pointe les infos utilisateur de mon store et j'initialise le dispatch des actions
     const infos = useSelector(state => state.userReducer.infos)
     const dispatch = useDispatch()
 
     //initialisation des states
     const [redirect, setRedirect] = useState(false)
-    const [events, setEvents] = useState(bookingsById)   
+    const [message, setMessage] = useState(null)
+    const [error, setError] = useState(null)
+    const [events, setEvents] = useState([])                 //tableau des rdv
     const [modalIsOpen, setModalIsOpen] = useState(false)    //pour ouvrir ModalEvent, fermé par défaut
     const [isNewEvent, setIsNewEvent] = useState(false)      //pour spécifier si nouvel évènement, non par défaut
     const [modalEvent, setModalEvent] = useState({           //infos du rdv que l'on fait glisser dans ModalEvent
         title: '',
         start: null,
         end: null,
-        desc: '',
+        description: '',
         id: null,
         wharehouseId: infos.wharehouseId,
         customerId: infos.customerId,
@@ -77,40 +75,63 @@ export default function Booking() {
     
 
     //fonction de récupération des rdv qui sera mise dans le useEffect()
-    const getBookings = () => {
+    const getBookingsById = () => {
+        let array = []
+
         if(infos.role === "user") {
-            dispatch(bookingsByCustomer(infos.customerId))
+            axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
+            .then((response) => {
+                //je met ma réponse dans un tableau et je transforme ensuite mes dates, je mets à jour la state events
+                array.push(response.data.data)   
+            })
+            .catch((error) => {
+                if(error.status === 403) {
+                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                    return setRedirect(true)
+                } else {
+                    return setError("Impossible de récupérer les rdv, veuillez ré-essayer svp")
+                }
+            })
         } else {
-            dispatch(bookingsByWharehouse(infos.wharehouseId))
+            axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${infos.wharehouseId}`, {headers: {"x-access-token": token, "userId": userId}})
+            .then((response) => {
+                console.log('response', response.data.data)
+                //je met ma réponse dans un tableau et je transforme ensuite mes dates, je mets à jour la state events
+                array.push(response.data.data)    
+            })
+            .catch((error) => {
+                if(error.status === 403) {
+                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                    return setRedirect(true)
+                } else {
+                    return setError("Impossible de récupérer les rdv, veuillez ré-essayer svp")
+                }
+            })
         }
-        
-        bookingsById.map((item)=>{
+
+        array.map((item)=>{
             item.start = new Date(item.start)
             item.end = new Date(item.end)
         })
+        setEvents(array)
+
+        console.log('array', array)
+        
+        if(events.length === 0) {
+            setMessage("Il n'y a aucun rdv de prévu pour l'instant")
+        }
 
     }
 
-    //fonction pour agrandir ou rétrécir un rdv déjà existant
-    const resizeEvent = ({ event, start, end }) => {
-        const { events } = events      //correspond à la state initialisée (tableau rdv)
-
-        //je cherche le rdv à modifier, si trouvé, modif des horaires si non pas de chgt
-        const newEvents = events.map(existingEvent => {
-            return existingEvent.id === event.id ?
-            { ...existingEvent, start, end }
-            : existingEvent
-        })
-        setEvents(newEvents)
-    }
 
     //fonction d'ouverture de ModalEvent
     const openModal = (event) => {
-        //je vérifie si id existant si non création ce jour
-        const id = event.id ? event.id 
-        : Date.now()                   //trouver un système d'id à incrémenter pour newEvent
+        //je vérifie si id existant si oui je récupère les states
+        let id = event.id
+        if(id) {
+            setModalEvent({...event, id})
+        }
         setModalIsOpen(true)
-        setModalIsOpen({...event, id})
     }
 
     //fonction de fermeture de ModalEvent
@@ -133,54 +154,103 @@ export default function Booking() {
         openModal(event)
     }
 
-    
 
-
-        // axios.post(`${configApi.api_url}/api/addBooking`, newEvent, {headers: {"x-access-token": token, "userId": userId}})
-        // .then((response) => {
-        //     if(response.status === 200) {
-        //         setMessage("Le rdv a bien été rajouté")
-        //     }
-        // })
-        // .catch((error) => {
-        //     if(error.status === 403) {
-        //         dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-        //     }
-        //     console.log('addBooking err', error) 
-        //     setErr("Impossible d'enregistrer le rdv, veuillez recommencer")
-        // })
-
-
-
-    //fonction d'édition/modif du rdv
+    //fonction d'édition du rdv
     const handleModalEventEdit = (key, newValue) => {
         const newData = { ...modalEvent }
         newData[key] = newValue
         setModalEvent(newData)
     }
 
-    //fonction de sauvegarde d'un rdv =============================> ici, dans la condition, mon post et mon put de sauvegarde en bdd!!!
+    //fonction de sauvegarde d'un rdv ================> ici, dans la condition, mon post et mon put de sauvegarde en bdd
     const handleEventSave = (newEvent) => {
+        //j'initialise mon objet datas pour envoyer dans bdd
+        let datas 
+
+        //je cherche si id existant avec findIndex=> si je trouve l'id du rdv, je le remplace (put) sinon je l'ajoute (post)
         const index = events.findIndex(event => event.id === newEvent.id)
-        if(index > -1) {
-            const newEvents = events
-            newEvents[index] = { ...newEvent }
-            setEvents(newEvents)
+        if(index !== -1) {
+            datas = {
+                start: newEvent.start.getFullYear()+'-'+(newEvent.start.getMonth() + 1)+"-"+newEvent.start.getDate()+' '+newEvent.start.getHours()+':'+newEvent.start.getMinutes(),
+                end: newEvent.end.getFullYear()+'-'+(newEvent.end.getMonth() + 1)+"-"+newEvent.end.getDate()+' '+newEvent.end.getHours()+':'+newEvent.end.getMinutes(),
+                title: newEvent.title,
+                description: newEvent.description,
+                customerId: newEvent.customerId,
+                wharehouseId: newEvent.wharehouseId,
+                userId: newEvent.userId
+            }
+            axios.put(`${configApi.api_url}/api/updateBooking/${newEvent.id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+            .then((response) => {
+                if(response.status === 200) {
+                setMessage("Le rdv a bien été modifié")
+                getBookingsById()
+            }
+            })
+            .catch((error) => {
+                if(error.status === 403) {
+                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                    return setRedirect(true)
+                } else {
+                    return setError("Impossible d'enregistrer le rdv, veuillez ré-essayer svp")
+                }
+            })
+            
         } else {
-            setEvents([events, {...newEvent},])
+            datas = {
+                start: moment(newEvent.start).format('YYYY-MM-DD HH:mm:ss'),
+                end: moment(newEvent.start).format('YYYY-MM-DD HH:mm:ss'),
+                title: newEvent.title,
+                description: newEvent.description,
+                customerId: newEvent.customerId,
+                wharehouseId: newEvent.wharehouseId,
+                userId: newEvent.userId
+            }
+            axios.post(`${configApi.api_url}/api/addBooking`, datas, {headers: {"x-access-token": token, "userId": userId}})
+            .then((response) => {
+                //si la réponse est ok, je mets un message et je rappelle tous mes rdv pour mettre à jour tous les rdv
+                if(response.status === 200) {
+                    setMessage("Le rdv a bien été enregistré")
+                    getBookingsById()
+                }
+            })
+            .catch((error) => {
+                if(error.status === 403) {
+                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                    return setRedirect(true)
+                } else {
+                    return setError("Impossible d'enregistrer le rdv, veuillez ré-essayer svp")
+                }
+            })
+            
         }
     }
 
-    //fonction de suppression d'un rdv ==============================> ici mon delete en bdd!!!!
+    //fonction de suppression d'un rdv ======================> ici mon delete en bdd
     const handleEventDelete = () => {
-        const index = events.findIndex(event => {
-            return event.id === modalEvent.id
-        })
-        if(index > -1) {
-            const newEvents = events
-            newEvents.splice(index, 1)
-            setEvents(newEvents)
-        }
+        //je cherche si id existant avec findIndex=> si je trouve l'id du rdv, je le supprime en bdd (delete)
+        const index = events.findIndex(event => event.id === modalEvent.id)
+            if(index !== -1) {
+                axios.delete(`${configApi.api_url}/api/deleteBooking/${modalEvent.id}`, {headers: {"x-access-token": token, "userId": userId}})
+                .then((response) => {
+                    if(response.status === 200) {
+                        setMessage("Le rdv a bien été enregistré")
+                        getBookingsById()
+                    }
+                })
+                .catch((error) => {
+                    if(error.status === 403) {
+                        dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                        return setRedirect(true)
+                    } else {
+                        return setError("Impossible d'enregistrer le rdv, veuillez ré-essayer svp")
+                    }
+                })    
+            } else {
+                setError("Impossible de trouver le rdv, veuillez ré-essayer")
+            }
+        
+        
+        
     }
 
     //au chargement du composant, je récupère le tableau de mes rdv par id client si l'utilisateur a le role user ou par id entrepôt si utilisateur est charvin ou admin
@@ -189,9 +259,9 @@ export default function Booking() {
            return setRedirect(true)
         }
 
-        //getBookings()
+        getBookingsById()
 
-        console.log('calendar', Calendar)
+        console.log('events', events)
         
     }, [])
 
@@ -204,11 +274,9 @@ export default function Booking() {
 
         <div className="booking">
             <h1 className="booking-title">calendrier des rdv actuellement planifiés</h1>
-            {isLoading && <p className="booking-p-message-chargement">chargement...</p>}
-            {/* {message!==null && <p className="booking-p-message-chargement">{message}</p>} */}
-            {events.length === 0 &&<p className="booking-p-message">Il n'y a aucun rdv de planifié pour l'instant</p>}
+
+            {message!==null && <p className="booking-p-message-chargement">{message}</p>}
             {error!==null &&<p className="booking-p-error">{error}</p>}
-            {/* {err!==null &&<p className="booking-p-error">{err}</p>} */}
 
             <Calendar
                 culture="fr"
@@ -221,9 +289,7 @@ export default function Booking() {
                 defaultDate={now}                                      //aujourd'hui
                 min={moment('07:00', 'H:mma').toDate()}                //heure début
                 max={moment('17:00', 'H:mma').toDate()}                //heure fin
-                resizable={true}                                       //rdv redimensionnable sur les plages ============>verif mais non supporté???????
-                onEventResize={resizeEvent}                            //fonction redimensionnement          ============>verif mais non supporté???????
-                selectable={true}                                      //plage selectionnable
+                selectable={true}                                      //plage cliquable
                 onSelectEvent={selectEvent}                            //fonction si selection d'un rdv
                 onSelectSlot={selectSlot}                              //fonction si selection plage
                 popup={true}
