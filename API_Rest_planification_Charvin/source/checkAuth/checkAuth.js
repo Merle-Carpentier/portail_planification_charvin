@@ -6,8 +6,6 @@ const key = require('./key')
 module.exports = (req, res, next) => {
     //on pointe le jeton dans l'entête
     const token = req.headers['x-access-token']
-    //console.log("token checkAuth", token)
-    //console.log("key", key)
 
     //on vérifie s'il y a un jeton dans l'entête http, si non gestion erreur 401
     if(!token) {
@@ -17,6 +15,7 @@ module.exports = (req, res, next) => {
 
     //on vérifie si le jeton est correct ou si non on gère l'erreur 401 (fonction flechée à 2 arguments)
     const decodedToken = jwt.verify(token, key, (error, decodedToken) => {
+        console.log('decodedtoken', decodedToken)
         if(error) {
             const message = "Utilisateur non autorisé à cet accès"
             return res.status(403).json({ message, data: error })

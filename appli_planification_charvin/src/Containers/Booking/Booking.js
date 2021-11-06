@@ -55,11 +55,12 @@ export default function Booking() {
     const infos = useSelector(state => state.userReducer.infos)
     const dispatch = useDispatch()
 
+    //j'initialise mon tableau de rdv
+    let events = []
     //initialisation des states
     const [redirect, setRedirect] = useState(false)
     const [message, setMessage] = useState(null)
     const [error, setError] = useState(null)
-    const [events, setEvents] = useState([])                 //tableau des rdv
     const [modalIsOpen, setModalIsOpen] = useState(false)    //pour ouvrir ModalEvent, fermé par défaut
     const [isNewEvent, setIsNewEvent] = useState(false)      //pour spécifier si nouvel évènement, non par défaut
     const [modalEvent, setModalEvent] = useState({           //infos du rdv que l'on fait glisser dans ModalEvent
@@ -76,13 +77,24 @@ export default function Booking() {
 
     //fonction de récupération des rdv qui sera mise dans le useEffect()
     const getBookingsById = () => {
-        let array = []
+        
+
+        if(infos.customerId===null || infos.wharehouseId===null || infos.customerId==="" || infos.wharehouseId==="") {
+            return setRedirect(true)
+        }
 
         if(infos.role === "user") {
             axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
             .then((response) => {
-                //je met ma réponse dans un tableau et je transforme ensuite mes dates, je mets à jour la state events
-                array.push(response.data.data)   
+                if(response.data.data.length === 0) {
+                    setMessage("Il n'y a aucun rdv de prévu pour l'instant")
+                }
+                //je transforme mes dates et je j'envoie mes rdv dans mon tableau events
+                response.data.data.map((item)=>{
+                    item.start = new Date(item.start)
+                    item.end = new Date(item.end)
+                    events.push(item)
+                })   
             })
             .catch((error) => {
                 if(error.status === 403) {
@@ -96,8 +108,17 @@ export default function Booking() {
             axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${infos.wharehouseId}`, {headers: {"x-access-token": token, "userId": userId}})
             .then((response) => {
                 console.log('response', response.data.data)
+                if(response.data.data.length === 0) {
+                    setMessage("Il n'y a aucun rdv de prévu pour l'instant")
+                }
+                //je transforme mes dates et je j'envoie mes rdv dans mon tableau events
+                response.data.data.map((item)=>{
+                    item.start = new Date(item.start)
+                    item.end = new Date(item.end)
+                    events.push(item)
+                })
                 //je met ma réponse dans un tableau et je transforme ensuite mes dates, je mets à jour la state events
-                array.push(response.data.data)    
+                //array.push(response.data.data)    
             })
             .catch((error) => {
                 if(error.status === 403) {
@@ -108,19 +129,7 @@ export default function Booking() {
                 }
             })
         }
-
-        array.map((item)=>{
-            item.start = new Date(item.start)
-            item.end = new Date(item.end)
-        })
-        setEvents(array)
-
-        console.log('array', array)
-        
-        if(events.length === 0) {
-            setMessage("Il n'y a aucun rdv de prévu pour l'instant")
-        }
-
+        console.log('events', events)
     }
 
 
@@ -255,13 +264,15 @@ export default function Booking() {
 
     //au chargement du composant, je récupère le tableau de mes rdv par id client si l'utilisateur a le role user ou par id entrepôt si utilisateur est charvin ou admin
     useEffect(() => {
-        if(infos===null) {
+        if(infos===null || infos.role===null || infos.custumerId===null || infos.wharehouseId===null) {
            return setRedirect(true)
         }
 
         getBookingsById()
 
-        console.log('events', events)
+        console.log('infos', infos)
+
+        console.log('modalEvent', modalEvent)
         
     }, [])
 
@@ -284,7 +295,8 @@ export default function Booking() {
                 formats={formats}
                 messages={messages}
                 events={events}
-                defaultView="week"
+                components={{event: ModalEvent}}
+                defaultView={"week"}
                 views={["week", "day", "agenda"]}
                 defaultDate={now}                                      //aujourd'hui
                 min={moment('07:00', 'H:mma').toDate()}                //heure début

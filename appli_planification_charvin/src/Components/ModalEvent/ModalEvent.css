@@ -1,5 +1,5 @@
 .ModalEvent-form {
-    width: 50%;
+    width: 60%;
     margin: auto;
     cursor: pointer;
     border: 1px solid #104476;
@@ -19,6 +19,8 @@
 }
 
 .ModalEvent-label {
+    margin: 25px auto;
+    padding: 5px;
     text-decoration: underline;
     width: 90%;
     
@@ -29,7 +31,7 @@
     
 }
 
-.ModalEvent-date-inuput-btn {
+.ModalEvent-date-input-btn {
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 5px;

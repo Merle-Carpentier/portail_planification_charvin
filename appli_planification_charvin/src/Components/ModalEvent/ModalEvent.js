@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import Modal from 'react-modal'
 import DatePicker from 'react-datepicker'
 
@@ -17,20 +17,26 @@ const customStyles = {
 Modal.setAppElement('#root')
 
 //Je crée un petit bouton lié aux props du calendar pour afficher les dates
-const DateInputButton = (props) => {
+const DateInputButton = forwardRef((props, ref) => {
     return (
+        <div
+        ref={ref}
+        className="ModalEvent-date-input-div">
         <button
-        className="ModalEvent-date-inuput-btn"
+        className="ModalEvent-date-input-btn"
         type="button"
         onClick={props.onClick}>{props.value}</button>   
+        </div>
     )
-}
+})
 
 //Je fais le petit composant DatePicker sur la même page pour l'ajouter à ModalEvent
 const DatePick = (props) => {   
+    
     return (
-        <DatePicker
+        <DatePicker 
         {...props}
+        locale="fr"
         customInput={<DateInputButton />}
         required={true}
         dateFormat="dd/MM/yyyy HH:mm"
@@ -41,12 +47,12 @@ const DatePick = (props) => {
         showMonthDropdown={true}
         showWeekNumbers={true}
         shouldCloseOnSelect={true}
-        popperModifiers={{
-          offset: {
-            enabled: true,
-            offset: '-40px, 0px'
-          }
-        }}
+        // popperModifiers={{
+        //   offset: {
+        //     enabled: true,
+        //     offset: '-40px, 0px'
+        //   }
+        // }}
         />
     )
 }

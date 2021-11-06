@@ -67,7 +67,7 @@ export default function Login() {
 
     useEffect(() => {
         //je supprime les données stockées dans mon local storage
-        //localStorage.clear()
+        localStorage.clear()
     }, [])
 
    
@@ -77,7 +77,6 @@ export default function Login() {
             {redirect && <Redirect to = "/booking"/>}
 
             <div className="login-container">
-            {/* {console.log('userInfo', infos)} */}
                 <div className="login-container-title">
                     <img className="login-container-img"src={charvin} alt="logo Charvin Logistics" />
                     <h1 className="login-container-h1">Bienvenue sur la plateforme de rendez-vous Charvin Logistics</h1>   
