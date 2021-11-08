@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        start: {
+        startDateTime: {
             type: DataTypes.DATE,
             allowNull: false,
             validate: {
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'La date et heure de début est une propriété requise' },
             }
         },
-        end: {
+        endDateTime: {
             type: DataTypes.DATE,
             allowNull: false,
             validate: {
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         
-        title: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -30,7 +30,15 @@ module.exports = (sequelize, DataTypes) => {
                 notNull: { msg: 'Le nom du rdv est une propriété requise' },
             }
         },
-        description: {
+        classes: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: { msg: 'La description du rdv ne peut pas être vide' },
+                notNull: { msg: 'La description de palettes du rdv est une propriété requise' },
+            }
+        },
+        _id: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {

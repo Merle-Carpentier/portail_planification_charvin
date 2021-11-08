@@ -9,10 +9,10 @@ module.exports = (app) => {
         Booking.findAll({
             where: {
                 wharehouseId: wharehouseId,
-                start:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
+                startDateTime:{ [Op.gte]: Sequelize.fn('CURRENT_DATE') }
             },
             attributes: {exclude: ['createdAt', 'updatedAt']},
-            order: ['start']
+            order: ['startDateTime']
         })
         .then(bookingsWharehouse => {
             //console.log("bookingCust", bookingsCustomer)

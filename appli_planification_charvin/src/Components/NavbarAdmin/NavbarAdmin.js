@@ -47,8 +47,6 @@ function NavbarAdmin() {
                         <li className="navbar-admin-list-item-one">
                             <Link className="navbar-admin-list-item navbar-admin-list-item-1" to='/booking'>Planning</Link></li>
                         <li className="navbar-admin-list-item">
-                            <Link className="navbar-admin-list-item navbar-admin-list-item-2" to='/stats'>Statistiques</Link></li>
-                        <li className="navbar-admin-list-item">
                             <Link className="navbar-admin-list-item navbar-admin-list-item-3" to='/admin'>Administration</Link></li>
                         <li className="navbar-admin-list-item">
                             <Link className="navbar-admin-list-item navbar-admin-list-item-4" to='/logout'>Déconnexion</Link></li>

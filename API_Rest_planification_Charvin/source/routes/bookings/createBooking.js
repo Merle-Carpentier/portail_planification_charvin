@@ -7,7 +7,7 @@ module.exports = (app) => {
     app.post('/api/addBooking', checkAuth, (req, res) => {
         Booking.create(req.body)
             .then(booking => {
-                const message = `Le rdv ${req.body.bookingName} a bien été créé`
+                const message = `Le rdv ${req.body.name} a bien été créé`
                 res.json({ message, data: booking })
             })
             //gestion des erreurs liés aux validateurs + contraintes et echec requête

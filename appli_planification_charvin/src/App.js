@@ -4,7 +4,6 @@ import Error from './Containers/Error/Error.js'
 import Login from './Containers/Login/Login.js';
 import Booking from './Containers/Booking/Booking.js';
 import Admin from './Containers/Admin/Admin.js';
-import Stats from './Containers/Stats/Stats.js';
 import Logout from './Containers/Logout/Logout.js';
 import WharehouseAdd from './Containers/WharehouseAdd/WharehouseAdd.js';
 import WharehouseEdit from './Containers/WharehouseEdit/WharehouseEdit.js';
@@ -15,6 +14,7 @@ import UserBddModif from './Containers/UserBddModif/UserBddModif.js'
 import CustomerAdd from './Containers/CustomerAdd/CustomerAdd.js';
 import CustomerEdit from './Containers/CustomerEdit/CustomerEdit.js';
 import CustomerModif from './Containers/CustomerModif/CustomerModif.js'
+import BookingEdit from './Containers/BookingEdit/BookingEdit.js';
 
 
 function App() {
@@ -36,8 +36,7 @@ function App() {
           <Route exact path = '/admin/customer/add' component = { CustomerAdd } />
           <Route exact path = '/admin/customer/edit/:id' component = { CustomerEdit } />
           <Route exact path = '/admin/customer/modif/:id' component = { CustomerModif } />
-
-          <Route exact path = '/stats' component = { Stats } />
+          <Route exact path = '/admin/booking/edit/:id' component = { BookingEdit } />
           <Route exact path = '/logout' component = { Logout } />
           <Route path = '/' component = { Error }/>        
         </Switch>

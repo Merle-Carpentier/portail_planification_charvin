@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { allBookings } from '../../redux/actions/bookingActions'
+import { convertDate } from '../../util/util'
 import '../../asset/cssCommun/composants_page_admin.css'
 
 
@@ -23,6 +24,8 @@ export default function AdminBooking() {
     //action d'appel à l'api au montage et à chaque modification
     useEffect(() => {
         dispatch(allBookings()) 
+
+        console.log('bookings', bookings)
         
         //je vérifie la taille de l'écran pour affichage au conditionnel
         const ChangeWidth = () => {
@@ -56,12 +59,10 @@ export default function AdminBooking() {
                     <tr className="admin-comp-table-trth">
                         <th className="admin-comp-table-th">date / heure rdv</th>
                         <th className="admin-comp-table-th">nom et nb de palettes</th>
-                        <th className="admin-comp-table-th">nature</th>
-                        {width > 1100 && <th className="admin-comp-table-th">transporteur</th>}
+                        <th className="admin-comp-table-th">nature rdv</th>
                         {width > 849 && <th className="admin-comp-table-th">client</th>}
                         <th className="admin-comp-table-th">entrepôt</th>
                         {width > 1100 && <th className="admin-comp-table-th">utilisateur</th>}
-                        <th className="admin-comp-table-th">action</th>
                     </tr>
                 </thead>
 
@@ -83,16 +84,24 @@ export default function AdminBooking() {
                         </tr>
                     )
                     :bookings.map((booking)=> {
-                        {/*je map sur les données renvoyées par l'api */}
+                        {/*je map sur les données renvoyées par l'api et je fais un affichage conditionnel */}
                         return(
                             <tr key={booking.id} className="admin-comp-table-tr">
-                                <td className="admin-comp-table-td">{booking.start}</td>
-                                <td className="admin-comp-table-td">{booking.title}</td>
-                                <td className="admin-comp-table-td td-upper">{booking.customClass}</td>
-                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.carrier}</td>}
+                            <td className="admin-comp-table-td">
+                                    <Link className="admin-comp-table-link" to={`/admin/booking/edit/${booking.id}`}>{convertDate(booking.startDateTime)}</Link>
+                                </td>
+                                <td className="admin-comp-table-td">{booking.name}</td>
+                                { booking.classes === "color-b" ? (
+                                    <td className="admin-comp-table-td">créneau bloqué</td>
+                                )
+                                : booking.classes === "color-v" ? (
+                                    <td className="admin-comp-table-td">expédition</td>
+                                )
+                                : <td className="admin-comp-table-td">réception</td>
+                                }
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{booking.Customer.name}</td>}
                                 <td className="admin-comp-table-td td-upper">{booking.Wharehouse.name}</td>
-                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.User.name}</td>}
+                                {width > 1100 && <td className="admin-comp-table-td td-upper">{booking.User.lastName}</td>}
                             </tr> 
                                     
                         )

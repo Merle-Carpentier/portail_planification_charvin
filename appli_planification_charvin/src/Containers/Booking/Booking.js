@@ -1,100 +1,88 @@
-import { useState, useEffect, Component } from 'react'
-import { Redirect } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import Authorized from '../../Components/Authorized/Authorized'
-import { logoutUser } from '../../redux/actions/userActions'
+import { useState, useEffect } from 'react'
+import { ReactAgenda, ReactAgendaCtrl, Modal } from 'react-agenda'  //_id généré auto par guid() de react-agenda
 import moment from 'moment'
-//import 'moment/locale/fr'
+import 'react-agenda/build/styles.css'
+import 'react-datetime/css/react-datetime.css'
+import { useSelector, useDispatch } from 'react-redux'
+import { Redirect } from 'react-router'
+import { configApi } from '../../apiCalls/configApi'
+import { logoutUser } from '../../redux/actions/userActions'
+import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
-import { configApi } from '../../apiCalls/configApi.js'
-import ModalEvent from '../../Components/ModalEvent/ModalEvent'
-import "react-big-calendar/lib/css/react-big-calendar.css"
 import './Booking.css'
-
 
 const token = localStorage.rdvCharvin
 const userId = localStorage.userCharvin
 
+//Initialisation des couleurs pour l'agenda
+let colors = {
+    "color-b": "rgba(16, 68, 118, 1)",
+    "color-v": "rgba(132, 255, 128, 1)",
+    "color-o": "rgba(234, 103, 23, 0.4)"
+}
+
+//initialisation de la date
 let now = new Date()
 
-moment.locale('fr')
-const localizer = momentLocalizer(moment)
 
-//modifications des messages de la toolbar du calendrier
-const messages = {
-    allDay: 'journée',
-    previous: '<',
-    next: '>',
-    today: 'aujourd\'hui',
-    month: 'mois',
-    week: 'semaine',
-    day: 'jour',
-    agenda: 'Agenda',
-    date: 'date',
-    time: 'heure',
-    event: 'événement', 
-    showMore: total => `+ ${total} événement(s) supplémentaire(s)`
-}
-
-//modification des formats d'heures du calendrier => à revoir
-let formats = {
-    timeGutterFormat: 'H:mm',
-    agendaTimeFormat: 'H:mm',
-    DayFormat: (date, culture, local) => (
-        `${local.format("D", date, culture)}`),
-    agendaHeaderFormat: ({ start, end }, culture, local) => (
-    `${local.format(start, "D MMMM", culture)} — ${local.format(end, "D MMMM", culture)}`),
-    dayHeaderFormat: 'dddd MMMM Do',
-}
-
-//page booking concetant le calendrier de rdv
+//page des rdv avec react-calendar
 export default function Booking() {
 
     //je pointe les infos utilisateur de mon store et j'initialise le dispatch des actions
     const infos = useSelector(state => state.userReducer.infos)
     const dispatch = useDispatch()
 
-    //j'initialise mon tableau de rdv
-    let events = []
-    //initialisation des states
+    //initialisation des states pour react-agenda
+    const [items, setItems] = useState([])                                            //tableau rdv
+    const [selected, setSelected] = useState([]);                                     //créneau horaire séléctionné
+    const [cellHeight, setCellHeight] = useState(35)                                  //taille des cellule par défault
+    const [showModal, setShowModal] = useState(false)                                 //affichage ou non popUp
+    const [rowsPerHour, setRowsPerHour] = useState(2)                                 //nombre de cellule par heure (modifiable)
+    const [numberOfDays, setNumberOfDays] = useState(5)                               //nombre de jours affichés
+    const [startDate, setStartDate] = useState(now)                                   //date de départ (actuelle)
+
+    //initialisation des autres states
     const [redirect, setRedirect] = useState(false)
     const [message, setMessage] = useState(null)
     const [error, setError] = useState(null)
-    const [modalIsOpen, setModalIsOpen] = useState(false)    //pour ouvrir ModalEvent, fermé par défaut
-    const [isNewEvent, setIsNewEvent] = useState(false)      //pour spécifier si nouvel évènement, non par défaut
-    const [modalEvent, setModalEvent] = useState({           //infos du rdv que l'on fait glisser dans ModalEvent
-        title: '',
-        start: null,
-        end: null,
-        description: '',
-        id: null,
-        wharehouseId: infos.wharehouseId,
-        customerId: infos.customerId,
-        userId: infos.id
-    })
-    
 
-    //fonction de récupération des rdv qui sera mise dans le useEffect()
+
+   ////////////////////fonction de récupération des rdv qui sera mise dans le useEffect() ///////////////////////////////////////////
     const getBookingsById = () => {
-        
 
-        if(infos.customerId===null || infos.wharehouseId===null || infos.customerId==="" || infos.wharehouseId==="") {
+        //je m'assure que j'ai bioen mes infos utilisateur sinon de redirige l'utilisateur vers la connexion
+        if(infos === null) {
             return setRedirect(true)
         }
 
+        //j'initialise un tableau pour accueillir mes rdv 
+        let events = []
+
+        //en fonction du role utilisateur, je fais mes requêtes
         if(infos.role === "user") {
             axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
             .then((response) => {
+                console.log('response booking by customer',response)
                 if(response.data.data.length === 0) {
                     setMessage("Il n'y a aucun rdv de prévu pour l'instant")
                 }
                 //je transforme mes dates et je j'envoie mes rdv dans mon tableau events
                 response.data.data.map((item)=>{
-                    item.start = new Date(item.start)
-                    item.end = new Date(item.end)
-                    events.push(item)
-                })   
+                    item.startDateTime = new Date(item.startDateTime)
+                    item.endDateTime = new Date(item.endDateTime)
+                    events.push(item)    
+                })  
+                //Je mets à jour ma state items
+                setItems(events) 
+
+                setError(null)
+
+                //je récupère le nombre de cellules par heure en fonction de mon client
+                axios.get(`${configApi.api_url}/api/detailCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
+                .then((response) => {
+                    console.log('response detail customer',response)
+                    setRowsPerHour(response.data.data.rowsPerHour)
+                })
             })
             .catch((error) => {
                 if(error.status === 403) {
@@ -113,12 +101,17 @@ export default function Booking() {
                 }
                 //je transforme mes dates et je j'envoie mes rdv dans mon tableau events
                 response.data.data.map((item)=>{
-                    item.start = new Date(item.start)
-                    item.end = new Date(item.end)
+                    item.startDateTime = new Date(item.startDateTime)
+                    item.endDateTime = new Date(item.endDateTime)
                     events.push(item)
                 })
-                //je met ma réponse dans un tableau et je transforme ensuite mes dates, je mets à jour la state events
-                //array.push(response.data.data)    
+
+                //Je mets à jour ma state items
+                setItems(events)
+
+                setError(null)
+
+                console.log('items', items)
             })
             .catch((error) => {
                 if(error.status === 403) {
@@ -132,194 +125,197 @@ export default function Booking() {
         console.log('events', events)
     }
 
+     /////////////////////////////////////  FONCTIONS POUR L'AGENDA /////////////////////////////////////////////////
+    
+    ////////////////////////////////// SELECTIONNER UNE PLAGE RDV /////////////////////////////////////////////
+    //fonction: j'ouvre une popup pour ajouter un rdv quand une cellule selectionnée
+    const handleCellSelection = (item) => {
+        console.log('handleCellSelection item', item)
+        let dateDeb = new Date(item)
+        let dateFin = dateDeb.getTime() + 30*60000
+        //setSelected([dateDeb.toISOString(), dateFin.toISOString()])
 
-    //fonction d'ouverture de ModalEvent
-    const openModal = (event) => {
-        //je vérifie si id existant si oui je récupère les states
-        let id = event.id
-        if(id) {
-            setModalEvent({...event, id})
+        //setSelected([dateDeb, dateFin])
+        //setShowModal(true)
+
+        
+
+        console.log('selected',selected)
+
+    }
+
+    //fonction: j'ouvre une popup pour ajouter un rdv quand selection plage horaire (plusieurs cellules)
+    const handleRangeSelection = (item) => {
+        console.log('handleRangeSelection', item) //heures début et fin 
+        setSelected(item)
+        setShowModal(true)
+        console.log('selected',selected)
+    }
+
+    /////////////////////////////////////// AJOUTER UN RDV /////////////////////////////////////////////////////
+    //fonction d'ajout d'un rdv
+    const addNewEvent = (items, newItem) =>{
+        console.log('addNewEvent', items)
+        console.log('addNewEvent', newItem)
+        
+        //création de datas pour injecter le nouveau rdv en bdd
+        const datas = {
+            name: newItem.name,
+            startDateTime: moment(newItem.startDateTime).format('YYYY-MM-DD HH:mm:ss'),
+            endDateTime: moment(newItem.endDateTime).format('YYYY-MM-DD HH:mm:ss'),
+            classes: newItem.classes,
+            _id: newItem._id,
+            customerId: infos.customerId,
+            wharehouseId: infos.customerId,
+            userId: infos.id 
         }
-        setModalIsOpen(true)
-    }
 
-    //fonction de fermeture de ModalEvent
-    const closeModal = () => {
-        setModalIsOpen(false)
-    }
-
-    //sélection d'une plage horaire vide
-    const selectSlot = (event) => {
-        setModalEvent({isNewEvent: true})
-        //je sélectionne les heures début et fin
-        event.start = event.slots[0]
-        event.end = event.slots[event.slots.length - 1]
-        openModal(event)
-    }
-
-    //sélection d'un rdv existant
-    const selectEvent = (event) => {
-        setIsNewEvent(false)
-        openModal(event)
-    }
-
-
-    //fonction d'édition du rdv
-    const handleModalEventEdit = (key, newValue) => {
-        const newData = { ...modalEvent }
-        newData[key] = newValue
-        setModalEvent(newData)
-    }
-
-    //fonction de sauvegarde d'un rdv ================> ici, dans la condition, mon post et mon put de sauvegarde en bdd
-    const handleEventSave = (newEvent) => {
-        //j'initialise mon objet datas pour envoyer dans bdd
-        let datas 
-
-        //je cherche si id existant avec findIndex=> si je trouve l'id du rdv, je le remplace (put) sinon je l'ajoute (post)
-        const index = events.findIndex(event => event.id === newEvent.id)
-        if(index !== -1) {
-            datas = {
-                start: newEvent.start.getFullYear()+'-'+(newEvent.start.getMonth() + 1)+"-"+newEvent.start.getDate()+' '+newEvent.start.getHours()+':'+newEvent.start.getMinutes(),
-                end: newEvent.end.getFullYear()+'-'+(newEvent.end.getMonth() + 1)+"-"+newEvent.end.getDate()+' '+newEvent.end.getHours()+':'+newEvent.end.getMinutes(),
-                title: newEvent.title,
-                description: newEvent.description,
-                customerId: newEvent.customerId,
-                wharehouseId: newEvent.wharehouseId,
-                userId: newEvent.userId
+        //envoi des infos dans la bdd
+        axios.post(`${configApi.api_url}/api/addBooking`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        .then(response => {
+            console.log('rep addNewEvent', response)
+            if(response.status === 200) {
+                setItems(items)
             }
-            axios.put(`${configApi.api_url}/api/updateBooking/${newEvent.id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
-            .then((response) => {
-                if(response.status === 200) {
-                setMessage("Le rdv a bien été modifié")
+            setShowModal(false)
+        })
+        .catch((error) => {
+            if(error.status === 403) {
+                return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
+            console.log('err addNewEvent', error)
+            setError("impossible d'enregistrer le rdv, veuillez recommencer ou contacter Charvin")
+        })
+    }
+
+
+    ///////////////////////////////////////// AFFICHER ET MODIFIER UN RDV ////////////////////////////////////////////
+    //fonction: j'ouvre une popup pour modifier le rdv quand selectionnée
+    const handleItemEdit = (item, newItem) =>{
+	    console.log('handleItemEdit', item)
+	    console.log('handleItemEdit', newItem)
+	    //mise à jour de la state selected et showModal
+        setSelected([item]);
+        setShowModal(true)
+	    
+	}
+
+    //fonction de modification d'un rdv
+    const editEvent = (item, newItem) =>{
+        console.log('editEvent', item)               
+        console.log('editEvent', newItem)
+        //création de datas pour injecter le nouveau rdv en bdd
+        let datas = {
+              name: newItem.name,
+              startDateTime: newItem.startDateTime.getFullYear()+'-'+(newItem.startDateTime.getMonth() + 1)+"-"+newItem.startDateTime.getDate()+' '+newItem.startDateTime.getHours()+':'+newItem.startDateTime.getMinutes(),
+              endDateTime: newItem.endDateTime.getFullYear()+'-'+(newItem.endDateTime.getMonth() + 1)+"-"+newItem.endDateTime.getDate()+' '+newItem.endDateTime.getHours()+':'+newItem.endDateTime.getMinutes(),
+              classes: newItem.classes,
+        }
+            
+        //modif des infos dans la bdd
+        axios.put(`${configApi.api_url}/api/updateBooking/${newItem._id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        .then((response) => {
+            console.log('rep editEvent', response)
+            if(response.status === 200) {
                 getBookingsById()
             }
-            })
-            .catch((error) => {
-                if(error.status === 403) {
-                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-                    return setRedirect(true)
-                } else {
-                    return setError("Impossible d'enregistrer le rdv, veuillez ré-essayer svp")
-                }
-            })
-            
-        } else {
-            datas = {
-                start: moment(newEvent.start).format('YYYY-MM-DD HH:mm:ss'),
-                end: moment(newEvent.start).format('YYYY-MM-DD HH:mm:ss'),
-                title: newEvent.title,
-                description: newEvent.description,
-                customerId: newEvent.customerId,
-                wharehouseId: newEvent.wharehouseId,
-                userId: newEvent.userId
+            setShowModal(false)
+        })
+        .catch((error) => {
+            if(error.status === 403) {
+                return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
             }
-            axios.post(`${configApi.api_url}/api/addBooking`, datas, {headers: {"x-access-token": token, "userId": userId}})
-            .then((response) => {
-                //si la réponse est ok, je mets un message et je rappelle tous mes rdv pour mettre à jour tous les rdv
-                if(response.status === 200) {
-                    setMessage("Le rdv a bien été enregistré")
-                    getBookingsById()
-                }
-            })
-            .catch((error) => {
-                if(error.status === 403) {
-                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-                    return setRedirect(true)
-                } else {
-                    return setError("Impossible d'enregistrer le rdv, veuillez ré-essayer svp")
-                }
-            })
-            
-        }
+            console.log('err editEvent', error)
+            setError("impossible de modifier le rdv, veuillez recommencer ou contacter Charvin")
+        })
     }
 
-    //fonction de suppression d'un rdv ======================> ici mon delete en bdd
-    const handleEventDelete = () => {
-        //je cherche si id existant avec findIndex=> si je trouve l'id du rdv, je le supprime en bdd (delete)
-        const index = events.findIndex(event => event.id === modalEvent.id)
-            if(index !== -1) {
-                axios.delete(`${configApi.api_url}/api/deleteBooking/${modalEvent.id}`, {headers: {"x-access-token": token, "userId": userId}})
-                .then((response) => {
-                    if(response.status === 200) {
-                        setMessage("Le rdv a bien été enregistré")
-                        getBookingsById()
-                    }
-                })
-                .catch((error) => {
-                    if(error.status === 403) {
-                        dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-                        return setRedirect(true)
-                    } else {
-                        return setError("Impossible d'enregistrer le rdv, veuillez ré-essayer svp")
-                    }
-                })    
-            } else {
-                setError("Impossible de trouver le rdv, veuillez ré-essayer")
+    /////////////////////////////////////////// SUPPRIMER UN RDV //////////////////////////////////////////////
+    //fonction de suppression d'un rdv
+    const handleItemRemove = (items, deleteItem) => {
+        console.log('handleItemRemove', items)
+        console.log('handleItemRemove', deleteItem)
+
+        //suppression dans la bdd
+        axios.delete(`${configApi.api_url}/api/deleteBooking/${deleteItem._id}`, {headers: {"x-access-token": token, "userId": userId}})
+        .then((response) => {
+            console.log('rep deleteItem', response)
+            if(response.status === 200) {
+                setItems(items)
             }
-        
-        
-        
+        })
     }
 
-    //au chargement du composant, je récupère le tableau de mes rdv par id client si l'utilisateur a le role user ou par id entrepôt si utilisateur est charvin ou admin
+    ///////////////////////////////// j'appelle ma requête au chargement de la page/////////////////////////////////
     useEffect(() => {
-        if(infos===null || infos.role===null || infos.custumerId===null || infos.wharehouseId===null) {
-           return setRedirect(true)
-        }
-
+        
         getBookingsById()
-
-        console.log('infos', infos)
-
-        console.log('modalEvent', modalEvent)
         
     }, [])
 
 
-
     return (
         <>
-        {redirect && <Redirect to='/'/>}
-        <Authorized />
+            {redirect && <Redirect to='/' />}
+            <Authorized />
 
-        <div className="booking">
-            <h1 className="booking-title">calendrier des rdv actuellement planifiés</h1>
+            <div className="booking">
 
-            {message!==null && <p className="booking-p-message-chargement">{message}</p>}
-            {error!==null &&<p className="booking-p-error">{error}</p>}
+                <h1 className="booking-title">calendrier des rdv actuellement planifiés</h1>
 
-            <Calendar
-                culture="fr"
-                localizer={localizer}
-                formats={formats}
-                messages={messages}
-                events={events}
-                components={{event: ModalEvent}}
-                defaultView={"week"}
-                views={["week", "day", "agenda"]}
-                defaultDate={now}                                      //aujourd'hui
-                min={moment('07:00', 'H:mma').toDate()}                //heure début
-                max={moment('17:00', 'H:mma').toDate()}                //heure fin
-                selectable={true}                                      //plage cliquable
-                onSelectEvent={selectEvent}                            //fonction si selection d'un rdv
-                onSelectSlot={selectSlot}                              //fonction si selection plage
-                popup={true}
-                tooltipAccessor={(e)=> e.title}   
-            />
+                <p className="booking-p-infos">Avant de prendre rdv, merci de respecter les consignes suivantes:</p>
+                <ul className="booking-infos-ul">
+                    <li className="booking-infos-li">Ne pas modifier ni supprimer les rdv ne vous appartenant pas</li>
+                    <li className="booking-infos-li">Sélectionnez une plage horaire parmi celles disponibles</li>
+                    <li className="booking-infos-li">Pensez à renseigner la référence rdv ainsi que le nombre de palettes dans le même champ</li>
+                    <li className="booking-infos-li">Code des couleurs: vert pour un chargement et orange pour une livraison (bleu réservé à charvin)</li>
+                </ul>
 
-            <ModalEvent
-                modalIsOpen={modalIsOpen}
-                closeModal={closeModal}
-                handleModalEventEdit={handleModalEventEdit}
-                modalEvent={modalEvent}
-                handleEventSave={handleEventSave}
-                handleEventDelete={handleEventDelete}
-                isNewEvent={isNewEvent}
-                key={modalEvent.id}
-            />
+                {message!==null && <p className="booking-p-message-chargement">{message}</p>}
+                {error!==null &&<p className="booking-p-error">{error}</p>}   
 
-        </div>
+                    {showModal &&
+                        <Modal
+                        clickOutside={()=>setShowModal(false)}
+                        title="Remplir ref rdv + nb palettes et choisir une couleur svp"
+                         >
+
+                            <div className="modal-content">
+                                <ReactAgendaCtrl
+                                    items={items}
+                                    itemColors={colors}
+                                    selectedCells={selected}
+                                    Addnew={addNewEvent}
+                                    edit={editEvent}  
+                                    
+
+                                />
+                            </div>
+
+                        </Modal>
+                    }
+                    <ReactAgenda
+                        minDate={now}
+                        maxDate={new Date(now.getFullYear(), now.getMonth()+3)}
+                        disablePrevButton={false}
+                        startDate={startDate}
+                        cellHeight={cellHeight}
+                        startAtTime={8}
+                        endAtTime={17}
+                        locale='fr'
+                        items={items}
+                        numberOfDays={numberOfDays}
+                        rowsPerHour={rowsPerHour}
+                        itemColors={colors}
+                        autoScale={true}
+                        fixedHeader={true}
+                        onItemEdit={handleItemEdit}
+                        onItemRemove={handleItemRemove}
+                        onCellSelect={handleCellSelection}
+                        onRangeSelection={handleRangeSelection}
+                    />
+                
+            </div>
         </>
     )
 }

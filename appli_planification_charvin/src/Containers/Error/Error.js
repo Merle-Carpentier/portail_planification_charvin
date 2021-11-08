@@ -16,7 +16,7 @@ export default function Error() {
                 Aucune ressource n'a été trouvée à cette page, veuillez vérifier l'url
             </h2>
 
-            <Link to="/" className="error-404-link">Retour à la page d'accueil</Link>
+            <Link to="/booking" className="error-404-link">Retour à la page des rdv</Link>
             
         </div>
     )

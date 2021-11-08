@@ -19,7 +19,7 @@ module.exports = (app) => {
                 }
             ],
             attributes: {exclude:['createdAt', 'updatedAt']},
-            order: ['start']
+            order: ['startDateTime']
         })
             .then(booking => {
                 if(booking === null) {

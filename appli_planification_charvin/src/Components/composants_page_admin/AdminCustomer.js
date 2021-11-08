@@ -89,7 +89,6 @@ export default function AdminCustomer() {
                         <th className="admin-comp-table-th">CP</th>
                         <th className="admin-comp-table-th">ville</th>
                         {width > 849 && <th className="admin-comp-table-th">nb rdv/heure</th>}
-                        {width > 849 && <th className="admin-comp-table-th">nb jours/semaine</th>}
                         {width > 849 && <th className="admin-comp-table-th">entrepôt</th>}
                         <th className="admin-comp-table-th">action</th>
                     </tr>
@@ -123,7 +122,6 @@ export default function AdminCustomer() {
                                 <td className="admin-comp-table-td">{customer.zip}</td>
                                 <td className="admin-comp-table-td td-upper">{customer.city}</td>
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{customer.rowsPerHour}</td>}
-                                {width > 849 && <td className="admin-comp-table-td td-upper">{customer.numberOfDays}</td>}
                                 {width > 849 && <td className="admin-comp-table-td td-upper">{customer.Wharehouse.name}</td>}
                                 <td className="admin-comp-table-td-action">
                                     <button className="admin-comp-btn-mod">

@@ -22,7 +22,7 @@ export default function Authorized() {
     const getGoodNavbar = ()=> {
         if(infos===null) {
             dispatch(logoutUser())
-            setRedirect(true)
+            return setRedirect(true)
         }else {
             if(infos.role === "admin") {
                 setAuthorized(true)

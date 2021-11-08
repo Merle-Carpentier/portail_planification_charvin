@@ -2,21 +2,18 @@ const { Booking } = require('../../sequelize')
 const { ValidationError } = require('sequelize')
 const checkAuth = require('../../checkAuth/checkAuth')
 
-//route de modification d'un rdv avec update + findByPk (pour vérifier son existence dans la bdd)
+//route de modification d'un rdv avec update + findOne (pour vérifier existence du _id dans la bdd)
 module.exports = (app) => {
     app.put('/api/updateBooking/:id', checkAuth, (req, res) => {
-        const id = req.params.id
-        Booking.update(req.body, {
-            where: { id: id }
-        })
-        .then(_ => {
-            return Booking.findByPk(id)
-            .then(booking => {
-                if(booking === null) {
-                    const message = `Le rdv demandé n'éxiste pas, veuillez réessayer avec un autre numéro de rdv`
-                    return res.status(404).json({ message })
-                }
-                const message = `Le rdv ${booking.title} a bien été modifié`
+        Booking.findOne({where: {_id: req.params.id}})
+        .then((booking) => {
+            if(booking === null) {
+                const message = `Le rdv demandé n'existe pas, utilisez un autre identifiant`
+                return res.status(404).json({ message })
+            }
+            return Booking.update(req.body, { where: {_id: booking._id} })
+            .then(_ => {
+                const message = `Le rdv ${booking.name} a bien été modifié`
                 res.json({ message, data: booking })
             })
         })
@@ -28,5 +25,6 @@ module.exports = (app) => {
             const message = `Le rdv n'a pas pu être modifié, veuillez réessayer`
             res.status(500).json({ message, data: error })
         })
+        
     })
 }
