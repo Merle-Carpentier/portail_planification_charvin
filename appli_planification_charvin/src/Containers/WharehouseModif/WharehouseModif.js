@@ -8,7 +8,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function WharehouseModif(props) {
@@ -28,7 +27,7 @@ export default function WharehouseModif(props) {
 
     //fonction de récupération d'uin entrepôt
     const getWharehouse = (whId) => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log("get dans wharehouseModif", response)
             setName(response.data.data.name)
@@ -59,7 +58,7 @@ export default function WharehouseModif(props) {
             city: city
         }
 
-        axios.put(`${configApi.api_url}/api/updateWharehouse/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.put(`${configApi.api_url}/api/updateWharehouse/${id}`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)

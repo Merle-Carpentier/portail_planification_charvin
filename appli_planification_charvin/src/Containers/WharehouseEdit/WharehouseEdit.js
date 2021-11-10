@@ -9,7 +9,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire de récupération d'un entrepôt
 export default function WharehouseEdit(props) {
@@ -33,7 +32,7 @@ export default function WharehouseEdit(props) {
 
     //fonction de récupération d'un entrepôt
     const getWharehouse = (whId) => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)

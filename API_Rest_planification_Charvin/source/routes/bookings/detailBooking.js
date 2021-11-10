@@ -18,7 +18,6 @@ module.exports = (app) => {
                 attributes: ['firstName', 'lastName']
                 }
             ],
-            attributes: {exclude:['createdAt', 'updatedAt']},
             order: ['startDateTime']
         })
             .then(booking => {

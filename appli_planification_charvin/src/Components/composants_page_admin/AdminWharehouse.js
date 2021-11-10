@@ -8,7 +8,6 @@ import '../../asset/cssCommun/composants_page_admin.css'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 
 //Composant pour affichage et suppression des entrepôts prenant en paramètre les states du store et le dispatch des actions
@@ -28,7 +27,7 @@ export default function AdminWharehouse() {
     
     //suppression d'un entrepôt
     const deleteWharehouse = (id) => {
-        axios.delete(`${configApi.api_url}/api/deleteWharehouse/${id}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.delete(`${configApi.api_url}/api/deleteWharehouse/${id}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log("réponse del", response)
             if(response.status === 200) {

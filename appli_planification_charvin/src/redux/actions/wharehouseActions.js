@@ -3,7 +3,6 @@ import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //types d'action
 export const LOAD_WHAREHOUSES = "LOAD_WHAREHOUSES"
@@ -36,7 +35,7 @@ export const allWharehouses = () => {
 
         dispatch(loadWharehouses())
 
-        axios.get(`${configApi.api_url}/api/allWharehouses`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/allWharehouses`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log('allwharehouses', response)
             dispatch(loadWharehousesSuccess(response.data.data))   

@@ -9,7 +9,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddModif(props) {
@@ -39,7 +38,7 @@ export default function UserBddModif(props) {
 
     //fonction de récupération d'un client
     const getUser = (usId) => {
-        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log("get dans userModif", response)
             setLastName(response.data.data.lastName)
@@ -73,7 +72,7 @@ export default function UserBddModif(props) {
             customerId: customerId,
         }
 
-        axios.put(`${configApi.api_url}/api/updateUser/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.put(`${configApi.api_url}/api/updateUser/${id}`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)
@@ -99,7 +98,7 @@ export default function UserBddModif(props) {
             let data = {
                 password: password
             }
-            axios.put(`${configApi.api_url}/api/updateUserPassword/${userId}`, data, {headers: {"x-access-token": token, "userId": userId}})
+            axios.put(`${configApi.api_url}/api/updateUserPassword/${userId}`, data, {headers: {Authorization: `Bearer ${token}`}})
             .then((response) => {
                 if(response.status === 200) {
                     setRedirect(true)

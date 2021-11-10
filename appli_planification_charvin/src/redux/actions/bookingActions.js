@@ -3,8 +3,6 @@ import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
-
 
 //types d'action
 export const LOAD_BOOKINGS = "LOAD_BOOKINGS"                             //message de chargement pendant la requète
@@ -42,7 +40,7 @@ export const allBookings = () => {
 
         dispatch(loadBookings())
 
-        axios.get(`${configApi.api_url}/api/allBookings`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/allBookings`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log('allUsersbdd', response)
             dispatch(loadBookingsSuccess(response.data.data))   

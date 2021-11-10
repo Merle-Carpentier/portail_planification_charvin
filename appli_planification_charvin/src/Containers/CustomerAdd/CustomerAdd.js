@@ -9,7 +9,6 @@ import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function CutomerAdd() {
@@ -51,7 +50,7 @@ export default function CutomerAdd() {
             numberOfDays: numberOfDays,
             wharehouseId: wharehouseId
         }
-        axios.post(`${configApi.api_url}/api/addCustomer`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.post(`${configApi.api_url}/api/addCustomer`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)

@@ -9,7 +9,7 @@ import { convertDate } from '../../util/util.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
+
 
 //page de formulaire d'affichage d'un rdv
 export default function BookingEdit(props) {
@@ -35,9 +35,9 @@ export default function BookingEdit(props) {
 
     //fonction de récupération d'un utilisateur
     const getBooking = (bookId) => {
-        axios.get(`${configApi.api_url}/api/detailBooking/${bookId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailBooking/${bookId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
-            //console.log(response)
+            console.log(response)
             setName(response.data.data.name)
             setStartDateTime(response.data.data.startDateTime)
             setCustomer(response.data.data.Customer.name)
@@ -90,8 +90,8 @@ export default function BookingEdit(props) {
                     <p className="edit-article-p edit-upper">Entrepôt d'affectation: {wharehouse}</p>
                     <p className="edit-article-p edit-upper">Client d'affectation: {customer}</p>
                     <p className="edit-article-p edit-upper">Utilisateur ayant pris le rdv: {user}</p>
-                    <p className="edit-article-p">Créé le: {convertDate(created)}</p>
-                    <p className="edit-article-p">Mis à jour le: {convertDate(updated)}</p>
+                    <p className="edit-article-p">Créé {convertDate(created)}</p>
+                    <p className="edit-article-p">Mis à jour {convertDate(updated)}</p>
                 </article>
 
                 <button

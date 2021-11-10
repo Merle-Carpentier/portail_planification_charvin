@@ -8,7 +8,6 @@ import '../../asset/cssCommun/composants_page_admin.css'
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //Composant pour affichage et suppression des utilisateurs prenant en paramètre les states du store et le dispatch des actions
 export default function AdminUserOfBdd() {    
@@ -29,7 +28,7 @@ export default function AdminUserOfBdd() {
 
     //suppression d'un entrepôt
     const deleteUserBdd = (id) => {
-        axios.delete(`${configApi.api_url}/api/deleteUser/${id}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.delete(`${configApi.api_url}/api/deleteUser/${id}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log("réponse del", response)
             if(response.status === 200) {

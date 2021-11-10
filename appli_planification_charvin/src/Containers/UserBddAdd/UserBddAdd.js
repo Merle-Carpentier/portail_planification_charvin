@@ -10,7 +10,6 @@ import { allWharehouses } from '../../redux/actions/wharehouseActions.js'
 import { allCustomers } from '../../redux/actions/customerActions.js'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddAdd() {
@@ -55,7 +54,7 @@ export default function UserBddAdd() {
             wharehouseId: wharehouseId,
             customerId: customerId,
         }
-        axios.post(`${configApi.api_url}/api/addUser`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.post(`${configApi.api_url}/api/addUser`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)

@@ -8,7 +8,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function CustomerModif(props) {
@@ -19,7 +18,6 @@ export default function CustomerModif(props) {
     const [zip, setZip] = useState("")
     const [city, setCity] = useState("")
     const [rowsPerHour, setRowsPerHour] = useState()
-    const [numberOfDays, setNumberOfDays] = useState()
     const [wharehouseName, setWharehouseName] = useState("")
     const [wharehouseId, setWharehouseId] = useState("")
     const [error, setError] = useState(null)
@@ -35,7 +33,7 @@ export default function CustomerModif(props) {
 
     //fonction de récupération d'un client
     const getCustomer = (custId) => {
-        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log("get dans customerModif", response)
             setName(response.data.data.name)
@@ -43,7 +41,6 @@ export default function CustomerModif(props) {
             setZip(response.data.data.zip)
             setCity(response.data.data.city)
             setRowsPerHour(response.data.data.rowsPerHour)
-            setNumberOfDays(response.data.data.numberOfDays)
             setWharehouseName(response.data.data.Wharehouse.name)
             setWharehouseId(response.data.data.Wharehouse.id)
         })
@@ -59,10 +56,10 @@ export default function CustomerModif(props) {
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
         //message d'erreur si les champs ne sont remplis
-        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId==="" || rowsPerHour===null || numberOfDays===null){
+        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId==="" || rowsPerHour===null){
             return setError("Tous les champs ne sont pas remplis!")
         }
-        if(isNaN(rowsPerHour) || isNaN(numberOfDays)) {
+        if(isNaN(rowsPerHour)) {
             return setError("Les champs nombre de rdv/heure et nombre de jour planifiés doivent être des chiffres")
         }
         //récupération des states dans datas + envoie des données vers l'api
@@ -72,11 +69,10 @@ export default function CustomerModif(props) {
             zip: zip,
             city: city,
             rowsPerHour: rowsPerHour,
-            numberOfDays: numberOfDays,
             wharehouseId: wharehouseId
         }
 
-        axios.put(`${configApi.api_url}/api/updateCustumer/${id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.put(`${configApi.api_url}/api/updateCustumer/${id}`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             if(response.status === 200) {
                 setRedirect(true)
@@ -163,15 +159,6 @@ export default function CustomerModif(props) {
                 className="AddMod-input"
                 onChange={(e) => {
                     setRowsPerHour(e.currentTarget.value)
-                }}/>
-
-                <label className="AddMod-label input-upper">nb de jours planifiables par semaine</label>
-                <input 
-                type="text"
-                value={numberOfDays}
-                className="AddMod-input"
-                onChange={(e) => {
-                    setNumberOfDays(e.currentTarget.value)
                 }}/>
 
                 <label className="AddMod-label">entrepôt d'affectation</label>

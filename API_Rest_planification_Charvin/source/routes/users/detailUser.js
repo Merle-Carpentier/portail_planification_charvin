@@ -14,7 +14,7 @@ module.exports = (app) => {
                 attributes: ['id', 'name']
                 }
             ],
-            attributes: {exclude:['password', 'createdAt', 'updatedAt']} 
+            attributes: {exclude:['password']} 
         })
             .then(user => {
                 if(user === null) {

@@ -8,9 +8,9 @@ const UserModel = require('./models/user')
 const BookingModel = require('./models/booking')
 
 
-//connexion à la bdd en vérifiant si l'environnement est localhost ou heroku
+//connexion à la bdd en vérifiant si l'environnement est localhost ou heroku (pas encore finaliser sur Heroku)
 let sequelize
-if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {      
     sequelize = new Sequelize('nom dbheroku', 'nom user', 'password', {
         host: 'blabla',
         dialect: 'mariadb',

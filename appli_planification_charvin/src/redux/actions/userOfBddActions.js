@@ -3,7 +3,6 @@ import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //types d'action
 export const LOAD_USERSBDD = "LOAD_USERSBDD"
@@ -36,7 +35,7 @@ export const allUsersBdd = () => {
 
         dispatch(loadUsersBdd())
 
-        axios.get(`${configApi.api_url}/api/allUsers`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/allUsers`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log('allUsersbdd', response)
             dispatch(loadUsersBddSuccess(response.data.data))   

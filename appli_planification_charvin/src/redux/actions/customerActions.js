@@ -3,7 +3,6 @@ import { configApi } from '../../apiCalls/configApi'
 import { logoutUser } from './userActions'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //types d'action
 export const LOAD_CUSTOMERS = "LOAD_CUSTOMERS"
@@ -36,7 +35,7 @@ export const allCustomers = () => {
 
         dispatch(loadCustomers())
 
-        axios.get(`${configApi.api_url}/api/allCustomers`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/allCustomers`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log('allcustomers', response)
             dispatch(loadCustomersSuccess(response.data.data))   

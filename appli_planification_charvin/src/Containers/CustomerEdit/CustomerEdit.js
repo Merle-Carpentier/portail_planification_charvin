@@ -9,7 +9,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function CustomerEdit(props) {
@@ -36,7 +35,7 @@ export default function CustomerEdit(props) {
 
     //fonction de récupération d'un utilisateur
     const getCustomer = (custId) => {
-        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)
@@ -44,7 +43,6 @@ export default function CustomerEdit(props) {
             setZip(response.data.data.zip)
             setCity(response.data.data.city)
             setRowsPerHour(response.data.data.rowsPerHour)
-            setNumberOfDays(response.data.data.numberOfDays)
             setWharehouseName(response.data.data.Wharehouse.name)
             setCreated(response.data.data.createdAt)
             setUpdated(response.data.data.updatedAt)
@@ -85,7 +83,6 @@ export default function CustomerEdit(props) {
                     <p className="edit-article-p">Code postale: {zip}</p>
                     <p className="edit-article-p edit-upper">Ville: {city}</p>
                     <p className="edit-article-p edit-upper">Nombre de rdv autorisé par heure: {rowsPerHour}</p>
-                    <p className="edit-article-p edit-upper">Nombre de jours planifiables par semaine: {numberOfDays}</p>
                     <p className="edit-article-p edit-upper">Entrepôt d'affectation: {wharehouseName}</p>
                     <p className="edit-article-p">Créé le: {convertDate(created)}</p>
                     <p className="edit-article-p">Mis à jour le: {convertDate(updated)}</p>

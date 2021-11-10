@@ -4,29 +4,26 @@ const key = require('./key')
 //Middleware d'authentification lors des requêtes
 
 module.exports = (req, res, next) => {
-    //on pointe le jeton dans l'entête
-    const token = req.headers['x-access-token']
-
-    //on vérifie s'il y a un jeton dans l'entête http, si non gestion erreur 401
-    if(!token) {
-        const message = "Vous n'avez pas de jeton d'autorisation dans l'entête"
-        return res.status(403).json({ message })
+    const authorizationHeader = req.headers.authorization
+  
+    if(!authorizationHeader) {
+      const message = `Vous n'avez pas de jeton d'authentification dans l'en-tête de la requête.`
+      return res.status(403).json({ message })
     }
-
-    //on vérifie si le jeton est correct ou si non on gère l'erreur 401 (fonction flechée à 2 arguments)
+    
+    const token = authorizationHeader.split(' ')[1]
     const decodedToken = jwt.verify(token, key, (error, decodedToken) => {
-        console.log('decodedtoken', decodedToken)
-        if(error) {
-            const message = "Utilisateur non autorisé à cet accès"
-            return res.status(403).json({ message, data: error })
-        }
-        //on vérifie si c'est le bon utilisateur sinon gestion erreur 401
-        const userId = decodedToken.userId
-        if(req.headers['userId'] && req.headers['userId'] !== userId) {
-            const message = "L'identifiant de cet utilisateur est invalide"
-            return res.status(403).json({ message })
-        }else{
-            next() // si tout est ok, authentification validée
-        }
+      if(error) {
+        const message = `L'utilisateur non autorisé à cette ressource.`
+        return res.status(403).json({ message, data: error })
+      }
+  
+      const userId = decodedToken.userId
+      if (req.body.userId && req.body.userId !== userId) {
+        const message = `L'identifiant de l'utilisateur est invalide.`
+        res.status(403).json({ message })
+      } else {
+        next()
+      }
     })
-}
+  }

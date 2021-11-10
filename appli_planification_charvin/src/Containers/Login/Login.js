@@ -46,9 +46,8 @@ export default function Login() {
                     customerId: response.data.data.customerId
                 }
 
-                //envoi du token et des infos utilisateur dans le local storage
+                //envoi du token dans le local storage
                 localStorage.rdvCharvin = response.data.token
-                localStorage.userCharvin = response.data.data.id
                        
                 //dispatch de l'action au store avec stockage des infos user dans le store
                 dispatch(loadUserInfo(datasUser))

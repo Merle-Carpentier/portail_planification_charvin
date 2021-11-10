@@ -9,11 +9,11 @@ const port = process.env.PORT || 8000
 
 //utilisation de morgan pour le développement (à retirer lorsque l'on n'est plus en phase de développement) + on parse les url + on sécurise les requêtes avec cors
 app
-.use(favicon(__dirname + '/favicon.ico'))
-.use(cors())
-.use(morgan('dev'))
-.use(express.urlencoded({ extended: true }))
-.use(express.json())
+ .use(favicon(__dirname + '/favicon.ico'))
+ .use(cors())
+ .use(morgan('dev'))
+ .use(express.urlencoded({ extended: true }))
+ .use(express.json())
 
 //initialisation de la bdd
 sequelize.initDb()

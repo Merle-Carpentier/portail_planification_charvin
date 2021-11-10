@@ -9,7 +9,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
 
 //page de formulaire d'ajout d'un entrepôt
 export default function UserBddEdit(props) {
@@ -35,7 +34,7 @@ export default function UserBddEdit(props) {
 
     //fonction de récupération d'un utilisateur
     const getUserBdd = (usId) => {
-        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             //console.log(response)
             setLastName(response.data.data.lastName)

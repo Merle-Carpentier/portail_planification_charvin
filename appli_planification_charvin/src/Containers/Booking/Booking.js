@@ -10,9 +10,10 @@ import { logoutUser } from '../../redux/actions/userActions'
 import Authorized from '../../Components/Authorized/Authorized.js'
 import axios from 'axios'
 import './Booking.css'
+require('moment/locale/fr.js') //pour avoir le calendrier en français
 
 const token = localStorage.rdvCharvin
-const userId = localStorage.userCharvin
+
 
 //Initialisation des couleurs pour l'agenda
 let colors = {
@@ -35,7 +36,7 @@ export default function Booking() {
     //initialisation des states pour react-agenda
     const [items, setItems] = useState([])                                            //tableau rdv
     const [selected, setSelected] = useState([]);                                     //créneau horaire séléctionné
-    const [cellHeight, setCellHeight] = useState(35)                                  //taille des cellule par défault
+    const [cellHeight, setCellHeight] = useState(45)                                  //taille des cellule par défault
     const [showModal, setShowModal] = useState(false)                                 //affichage ou non popUp
     const [rowsPerHour, setRowsPerHour] = useState(2)                                 //nombre de cellule par heure (modifiable)
     const [numberOfDays, setNumberOfDays] = useState(5)                               //nombre de jours affichés
@@ -45,6 +46,11 @@ export default function Booking() {
     const [redirect, setRedirect] = useState(false)
     const [message, setMessage] = useState(null)
     const [error, setError] = useState(null)
+    const [whName, setWhName] = useState("")
+    const [whAddress, setWhAddress] = useState("")
+    const [whZip, setWhZip] = useState("")
+    const [whCity, setWhCity] = useState("")
+
 
 
    ////////////////////fonction de récupération des rdv qui sera mise dans le useEffect() ///////////////////////////////////////////
@@ -60,7 +66,7 @@ export default function Booking() {
 
         //en fonction du role utilisateur, je fais mes requêtes
         if(infos.role === "user") {
-            axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
+            axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`, {headers: {Authorization: `Bearer ${token}`}})
             .then((response) => {
                 console.log('response booking by customer',response)
                 if(response.data.data.length === 0) {
@@ -78,7 +84,7 @@ export default function Booking() {
                 setError(null)
 
                 //je récupère le nombre de cellules par heure en fonction de mon client
-                axios.get(`${configApi.api_url}/api/detailCustomer/${infos.customerId}`, {headers: {"x-access-token": token, "userId": userId}})
+                axios.get(`${configApi.api_url}/api/detailCustomer/${infos.customerId}`, {headers: {Authorization: `Bearer ${token}`}})
                 .then((response) => {
                     console.log('response detail customer',response)
                     setRowsPerHour(response.data.data.rowsPerHour)
@@ -93,7 +99,7 @@ export default function Booking() {
                 }
             })
         } else {
-            axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${infos.wharehouseId}`, {headers: {"x-access-token": token, "userId": userId}})
+            axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${infos.wharehouseId}`, {headers: {Authorization: `Bearer ${token}`}})
             .then((response) => {
                 console.log('response', response.data.data)
                 if(response.data.data.length === 0) {
@@ -124,6 +130,27 @@ export default function Booking() {
         }
         console.log('events', events)
     }
+
+    //fonction pour récupérer l'entrepôt concerné pour affichage lieu et adresse rdv
+    const getWharehouse = () => {
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${infos.wharehouseId}`, {headers: {Authorization: `Bearer ${token}`}})
+        .then((response) => {
+            setWhName(response.data.data.name)
+            setWhAddress(response.data.data.address)
+            setWhZip(response.data.data.zip)
+            setWhCity(response.data.data.city)
+
+        })
+        .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirect(true)
+            } else {
+                return setError("Impossible d'afficher l'adresse entrepôt, veuillez ré-essayer")
+            }
+        })
+    }
+
 
      /////////////////////////////////////  FONCTIONS POUR L'AGENDA /////////////////////////////////////////////////
     
@@ -166,12 +193,12 @@ export default function Booking() {
             classes: newItem.classes,
             _id: newItem._id,
             customerId: infos.customerId,
-            wharehouseId: infos.customerId,
+            wharehouseId: infos.wharehouseId,
             userId: infos.id 
         }
 
         //envoi des infos dans la bdd
-        axios.post(`${configApi.api_url}/api/addBooking`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.post(`${configApi.api_url}/api/addBooking`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then(response => {
             console.log('rep addNewEvent', response)
             if(response.status === 200) {
@@ -184,7 +211,7 @@ export default function Booking() {
                 return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
             }
             console.log('err addNewEvent', error)
-            setError("impossible d'enregistrer le rdv, veuillez recommencer ou contacter Charvin")
+            setError("Aucun rdv à afficher pour l'instant")
         })
     }
 
@@ -213,7 +240,7 @@ export default function Booking() {
         }
             
         //modif des infos dans la bdd
-        axios.put(`${configApi.api_url}/api/updateBooking/${newItem._id}`, datas, {headers: {"x-access-token": token, "userId": userId}})
+        axios.put(`${configApi.api_url}/api/updateBooking/${newItem._id}`, datas, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             console.log('rep editEvent', response)
             if(response.status === 200) {
@@ -237,19 +264,36 @@ export default function Booking() {
         console.log('handleItemRemove', deleteItem)
 
         //suppression dans la bdd
-        axios.delete(`${configApi.api_url}/api/deleteBooking/${deleteItem._id}`, {headers: {"x-access-token": token, "userId": userId}})
+        axios.delete(`${configApi.api_url}/api/deleteBooking/${deleteItem._id}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((response) => {
             console.log('rep deleteItem', response)
             if(response.status === 200) {
                 setItems(items)
             }
         })
+        .catch((error) => {
+            if(error.status === 403) {
+                return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+            }
+            console.log('err editEvent', error)
+            setError("impossible de modifier le rdv, veuillez recommencer ou contacter Charvin")
+        })
     }
 
     ///////////////////////////////// j'appelle ma requête au chargement de la page/////////////////////////////////
     useEffect(() => {
+
+        //je m'assure que j'ai bioen mes infos utilisateur sinon de redirige l'utilisateur vers la connexion
+        if(infos === null) {
+            return setRedirect(true)
+        } else {
+            //j'appelle l'entrepôt de rdv
+            getWharehouse()
+            //j'appelle mon tableau de rdv
+            getBookingsById()
+        }
         
-        getBookingsById()
+        console.log('infos user',infos)
         
     }, [])
 
@@ -263,16 +307,19 @@ export default function Booking() {
 
                 <h1 className="booking-title">calendrier des rdv actuellement planifiés</h1>
 
-                <p className="booking-p-infos">Avant de prendre rdv, merci de respecter les consignes suivantes:</p>
-                <ul className="booking-infos-ul">
-                    <li className="booking-infos-li">Ne pas modifier ni supprimer les rdv ne vous appartenant pas</li>
-                    <li className="booking-infos-li">Sélectionnez une plage horaire parmi celles disponibles</li>
-                    <li className="booking-infos-li">Pensez à renseigner la référence rdv ainsi que le nombre de palettes dans le même champ</li>
-                    <li className="booking-infos-li">Code des couleurs: vert pour un chargement et orange pour une livraison (bleu réservé à charvin)</li>
-                </ul>
+                <h2 className="booking-title2"><i class="fas fa-warehouse booking-title2"> {whName} {whAddress} {whZip} {whCity}</i></h2>
 
-                {message!==null && <p className="booking-p-message-chargement">{message}</p>}
-                {error!==null &&<p className="booking-p-error">{error}</p>}   
+                <div className="booking-infos">
+                    <p className="booking-p-infos">Avant de prendre rdv, merci de prendre connaissance des consignes suivantes:</p>
+                    <ul className="booking-infos-ul">
+                        <li className="booking-infos-li">Ne pas modifier ni supprimer les rdv ne vous appartenant pas</li>
+                        <li className="booking-infos-li">Renseigner la référence rdv ainsi que le nombre de palettes dans la même ligne</li>
+                        <li className="booking-infos-li">Code des couleurs: vert pour un chargement et orange pour une livraison (bleu réservé à charvin)</li>
+                    </ul>
+                    
+                    {message!==null && <p className="booking-p-message">{message}</p>}
+                    {error!==null &&<p className="booking-p-error">{error}</p>}   
+                </div>
 
                     {showModal &&
                         <Modal
@@ -302,7 +349,7 @@ export default function Booking() {
                         cellHeight={cellHeight}
                         startAtTime={8}
                         endAtTime={17}
-                        locale='fr'
+                        locale="fr"
                         items={items}
                         numberOfDays={numberOfDays}
                         rowsPerHour={rowsPerHour}

@@ -15,7 +15,6 @@ module.exports = (app) => {
             order: ['startDateTime']
         })
         .then(bookingsWharehouse => {
-            //console.log("bookingCust", bookingsCustomer)
             const message = `La liste de rdv de l'entrepôt portant l'identifiant ${bookingsWharehouse[0].wharehouseId} a bien été récupérée`
             res.json({ message, data: bookingsWharehouse})
         })
