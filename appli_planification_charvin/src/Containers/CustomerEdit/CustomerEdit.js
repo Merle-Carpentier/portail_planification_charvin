@@ -8,9 +8,8 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
-const token = localStorage.rdvCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire de détail d'un client
 export default function CustomerEdit(props) {
 
     //initialisation des states des données de l'api + message erreur + redirection
@@ -35,7 +34,7 @@ export default function CustomerEdit(props) {
 
     //fonction de récupération d'un utilisateur
     const getCustomer = (custId) => {
-        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`)
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)

@@ -9,7 +9,7 @@ import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire de modification d'un client
 export default function CustomerModif(props) {
 
     //initialisation des states du formulaire + message erreur + redirection
@@ -22,6 +22,7 @@ export default function CustomerModif(props) {
     const [wharehouseId, setWharehouseId] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     let id = props.match.params.id
 
@@ -33,7 +34,7 @@ export default function CustomerModif(props) {
 
     //fonction de récupération d'un client
     const getCustomer = (custId) => {
-        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailCustomer/${custId}`)
         .then((response) => {
             //console.log("get dans customerModif", response)
             setName(response.data.data.name)
@@ -45,9 +46,6 @@ export default function CustomerModif(props) {
             setWharehouseId(response.data.data.Wharehouse.id)
         })
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-            }
             console.log('modif customer err', error) 
             setError("Impossible d'afficher le client, tentez de rafraîchir la page svp")
         })
@@ -79,6 +77,10 @@ export default function CustomerModif(props) {
             }
         })
         .catch((error) => {
+            if(error.status === 403) {
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirectLog(true)
+            }
             console.log('modif customer err', error) 
             setError("Impossible d'enregistrer le client, veuillez recommencer")
         })
@@ -98,6 +100,9 @@ export default function CustomerModif(props) {
         <>
             {/*retour à la page admin si redirect est true*/}
             {redirect && <Redirect to='/admin' />}
+
+            {/*retour à la page de connexion si redirectLog est true*/}
+            {redirectLog && <Redirect to='/' />}
 
             <Authorized />            
 
@@ -171,7 +176,7 @@ export default function CustomerModif(props) {
                 
                     <option
                     className="AddMod-select select-upper"
-                    defaultValue = {wharehouseId}
+                    defaultValue = {wharehouseId || " "}
                     >{wharehouseName}</option>
                    
                     {wharehouses.map((whareh) => {

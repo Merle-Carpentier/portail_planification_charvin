@@ -20,12 +20,12 @@ import BookingEdit from './Containers/BookingEdit/BookingEdit.js';
 function App() {
   return (
     <div className="app">
+    
       <Router>
 
         <Switch>
           <Route exact path = '/' component = { Login } />
           <Route exact path = '/booking' component = { Booking } />
-
           <Route exact path = '/admin' component = { Admin } />
           <Route exact path = '/admin/wharehouse/add' component = { WharehouseAdd } />
           <Route exact path = '/admin/wharehouse/edit/:id' component = { WharehouseEdit } />
@@ -38,6 +38,7 @@ function App() {
           <Route exact path = '/admin/customer/modif/:id' component = { CustomerModif } />
           <Route exact path = '/admin/booking/edit/:id' component = { BookingEdit } />
           <Route exact path = '/logout' component = { Logout } />
+
           <Route path = '/' component = { Error }/>        
         </Switch>
 

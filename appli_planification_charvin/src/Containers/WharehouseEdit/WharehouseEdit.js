@@ -8,7 +8,6 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
-const token = localStorage.rdvCharvin
 
 //page de formulaire de récupération d'un entrepôt
 export default function WharehouseEdit(props) {
@@ -32,7 +31,7 @@ export default function WharehouseEdit(props) {
 
     //fonction de récupération d'un entrepôt
     const getWharehouse = (whId) => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${whId}`)
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)
@@ -43,9 +42,6 @@ export default function WharehouseEdit(props) {
             setUpdated(response.data.data.updatedAt)
         })
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-            }
             console.log('detailWharehouse err', error) 
             setError("Impossible d'afficher l'entrepôt, tentez de rafraîchir la page svp")
         })

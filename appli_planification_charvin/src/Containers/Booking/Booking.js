@@ -14,7 +14,6 @@ require('moment/locale/fr.js') //pour avoir le calendrier en français
 
 const token = localStorage.rdvCharvin
 
-
 //Initialisation des couleurs pour l'agenda
 let colors = {
     "color-b": "rgba(16, 68, 118, 1)",
@@ -66,7 +65,7 @@ export default function Booking() {
 
         //en fonction du role utilisateur, je fais mes requêtes
         if(infos.role === "user") {
-            axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`, {headers: {Authorization: `Bearer ${token}`}})
+            axios.get(`${configApi.api_url}/api/bookingsByCustomer/${infos.customerId}`)
             .then((response) => {
                 console.log('response booking by customer',response)
                 if(response.data.data.length === 0) {
@@ -84,22 +83,19 @@ export default function Booking() {
                 setError(null)
 
                 //je récupère le nombre de cellules par heure en fonction de mon client
-                axios.get(`${configApi.api_url}/api/detailCustomer/${infos.customerId}`, {headers: {Authorization: `Bearer ${token}`}})
+                axios.get(`${configApi.api_url}/api/detailCustomer/${infos.customerId}`)
                 .then((response) => {
                     console.log('response detail customer',response)
                     setRowsPerHour(response.data.data.rowsPerHour)
                 })
             })
             .catch((error) => {
-                if(error.status === 403) {
-                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-                    return setRedirect(true)
-                } else {
-                    return setError("Impossible de récupérer les rdv, veuillez ré-essayer svp")
-                }
+                console.log('error bookingsByCustomer', error)
+                return setError("Il n'y a pas de rdv pour l'instant")
+                
             })
         } else {
-            axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${infos.wharehouseId}`, {headers: {Authorization: `Bearer ${token}`}})
+            axios.get(`${configApi.api_url}/api/bookingsByWharehouse/${infos.wharehouseId}`)
             .then((response) => {
                 console.log('response', response.data.data)
                 if(response.data.data.length === 0) {
@@ -120,20 +116,16 @@ export default function Booking() {
                 console.log('items', items)
             })
             .catch((error) => {
-                if(error.status === 403) {
-                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-                    return setRedirect(true)
-                } else {
-                    return setError("Impossible de récupérer les rdv, veuillez ré-essayer svp")
-                }
+                console.log('error bookingsByWharehouse', error)
+                return setError("Il n'y a pas de rdv pour l'instant")
             })
         }
-        console.log('events', events)
+        //console.log('events', events)
     }
 
     //fonction pour récupérer l'entrepôt concerné pour affichage lieu et adresse rdv
     const getWharehouse = () => {
-        axios.get(`${configApi.api_url}/api/detailWharehouse/${infos.wharehouseId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailWharehouse/${infos.wharehouseId}`)
         .then((response) => {
             setWhName(response.data.data.name)
             setWhAddress(response.data.data.address)
@@ -142,12 +134,9 @@ export default function Booking() {
 
         })
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-                return setRedirect(true)
-            } else {
-                return setError("Impossible d'afficher l'adresse entrepôt, veuillez ré-essayer")
-            }
+            console.log('error detailWharehouse', error)
+            return setError("Impossible d'afficher l'adresse entrepôt, veuillez ré-essayer")
+            
         })
     }
 
@@ -158,17 +147,12 @@ export default function Booking() {
     //fonction: j'ouvre une popup pour ajouter un rdv quand une cellule selectionnée
     const handleCellSelection = (item) => {
         console.log('handleCellSelection item', item)
-        let dateDeb = new Date(item)
-        let dateFin = dateDeb.getTime() + 30*60000
+        // let dateDeb = new Date(item)
+        // let dateFin = dateDeb.getTime() + 30*60000
         //setSelected([dateDeb.toISOString(), dateFin.toISOString()])
-
         //setSelected([dateDeb, dateFin])
         //setShowModal(true)
-
-        
-
         console.log('selected',selected)
-
     }
 
     //fonction: j'ouvre une popup pour ajouter un rdv quand selection plage horaire (plusieurs cellules)
@@ -208,7 +192,8 @@ export default function Booking() {
         })
         .catch((error) => {
             if(error.status === 403) {
-                return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirect(true)
             }
             console.log('err addNewEvent', error)
             setError("Aucun rdv à afficher pour l'instant")
@@ -250,7 +235,8 @@ export default function Booking() {
         })
         .catch((error) => {
             if(error.status === 403) {
-                return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirect(true)
             }
             console.log('err editEvent', error)
             setError("impossible de modifier le rdv, veuillez recommencer ou contacter Charvin")
@@ -273,7 +259,8 @@ export default function Booking() {
         })
         .catch((error) => {
             if(error.status === 403) {
-                return dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirect(true)
             }
             console.log('err editEvent', error)
             setError("impossible de modifier le rdv, veuillez recommencer ou contacter Charvin")
@@ -301,6 +288,7 @@ export default function Booking() {
     return (
         <>
             {redirect && <Redirect to='/' />}
+
             <Authorized />
 
             <div className="booking">

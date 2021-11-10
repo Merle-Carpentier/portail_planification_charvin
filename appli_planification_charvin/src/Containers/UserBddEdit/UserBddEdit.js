@@ -8,9 +8,8 @@ import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
-const token = localStorage.rdvCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire d'edition d'un utilisateur
 export default function UserBddEdit(props) {
 
     //initialisation des states des données de l'api + message erreur + redirection
@@ -34,7 +33,7 @@ export default function UserBddEdit(props) {
 
     //fonction de récupération d'un utilisateur
     const getUserBdd = (usId) => {
-        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailUser/${usId}`)
         .then((response) => {
             //console.log(response)
             setLastName(response.data.data.lastName)

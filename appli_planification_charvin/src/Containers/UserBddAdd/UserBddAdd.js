@@ -11,7 +11,7 @@ import { allCustomers } from '../../redux/actions/customerActions.js'
 
 const token = localStorage.rdvCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire d'ajout d'un utilisateur
 export default function UserBddAdd() {
 
     //initialisation des states du formulaire + message erreur + redirection
@@ -25,6 +25,7 @@ export default function UserBddAdd() {
     const [role, setRole] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
@@ -63,6 +64,8 @@ export default function UserBddAdd() {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirectLog(true)
+
             }
             console.log('addUserBdd err', error) 
             setError("Impossible d'enregistrer l'utilisateur, veuillez recommencer")
@@ -80,6 +83,9 @@ export default function UserBddAdd() {
         <>
             {/*retour à la page admin si redirect est true*/}
             {redirect && <Redirect to='/admin' />}
+
+            {/*retour à la page de connexion si redirectLog est true*/}
+            {redirectLog && <Redirect to='/' />}
 
             <Authorized />
 

@@ -10,7 +10,7 @@ export default function Footer() {
             
             <a className="footer-a" href="https://groupe-bbl.com/">Cliquez ici pour visiter notre site Web</a>
             
-            <a href="" className="footer-a-img"><img className="footer-img" src={bbl} alt="logo BBL" /></a>
+            <a href="https://groupe-bbl.com/" className="footer-a-img"><img className="footer-img" src={bbl} alt="logo BBL" /></a>
             
             <small className="footer-mentions">
                 <a href={cgu}>Conditions générales de vente</a>

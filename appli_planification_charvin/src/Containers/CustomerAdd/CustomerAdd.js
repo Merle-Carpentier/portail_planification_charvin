@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Authorized from '../../Components/Authorized/Authorized.js'
@@ -10,7 +10,7 @@ import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire d'ajout d'un client
 export default function CutomerAdd() {
 
     //initialisation des states du formulaire + message erreur + redirection
@@ -19,10 +19,10 @@ export default function CutomerAdd() {
     const [zip, setZip] = useState("")
     const [city, setCity] = useState("")
     const [rowsPerHour, setRowsPerHour] = useState()
-    const [numberOfDays, setNumberOfDays] = useState()
     const [wharehouseId, setWharehouseId] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     //je sélectionne mes tableaux Wharehouses et Customers dans le store
     const wharehouses = useSelector(state => state.wharehouseReducer.wharehouses) 
@@ -33,11 +33,11 @@ export default function CutomerAdd() {
     //fonction d'envoi du formulaire
     const onSubmitForm = () => {
         //message d'erreur si les champs ne sont remplis
-        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId==="" || rowsPerHour===null || numberOfDays===null){
+        if(name==="" || address==="" || zip==="" || city==="" || wharehouseId==="" || rowsPerHour===null){
             return setError("Tous les champs ne sont pas remplis!")
         }
-        if(isNaN(rowsPerHour) || isNaN(numberOfDays)) {
-            return setError("Les champs nombre de rdv/heure et nombre de jour planifiés doivent être des chiffres")
+        if(isNaN(rowsPerHour)) {
+            return setError("Le champ nombre de rdv/heure doit être des chiffres")
         }
 
         //récupération des states dans datas + envoie des données vers l'api
@@ -47,7 +47,6 @@ export default function CutomerAdd() {
             zip: zip,
             city: city,
             rowsPerHour: rowsPerHour,
-            numberOfDays: numberOfDays,
             wharehouseId: wharehouseId
         }
         axios.post(`${configApi.api_url}/api/addCustomer`, datas, {headers: {Authorization: `Bearer ${token}`}})
@@ -59,6 +58,7 @@ export default function CutomerAdd() {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirectLog(true)
             }
             console.log('addCustomerBdd err', error) 
             setError("Impossible d'enregistrer le client, veuillez recommencer")
@@ -71,6 +71,9 @@ export default function CutomerAdd() {
         <>
             {/*retour à la page admin si redirect est true*/}
             {redirect && <Redirect to='/admin' />}
+
+            {/*retour à la page de connexion si redirectLog est true*/}
+            {redirectLog && <Redirect to='/' />}
 
             <Authorized />
 
@@ -127,14 +130,6 @@ export default function CutomerAdd() {
                 className="AddMod-input"
                 onChange={(e) => {
                     setRowsPerHour(e.currentTarget.value)
-                }}/>
-
-                <label className="AddMod-label input-upper">nb de jours planifiables par semaine</label>
-                <input 
-                type="text"
-                className="AddMod-input"
-                onChange={(e) => {
-                    setNumberOfDays(e.currentTarget.value)
                 }}/>
 
                 <label className="AddMod-label">entrepôt d'affectation</label>

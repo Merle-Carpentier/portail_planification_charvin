@@ -1,8 +1,6 @@
 import axios from 'axios'
-import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
-const token = localStorage.rdvCharvin
 
 //types d'action
 export const LOAD_USERSBDD = "LOAD_USERSBDD"
@@ -35,16 +33,12 @@ export const allUsersBdd = () => {
 
         dispatch(loadUsersBdd())
 
-        axios.get(`${configApi.api_url}/api/allUsers`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/allUsers`)
         .then((response) => {
             //console.log('allUsersbdd', response)
             dispatch(loadUsersBddSuccess(response.data.data))   
         })
-
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-            }
             dispatch(loadUsersBddError(error))
             console.log('usersbdd err', error.message) 
         })

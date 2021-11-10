@@ -8,7 +8,6 @@ import { configApi } from '../../apiCalls/configApi.js'
 import { convertDate } from '../../util/util.js'
 import '../../asset/cssCommun/pages_finissant_en_Edit.css'
 
-const token = localStorage.rdvCharvin
 
 
 //page de formulaire d'affichage d'un rdv
@@ -35,7 +34,7 @@ export default function BookingEdit(props) {
 
     //fonction de récupération d'un utilisateur
     const getBooking = (bookId) => {
-        axios.get(`${configApi.api_url}/api/detailBooking/${bookId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailBooking/${bookId}`)
         .then((response) => {
             console.log(response)
             setName(response.data.data.name)
@@ -54,9 +53,6 @@ export default function BookingEdit(props) {
             }
         })
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-            }
             console.log('detailBooking err', error) 
             setError("Impossible d'afficher le détail rdv, tentez de rafraîchir la page svp")
         })

@@ -19,6 +19,7 @@ export default function WharehouseAdd() {
     const [city, setCity] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     //appel action du store
     const dispatch = useDispatch()
@@ -45,6 +46,7 @@ export default function WharehouseAdd() {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirectLog(true)
             }
             console.log('addWharehouse err', error) 
             setError("Impossible d'enregistrer l'entrepôt, veuillez recommencer")
@@ -56,6 +58,9 @@ export default function WharehouseAdd() {
         <>
             {/*retour à la page admin si redirect est true*/}
             {redirect && <Redirect to='/admin' />}
+
+            {/*retour à la page de connexion si redirectLog est true*/}
+            {redirectLog && <Redirect to='/' />}
 
             <Authorized />
 

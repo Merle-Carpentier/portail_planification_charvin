@@ -1,8 +1,6 @@
 import axios from 'axios'
-import { logoutUser } from './userActions'
 import { configApi } from '../../apiCalls/configApi'
 
-const token = localStorage.rdvCharvin
 
 //types d'action
 export const LOAD_BOOKINGS = "LOAD_BOOKINGS"                             //message de chargement pendant la requète
@@ -40,16 +38,13 @@ export const allBookings = () => {
 
         dispatch(loadBookings())
 
-        axios.get(`${configApi.api_url}/api/allBookings`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/allBookings`)
         .then((response) => {
             //console.log('allUsersbdd', response)
             dispatch(loadBookingsSuccess(response.data.data))   
         })
 
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-            }
             dispatch(loadBookingsError(error))
             console.log('Bookings err', error.message) 
         })

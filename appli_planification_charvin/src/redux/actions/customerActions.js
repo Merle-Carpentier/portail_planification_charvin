@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { configApi } from '../../apiCalls/configApi'
-import { logoutUser } from './userActions'
 
-const token = localStorage.rdvCharvin
 
 //types d'action
 export const LOAD_CUSTOMERS = "LOAD_CUSTOMERS"
@@ -35,16 +33,13 @@ export const allCustomers = () => {
 
         dispatch(loadCustomers())
 
-        axios.get(`${configApi.api_url}/api/allCustomers`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/allCustomers`)
         .then((response) => {
             //console.log('allcustomers', response)
             dispatch(loadCustomersSuccess(response.data.data))   
         })
 
         .catch((error) => {
-            if(error.status === 403) {
-                dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
-            }
             dispatch(loadCustomersError(error))
             console.log('allCustomers err', error.message) 
         })

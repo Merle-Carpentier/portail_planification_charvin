@@ -1,9 +1,10 @@
 const { Booking, Customer, Wharehouse, User } = require('../../sequelize')
-const checkAuth = require('../../checkAuth/checkAuth')
 
+
+//s'agissant d'une route get, et l'utilisateur venant de se connecter, pas besoin du middleware
 //route de récupération de tous les rdv avec nom entrepôt, client et utilisateur
 module.exports = (app) => {
-    app.get('/api/detailBooking/:id', checkAuth, (req, res) => {
+    app.get('/api/detailBooking/:id', (req, res) => {
         Booking.findByPk(req.params.id, {
             include: [{
                 model: Wharehouse,

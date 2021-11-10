@@ -1,9 +1,9 @@
 const { User, Wharehouse, Customer } = require('../../sequelize')
-const checkAuth = require('../../checkAuth/checkAuth')
 
+//s'agissant d'une route get, et l'utilisateur venant de se connecter, pas besoin du middleware
 //route de récupération de tous les utilisateurs avec leur entrepôt et client affecté
 module.exports = (app) => {
-    app.get('/api/allUsers', checkAuth, (req, res) => {
+    app.get('/api/allUsers', (req, res) => {
         User.findAll({
             include: [{
                 model: Wharehouse,

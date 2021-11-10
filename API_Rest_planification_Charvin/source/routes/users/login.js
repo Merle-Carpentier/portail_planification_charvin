@@ -22,7 +22,7 @@ module.exports = (app) => {
                     return res.status(401).json({ message })
                 }
                 //génération d'un jeton jwt pendant 10h
-                const token = jwt.sign( { userId: user.id }, key, { expiresIn: '10h' } )
+                const token = jwt.sign( { userId: user.id }, key, { expiresIn: '72h' } )
                 const message = `L'utilisateur s'est connecté avec succès`
     
                 //console.log('token de login ds back', token)

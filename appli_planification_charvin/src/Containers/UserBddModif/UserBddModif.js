@@ -10,7 +10,7 @@ import '../../asset/cssCommun/pages_finissant_en_Add_ou_Modif.css'
 
 const token = localStorage.rdvCharvin
 
-//page de formulaire d'ajout d'un entrepôt
+//page de formulaire de modification d'un utilisateur
 export default function UserBddModif(props) {
 
     //initialisation des states du formulaire + message erreur + redirection
@@ -26,6 +26,7 @@ export default function UserBddModif(props) {
     const [checkPassword, setCheckPassword] = useState("")
     const [error, setError] = useState(null)
     const [redirect, setRedirect] = useState(false)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     let id = props.match.params.id
 
@@ -38,7 +39,7 @@ export default function UserBddModif(props) {
 
     //fonction de récupération d'un client
     const getUser = (usId) => {
-        axios.get(`${configApi.api_url}/api/detailUser/${usId}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${configApi.api_url}/api/detailUser/${usId}`)
         .then((response) => {
             //console.log("get dans userModif", response)
             setLastName(response.data.data.lastName)
@@ -81,6 +82,7 @@ export default function UserBddModif(props) {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirectLog(true)
             }
             console.log('modif user err', error) 
             setError("Impossible de modifier l'utilisateur', veuillez recommencer")
@@ -105,6 +107,10 @@ export default function UserBddModif(props) {
                 }
             })
             .catch((error) => {
+                if(error.status === 403) {
+                    dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                    return setRedirectLog(true)
+                }
                 console.log('modif passworduser err', error) 
                 setError("Impossible de modifier le mot de passe utilisateur', veuillez recommencer")
             })
@@ -126,6 +132,9 @@ export default function UserBddModif(props) {
         <>
             {/*retour à la page admin si redirect est true*/}
             {redirect && <Redirect to='/admin' />}
+
+            {/*retour à la page de connexion si redirectLog est true*/}
+            {redirectLog && <Redirect to='/' />}
 
             <Authorized />            
 
