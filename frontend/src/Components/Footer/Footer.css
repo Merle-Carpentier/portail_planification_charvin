@@ -7,8 +7,8 @@
     background-color: #104476;
     color: #f1f1f1;
     padding: 5px 5px 2px 5px;
-    line-height: 12px;
-    font-size: 8px; 
+    line-height: 18px;
+    font-size: 12px; 
 }
 
 .footer-a {
@@ -46,8 +46,8 @@
 @media screen and (min-width: 1050px) {
    
     .footer {
-        font-size: 10px;
-        line-height: 13px;
+        font-size: 15px;
+        line-height: 20px;
     }
 
     .footer-img {
