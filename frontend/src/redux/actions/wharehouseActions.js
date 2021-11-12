@@ -40,8 +40,8 @@ export const allWharehouses = () => {
         })
 
         .catch((error) => {
-            dispatch(loadWharehousesError(error))
-            console.log('allWharehouses err', error.message) 
+            dispatch(loadWharehousesError(error.message))
+            console.log('allWharehouses err', error) 
         })
     }
 }

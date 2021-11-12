@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { allWharehouses } from '../../redux/actions/wharehouseActions'
 import { logoutUser } from '../../redux/actions/userActions'
@@ -21,6 +21,7 @@ export default function AdminWharehouse() {
     //j'initialise mes states pour les eventuels messages erreur et réponse pour modif et suppression + taille fenêtre
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
@@ -38,6 +39,7 @@ export default function AdminWharehouse() {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc deconnexion
+                return setRedirectLog(true)
             }
             console.log("err del", error)
             setErrResponse("Impossible de supprimer l'entrepôt, veuillez vérifier s'il n'est pas en lien avec un client ou un rdv")
@@ -54,6 +56,9 @@ export default function AdminWharehouse() {
 
     //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
+
+        <>
+        {redirectLog && <Redirect to='/' />}
         
         <div className="admin-comp">
 
@@ -87,7 +92,7 @@ export default function AdminWharehouse() {
                             <td colSpan="3" className="admin-comp-table-tdload">Chargement...</td>
                         </tr>
                     )
-                    :err ? (
+                    :err!=="" ? (
                         <tr className="admin-comp-table-trerr">
                             <td colSpan="3" className="admin-comp-table-tderr">{err}</td>
                         </tr>
@@ -97,7 +102,7 @@ export default function AdminWharehouse() {
                             <td colSpan="3" className="admin-comp-table-tdload">aucun entrepôt enregistré</td>
                         </tr>
                     )
-                    :wharehouses.map((wharehouse)=> {
+                    : wharehouses.length>0 && wharehouses.map((wharehouse)=> {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
                             <tr key={wharehouse.id} className="admin-comp-table-tr">
@@ -137,6 +142,7 @@ export default function AdminWharehouse() {
                 <p className="admin-comp-errmessage">{errResponse}</p>
             }
         </div>
+        </>
     )
 }
 

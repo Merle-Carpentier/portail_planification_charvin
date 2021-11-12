@@ -40,8 +40,8 @@ export const allCustomers = () => {
         })
 
         .catch((error) => {
-            dispatch(loadCustomersError(error))
-            console.log('allCustomers err', error.message) 
+            dispatch(loadCustomersError(error.message))
+            console.log('allCustomers err', error) 
         })
     }
 }

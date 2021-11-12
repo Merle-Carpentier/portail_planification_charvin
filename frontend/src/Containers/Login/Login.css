@@ -1,36 +1,37 @@
 .login-container {
     width: 100%;
     margin-top: 0;
-    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     text-align: center;   
     color: #104476;
+   
+
 }
 
 .login-container-title {
     width: 100%;
     margin-top: 0;
     background: linear-gradient(35deg, #104476, #eb671c);
-
 }
 
 .login-container-h1 {
-    width: 100%;
+    width: 80%;
+    margin: auto;
     text-transform: uppercase;
     color: #f1f1f1;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: bolder;
-    padding: 15px 10px 20px 10px;
+    padding: 5px;
     margin-bottom: 20px;
     
 }
 
 .login-container-img{
-    margin-top: 20px;
-    width: 60%;
-    border-radius: 50px;
+    width: 30%;
+    margin-top: 5px;
+    border-radius: 10px;
 }
 
 .login-form {
@@ -42,7 +43,7 @@
 }
 
 .login-form h2 {
-    font-size: 13px;
+    font-size: 20px;
     font-style: italic;
     color: #104476;
     margin: 10px auto 20px auto;
@@ -50,16 +51,15 @@
 }
 
 .login-form label {
-    font-size: 10px;
+    font-size: 15px;
     font-style: italic; 
-
     padding: 5px;
 }
 
 .login-input {
-   width: 65%; 
+   width: 75%; 
    margin: 10px auto 20px auto;
-   padding: 5px;
+   padding: 10px;
    text-align: center;
    border-radius: 5px;
    border-style: none;
@@ -68,12 +68,13 @@
 }
 
 .login-form-button {
-    width: 30%;
+    width: 40%;
     background-color: #104476;
     color: #f1f1f1;
     border-radius: 5px;
     border-style: none;
-    padding: 5px;
+    padding: 8px;
+    margin-top: 20px;
     margin-bottom: 20px;
     font-weight: bold;
     cursor: pointer;
@@ -88,7 +89,7 @@
 @media screen and (min-width: 769px){
     
     .login-container {
-        margin: 15px auto 20px;
+        margin: 0 auto 20px;
     }
 
     .login-container h1 {
@@ -96,22 +97,24 @@
     }
    
     .login-form h2 {
-        font-size: 20px;
+        font-size: 22px;
+        margin-bottom: 25px;
     }
 
     .login-form label {
-        font-size: 15px;
+        font-size: 20px;
+        margin-top: 15px;
     }
 
     .login-container-img {
-        width: 60%;
+        width: 30%;
     }
 }
 
 @media screen and (min-width: 1050px){
 
-    .login-input:focus {
-        background-color: #eb671c;
+    .login-input {
+        width: 80%;
     }
 
     .login-form-button:hover {

@@ -39,8 +39,8 @@ export const allUsersBdd = () => {
             dispatch(loadUsersBddSuccess(response.data.data))   
         })
         .catch((error) => {
-            dispatch(loadUsersBddError(error))
-            console.log('usersbdd err', error.message) 
+            dispatch(loadUsersBddError(error.message))
+            console.log('usersbdd err', error) 
         })
     }
 }

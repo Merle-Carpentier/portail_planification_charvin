@@ -59,7 +59,11 @@ export default function Login() {
         //gestion de l'erreur
         .catch((error) => {
             console.log(error)
-            setErrorConnection("Vos identifiants sont incorrects, recommencez ou contactez Charvin")
+            if(error.status === 500) {
+               return setErrorConnection("Impossible de se connecter au serveur")
+            } else {
+                setErrorConnection("Vos identifiants sont incorrects, recommencez ou contactez Charvin si vous les avez oublié")
+            }  
         })
         
     }

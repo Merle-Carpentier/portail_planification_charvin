@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { allUsersBdd } from '../../redux/actions/userOfBddActions'
 import { logoutUser } from '../../redux/actions/userActions'
@@ -21,6 +21,7 @@ export default function AdminUserOfBdd() {
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
     const [width, setWidth] = useState(window.innerWidth)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     //j'initialise mon dispatch d'action du store
     const dispatch = useDispatch()
@@ -39,6 +40,7 @@ export default function AdminUserOfBdd() {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc direction login
+                return setRedirectLog(true)
             }
             console.log("err del", error)
             setErrResponse("Impossible de supprimer l'utilisateur, recommencez ou vérifier s'il n'est pas en lien avec un rdv")
@@ -65,6 +67,9 @@ export default function AdminUserOfBdd() {
 
     //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
+
+        <>
+        {redirectLog && <Redirect to='/' />}
         
         <div className="admin-comp">
 
@@ -109,7 +114,7 @@ export default function AdminUserOfBdd() {
                             <td colSpan="3" className="admin-comp-table-tdload">aucun utilisateur enregistré</td>
                         </tr>
                     )
-                    :usersBdd.map((userBdd)=> {
+                    :usersBdd.length>0 && usersBdd.map((userBdd)=> {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
                             <tr key={userBdd.id} className="admin-comp-table-tr">
@@ -150,5 +155,6 @@ export default function AdminUserOfBdd() {
                 <p className="admin-comp-errmessage">{errResponse}</p>
             }
         </div>
+        </>
     )
 }

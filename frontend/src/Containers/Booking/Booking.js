@@ -303,6 +303,7 @@ export default function Booking() {
                         <li className="booking-infos-li">Ne pas modifier ni supprimer les rdv ne vous appartenant pas</li>
                         <li className="booking-infos-li">Renseigner la référence rdv ainsi que le nombre de palettes dans la même ligne</li>
                         <li className="booking-infos-li">Code des couleurs: vert pour un chargement et orange pour une livraison (bleu réservé à charvin)</li>
+                        <li className="booking-infos-li">Pour prendre rdv, sélectionner une plage horaire en faisant glisser la souris sur l'agenda</li>
                     </ul>
                     
                     {message!==null && <p className="booking-p-message">{message}</p>}

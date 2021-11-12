@@ -41,6 +41,7 @@ export default function AdminBooking() {
 
     //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
+
         
         <div className="admin-comp">
 
@@ -83,7 +84,7 @@ export default function AdminBooking() {
                             <td colSpan="3" className="admin-comp-table-tdload">aucun rdv enregistré</td>
                         </tr>
                     )
-                    :bookings.map((booking)=> {
+                    :bookings.length>0 && bookings.map((booking)=> {
                         {/*je map sur les données renvoyées par l'api et je fais un affichage conditionnel */}
                         return(
                             <tr key={booking.id} className="admin-comp-table-tr">

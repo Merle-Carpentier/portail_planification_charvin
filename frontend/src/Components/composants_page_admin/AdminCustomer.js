@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { allCustomers } from '../../redux/actions/customerActions'
 import { logoutUser } from '../../redux/actions/userActions.js'
@@ -22,6 +22,7 @@ export default function AdminCustomer() {
     const [errResponse, setErrResponse] = useState(null)
     const [successResponse, setSuccessResponse] = useState(null)
     const [width, setWidth] = useState(window.innerWidth)
+    const [redirectLog, setRedirectLog] = useState(false)
 
     //j'initialise mon dispatch d'actions
     const dispatch = useDispatch()
@@ -39,6 +40,7 @@ export default function AdminCustomer() {
         .catch((error) => {
             if(error.status === 403) {
                 dispatch(logoutUser()) //si status 403, erreur dans le token donc direction login
+                return setRedirectLog(true)
             }
             console.log("err del", error)
             setErrResponse("Impossible de supprimer le client, recommencez ou vérifier s'il n'est pas en lien avec un entrepôt ou rdv")
@@ -65,6 +67,9 @@ export default function AdminCustomer() {
 
     //affichage du tableau en fonction de l'état des state du store + des states créées
     return (
+
+        <>
+        {redirectLog && <Redirect to='/' />}
         
         <div className="admin-comp">
 
@@ -110,7 +115,7 @@ export default function AdminCustomer() {
                             <td colSpan="3" className="admin-comp-table-tdload">aucun client enregistré</td>
                         </tr>
                     )
-                    :customers.map((customer)=> {
+                    :customers.length>0 && customers.map((customer)=> {
                         {/*je map sur les données renvoyées par l'api */}
                         return(
                             <tr key={customer.id} className="admin-comp-table-tr">
@@ -152,5 +157,6 @@ export default function AdminCustomer() {
                 <p className="admin-comp-errmessage">{errResponse}</p>
             }
         </div>
+        </>
     )
 }

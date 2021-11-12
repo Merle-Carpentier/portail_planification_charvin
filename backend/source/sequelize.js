@@ -24,15 +24,6 @@ if(process.env.NODE_ENV === 'production') {
     })
 }
 
-//connexion bdd
-sequelize.authenticate()
-.then(_ => {
-    console.log("Connexion à la base de données OK")
-})
-.catch((error) => {
-    console.log("Impossible de se connecter à la bdd", error)
-})
-
 
 //récupération des modèles
 const Wharehouse = WharehouseModel(sequelize, DataTypes)
@@ -40,28 +31,58 @@ const Customer = CustomerModel(sequelize, DataTypes)
 const User = UserModel(sequelize, DataTypes)
 const Booking = BookingModel(sequelize, DataTypes)
 
-//association des champs wharehouseId
-Customer.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
-User.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
-Booking.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
-Wharehouse.hasMany(Customer, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
-Wharehouse.hasMany(User, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
-Wharehouse.hasMany(Booking, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
-
-//association des champs customerId
-User.belongsTo(Customer, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
-Booking.belongsTo(Customer, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
-Customer.hasMany(User, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
-Customer.hasMany(Booking, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
- 
-//association du champ userId
-Booking.belongsTo(User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
-User.hasMany(Booking, { foreignKey: 'userId', onDelete: 'RESTRICT' })
 
 
-
-//initialisation de la base de données (création tables + 1 ligne par table)
+//initialisation de la base de données (création tables)
 const initDb = () => {
+
+    //connexion bdd
+    sequelize.authenticate()
+    .then(_ => {
+        console.log("Connexion à la base de données OK")
+    })
+    .catch((error) => {
+        console.log("Impossible de se connecter à la bdd", error)
+    })
+
+    //association des champs wharehouseId
+    Customer.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    User.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Booking.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Wharehouse.hasMany(Customer, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Wharehouse.hasMany(User, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Wharehouse.hasMany(Booking, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+
+    //association des champs customerId
+    User.belongsTo(Customer, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    Booking.belongsTo(Customer, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    Customer.hasMany(User, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    Customer.hasMany(Booking, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    
+    //association du champ userId
+    Booking.belongsTo(User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+    User.hasMany(Booking, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+
+}
+
+const createDb = () => {
+    //association des champs wharehouseId
+    Customer.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    User.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Booking.belongsTo(Wharehouse, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Wharehouse.hasMany(Customer, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Wharehouse.hasMany(User, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+    Wharehouse.hasMany(Booking, { foreignKey: 'wharehouseId', onDelete: 'RESTRICT' })
+
+    //association des champs customerId
+    User.belongsTo(Customer, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    Booking.belongsTo(Customer, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    Customer.hasMany(User, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    Customer.hasMany(Booking, { foreignKey: 'customerId', onDelete: 'RESTRICT' })
+    
+    //association du champ userId
+    Booking.belongsTo(User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+    User.hasMany(Booking, { foreignKey: 'userId', onDelete: 'RESTRICT' })
 
     //synchronisation des tables et affichage du message
     return sequelize.sync()
@@ -69,7 +90,7 @@ const initDb = () => {
             console.log("La base de données à bien été initialisée")
         })
         .catch(error => {
-            console.log("L\'initialisation de le bdd a echouée", error)
+            console.log("L\'initialisation de la bdd a echouée", error)
         })
 }
 

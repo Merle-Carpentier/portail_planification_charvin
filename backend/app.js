@@ -15,10 +15,11 @@ app
  .use(express.urlencoded({ extended: true }))
  .use(express.json())
 
-//initialisation de la bdd
-//sequelize.initDb()
+//connexion bdd + lines entre tables
+sequelize.initDb()
 
-
+//création des tables => à laisser commenter si vous utilisez la base de donnée fournie
+//sequelize.createDb()
 
 //acquisition de la page "home"
 app.get('/', (req, res) => res.json( "Bienvenue sur API REST portail planification Charvin" ))

@@ -45,8 +45,8 @@ export const allBookings = () => {
         })
 
         .catch((error) => {
-            dispatch(loadBookingsError(error))
-            console.log('Bookings err', error.message) 
+            dispatch(loadBookingsError(error.message))
+            console.log('Bookings err', error) 
         })
     }
 }

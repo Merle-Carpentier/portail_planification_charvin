@@ -11,6 +11,10 @@
     border-top: 1px solid #eb671c;
 }
 
+.--body {
+    margin-bottom: 0;
+}
+
 .booking-title {
     text-transform: uppercase;
     font-weight: bolder;
